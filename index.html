@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#171310">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SHALA PARTY</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23171310'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23ffc93d'/%3E%3Ccircle cx='32' cy='32' r='10' fill='%23171310'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;500;600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#171310; --bg2:#211b15; --surf:#26201725; --card:#251f17; --card2:#2c251b;
+  --line:#3b3227; --line2:#4a3e2f;
+  --ink:#f7efdd; --ink2:#b6a68d; --dim:#8a7b64;
+  --yl:#ffc93d; --yl2:#ffd76a; --red:#ff5d5d; --tl:#38d3c0; --gr:#4ecb71; --or:#ff8f3d; --pk:#e86fa4;
+  --shadow:5px 5px 0 rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Baloo Bhaijaan 2',sans-serif;color:var(--ink);
+  background:#0d0b09;
+  background-image:radial-gradient(rgba(255,201,61,.05) 1.2px,transparent 1.2px);
+  background-size:26px 26px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+#frame{
+  position:relative;width:min(430px,100vw);height:min(900px,100dvh);
+  background:var(--bg);overflow:hidden;display:flex;flex-direction:column;
+}
+@media(min-width:480px){
+  #frame{border:2px solid #33291c;border-radius:26px;box-shadow:0 30px 80px rgba(0,0,0,.7);height:min(860px,94dvh)}
+}
+#frame::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(rgba(255,255,255,.028) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+#stage{position:absolute;inset:0;overflow:hidden;z-index:1}
+.scr{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  background:var(--bg);transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.25,1);
+}
+.scr.in{transform:translateX(0)}
+.scr.back{transform:translateX(-25%);opacity:.6}
+.scr.rev{transform:translateX(-100%)}
+/* ---------- header ---------- */
+.hdr{
+  display:flex;align-items:center;gap:10px;padding:14px 16px 10px;flex:0 0 auto;
+  border-bottom:2px solid var(--line);
+}
+.hbtn{
+  width:40px;height:40px;border-radius:13px;border:2.5px solid var(--line2);
+  background:var(--card);color:var(--ink2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex:0 0 auto;
+}
+.hbtn:active{transform:translate(1px,1px)}
+.hbtn svg{width:20px;height:20px}
+.htitle{flex:1;text-align:center;font-weight:800;font-size:19px;letter-spacing:.3px}
+/* ---------- body ---------- */
+.body{flex:1;overflow-y:auto;padding:18px 16px 26px;scrollbar-width:none}
+.body::-webkit-scrollbar{display:none}
+.big{font-size:26px;font-weight:800;line-height:1.25}
+.sub{color:var(--ink2);font-size:15px;font-weight:500;line-height:1.5}
+.center{text-align:center}
+.mt{margin-top:14px}.mt2{margin-top:24px}
+/* ---------- buttons ---------- */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  width:100%;padding:15px 18px;border-radius:16px;cursor:pointer;
+  font-family:inherit;font-size:18px;font-weight:800;color:#221a08;
+  background:var(--yl);border:3px solid #1a1408;box-shadow:var(--shadow);
+  transition:transform .06s;
+}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 rgba(0,0,0,.55)}
+.btn.red{background:var(--red);color:#fff}
+.btn.tl{background:var(--tl);color:#062723}
+.btn.gr{background:var(--gr);color:#06270f}
+.btn.ghost{background:var(--card);color:var(--ink);border-color:var(--line2)}
+.btn.sm{padding:10px 14px;font-size:15px;border-radius:12px;box-shadow:3px 3px 0 rgba(0,0,0,.5)}
+.btn:disabled{opacity:.45;pointer-events:none}
+.btn svg{width:20px;height:20px}
+.row{display:flex;gap:10px}
+/* ---------- cards ---------- */
+.card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px}
+.hero{border:3px solid #1a1408;box-shadow:6px 6px 0 rgba(0,0,0,.5);border-radius:22px;padding:20px}
+/* ---------- chips ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{
+  padding:9px 15px;border-radius:13px;border:2.5px solid var(--line2);
+  background:var(--card);color:var(--ink2);font-weight:700;font-size:15px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;
+}
+.chip svg{width:17px;height:17px}
+.chip.on{background:var(--yl);color:#221a08;border-color:#1a1408}
+/* ---------- players ---------- */
+.pl-row{display:flex;align-items:center;gap:11px;background:var(--card);border:2px solid var(--line);border-radius:15px;padding:10px 12px}
+.av{width:42px;height:42px;border-radius:14px;border:2.5px solid #1a1408;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#221a08;flex:0 0 auto;box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.av.big{width:96px;height:96px;font-size:38px;border-radius:26px}
+.av.lg{width:64px;height:64px;font-size:26px;border-radius:20px}
+input,select,textarea{
+  font-family:inherit;font-size:16px;font-weight:600;color:var(--ink);
+  background:var(--bg2);border:2.5px solid var(--line2);border-radius:13px;
+  padding:12px 14px;width:100%;outline:none;
+}
+input:focus{border-color:var(--yl)}
+/* ---------- tabbar ---------- */
+.tabbar{flex:0 0 auto;display:flex;border-top:2.5px solid var(--line);background:#14100c;padding-bottom:env(safe-area-inset-bottom)}
+.tab{flex:1;padding:10px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--dim);cursor:pointer;font-weight:700;font-size:12px;border-top:3px solid transparent;margin-top:-2.5px}
+.tab svg{width:22px;height:22px}
+.tab.on{color:var(--yl);border-top-color:var(--yl)}
+/* ---------- game rows ---------- */
+.grow{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid var(--line);border-radius:17px;padding:13px 14px;cursor:pointer;margin-top:11px}
+.grow:active{transform:translate(1px,1px)}
+.gic{width:46px;height:46px;border-radius:14px;border:2.5px solid #1a1408;display:flex;align-items:center;justify-content:center;flex:0 0 auto;box-shadow:2.5px 2.5px 0 rgba(0,0,0,.45)}
+.gic svg{width:24px;height:24px}
+.grow .gt{font-size:17px;font-weight:800}
+.grow .gs{font-size:13px;color:var(--ink2);font-weight:600}
+.grow .arr{margin-inline-start:auto;color:var(--dim)}
+.grow .arr svg{width:18px;height:18px}
+/* ---------- word reveal ---------- */
+.wordcard{
+  background:#14100c;border:3px solid var(--line2);border-radius:22px;padding:34px 22px;text-align:center;
+  animation:pop .45s cubic-bezier(.2,1.4,.4,1);
+}
+.wordcard .w{font-size:42px;font-weight:800;color:var(--yl);line-height:1.2}
+.wordcard.red .w{color:var(--red)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.shake{animation:shake .4s}
+@keyframes bounceIn{0%{transform:translateY(30px) scale(.8);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes blink{50%{opacity:.35}}
+.blink{animation:blink 1s infinite}
+@keyframes growBar{from{width:0}}
+/* ---------- logo ---------- */
+.logo{display:flex;justify-content:center;gap:1px;font-family:'Lilita One',cursive;font-size:56px;color:var(--yl);text-shadow:4px 4px 0 #000;user-select:none}
+.logo span{display:inline-block;animation:bounceIn .5s cubic-bezier(.2,1.5,.4,1) both}
+.logo-sub{font-family:'Lilita One',cursive;text-align:center;font-size:21px;letter-spacing:14px;color:var(--ink);margin-right:14px;text-shadow:3px 3px 0 #000;margin-top:-4px}
+/* ---------- misc ---------- */
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;padding:4px 10px;border-radius:8px;background:var(--bg2);border:2px solid var(--line2);color:var(--ink2)}
+.tag.y{background:var(--yl);color:#221a08;border-color:#1a1408}
+.tag.r{background:var(--red);color:#fff;border-color:#1a1408}
+.tag.t{background:var(--tl);color:#062723;border-color:#1a1408}
+#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--yl);color:#221a08;font-weight:800;padding:11px 22px;border-radius:14px;border:3px solid #1a1408;box-shadow:4px 4px 0 rgba(0,0,0,.5);opacity:0;transition:.25s;z-index:99;pointer-events:none;font-size:15px;max-width:86vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:98}
+.vs{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;background:var(--card);border:2px solid var(--line);border-radius:16px}
+.vs .p{flex:1;text-align:center}
+.vs .x{font-family:'Lilita One';font-size:26px;color:var(--red)}
+.halves{display:flex;height:100%;position:relative}
+.half{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;cursor:pointer;position:relative}
+.half .hname{font-size:30px;font-weight:800;text-shadow:3px 3px 0 rgba(0,0,0,.4)}
+.buzzname{width:100%;padding:20px;border-radius:18px;border:3px solid #1a1408;font-size:24px;font-weight:800;color:#221a08;box-shadow:var(--shadow);cursor:pointer;transition:.1s}
+.buzzname:disabled{opacity:.35;box-shadow:none}
+.timerbar{height:12px;border-radius:8px;background:var(--bg2);border:2px solid var(--line2);overflow:hidden}
+.timerbar>div{height:100%;background:var(--yl);transition:width .3s linear}
+canvas.pad{background:#f7efdd;border-radius:16px;border:3px solid #1a1408;touch-action:none;box-shadow:5px 5px 0 rgba(0,0,0,.45);width:100%;display:block}
+.score-pill{display:flex;justify-content:space-between;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:9px 14px;font-weight:800;margin-top:9px}
+.bar{height:22px;background:var(--bg2);border:2px solid var(--line2);border-radius:8px;overflow:hidden;margin-top:6px}
+.bar>div{height:100%;border-radius:5px;animation:growBar .6s ease;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:800;color:#221a08;min-width:34px}
+.flip{perspective:900px}
+.flipin{transition:transform .6s;transform-style:preserve-3d;position:relative}
+.flipin.flipped{transform:rotateY(180deg)}
+.ff,.bb{backface-visibility:hidden}
+.bb{position:absolute;inset:0;transform:rotateY(180deg);display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div id="frame"><div id="stage"></div></div>
+<div id="toast"></div>
+<canvas id="fx"></canvas>
+<script>
+/* ============ helpers ============ */
+const $=s=>document.querySelector(s);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let TIMERS=[];
+const tm=(f,ms)=>{const id=setTimeout(f,ms);TIMERS.push(id);return id};
+const iv=(f,ms)=>{const id=setInterval(f,ms);TIMERS.push(id);return id};
+const clearTimers=()=>{TIMERS.forEach(clearInterval);TIMERS=[]};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
+const wait=(ms,f)=>tm(f,ms);
+const pad2=n=>String(n).padStart(2,'0');
+
+/* ============ icons (SVG) ============ */
+const I={};
+I.back=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>`;
+I.snd=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12"/></svg>`;
+I.mute=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4V5z" fill="currentColor" stroke="none"/><path d="M16 9l6 6M22 9l-6 6"/></svg>`;
+I.dice=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="15.5" cy="8.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="8.5" cy="15.5" r="1.6" fill="currentColor" stroke="none"/></svg>`;
+I.users=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 15.2c2.6.3 4.6 1.8 5.3 4.8"/></svg>`;
+I.pad=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 8h10M6 11h12M9 8v11M15 8v11"/><rect x="2.5" y="4" width="19" height="17" rx="4.5"/></svg>`;
+I.crown=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 8l4 4 5-7 5 7 4-4v10H3z"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>`;
+I.ghost=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3a7 7 0 00-7 7v11l2.5-2 2.3 2 2.2-2 2.2 2 2.3-2L19 21V10a7 7 0 00-7-7z"/><circle cx="9.5" cy="11" r="1.2" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11" r="1.2" fill="currentColor" stroke="none"/></svg>`;
+I.zap=`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>`;
+I.brain=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 3a3 3 0 00-3 3 3 3 0 00-2.5 4.5A3 3 0 005 15a3.5 3.5 0 004.5 3.4V3zM14.5 3a3 3 0 013 3 3 3 0 012.5 4.5A3 3 0 0119 15a3.5 3.5 0 01-4.5 3.4V3z"/><path d="M9.5 18.5c0 1.5 1 2.5 2.5 2.5s2.5-1 2.5-2.5"/></svg>`;
+I.brush=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4l5 5-8.5 8.5a3.5 3.5 0 11-5-5L15 4z"/><path d="M5 20l1.5-4"/></svg>`;
+I.music=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg>`;
+I.target=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>`;
+I.mic=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg>`;
+I.q=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M8.5 9a3.5 3.5 0 116 2.4c-1 1.1-2.5 1.6-2.5 3.6"/><circle cx="12" cy="18.5" r="1.2" fill="currentColor" stroke="none"/></svg>`;
+I.eye=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+I.swords=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l6 6M21 3l-6 6M3 3v4M3 3h4M21 3v4M21 3h-4M6 15l3 3 6-6 3 3M9 18l-3 3M18 12l3-3"/></svg>`;
+I.trophy=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 01-10 0V4z"/><path d="M7 5H4a3 3 0 003 4M17 5h3a3 3 0 01-3 4M12 14v4M8.5 21h7"/></svg>`;
+I.star=`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>`;
+I.fire=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><path d="M12 2.5c1 3-1.5 4.5-2.5 6.5-1 2 .5 3 .5 3S8 11 7 9C5.5 11.5 5 13 5 15a7 7 0 0014 0c0-4-3.5-6-4-9-1.2 1.5-2 2.5-3 3.5.8-3 .8-5 0-7z"/></svg>`;
+I.play=`<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>`;
+I.check=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>`;
+I.next=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>`;
+I.money=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2.5" y="6" width="19" height="12" rx="3"/><circle cx="12" cy="12" r="3"/><path d="M5.5 9v0M18.5 15v0" stroke-linecap="round"/></svg>`;
+I.pizza=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5A10.5 10.5 0 013 9.5z"/><path d="M12 3v18"/><circle cx="8" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1" fill="currentColor" stroke="none"/></svg>`;
+I.brief=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 12h18"/></svg>`;
+I.paw=`<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="7" cy="8" r="2"/><circle cx="12" cy="6" r="2.1"/><circle cx="17" cy="8" r="2"/><path d="M12 11.5c-3 0-5.5 2.5-5.5 4.8 0 1.5 1.2 2.4 2.6 2.4 1 0 1.8-.4 2.9-.4s1.9.4 2.9.4c1.4 0 2.6-.9 2.6-2.4 0-2.3-2.5-4.8-5.5-4.8z"/></svg>`;
+I.dress=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 3l3 3 3-3M12 6c0 4 4 6 4 12H8c0-6 4-8 4-12z"/></svg>`;
+I.ball=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M4 7.5l2.5 1.7M17.5 14.8L20 16.5M20 7.5l-2.5 1.7M6.5 14.8L4 16.5"/><path d="M12 6.5l4 3-1.5 4.5h-5L8 9.5z" fill="currentColor" stroke="none" opacity=".4"/></svg>`;
+I.school=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 9l9-5 9 5-9 5z"/><path d="M7 11.8V16c0 1.5 2.2 2.6 5 2.6s5-1.1 5-2.6v-4.2"/></svg>`;
+I.film=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 4v16M16 4v16M3 9h5M3 15h5M16 9h5M16 15h5"/></svg>`;
+I.globe=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-3 3-3 15 0 18 3-3 3-15 0-18z"/></svg>`;
+I.car=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 13l1.6-5A2 2 0 017.5 6.5h9a2 2 0 011.9 1.5L20 13v5h-2.5v-1.5h-11V18H4v-5z"/><circle cx="7.5" cy="15" r="1.3" fill="currentColor" stroke="none"/><circle cx="16.5" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg>`;
+I.beach=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 19h18M8 19c1-6 4-9 8.5-10M13 9c2-2 5-3 7-2"/><circle cx="17" cy="5" r="2.2"/></svg>`;
+I.home=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5.5v-6h-5v6H4v-9z"/></svg>`;
+I.skull=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3a8 8 0 00-8 8c0 2.8 1.5 5 3.5 6.3V21h9v-3.7C18.5 16 20 13.8 20 11a8 8 0 00-8-8z"/><circle cx="9" cy="11" r="1.6" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r="1.6" fill="currentColor" stroke="none"/><path d="M10.5 17v2M13.5 17v2" stroke-linecap="round"/></svg>`;
+I.heart=`<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M12 20.5S4 15 4 9.3C4 6.4 6.2 4.5 8.6 4.5c1.5 0 2.7.7 3.4 1.9.7-1.2 1.9-1.9 3.4-1.9 2.4 0 4.6 1.9 4.6 4.8 0 5.7-8 11.2-8 11.2z"/></svg>`;
+I.laugh=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14c1 1.7 2.4 2.5 4 2.5S15 15.7 16 14"/><path d="M8.5 9.5l1.5 1M15.5 9.5L14 10.5"/></svg>`;
+I.puzzle=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M10 3.5a2 2 0 114 0V5h3.5a1 1 0 011 1V9h1.5a2 2 0 110 4H18.5v6a1 1 0 01-1 1h-5v-1.7a2 2 0 10-4 0V20h-5a1 1 0 01-1-1v-5h1.5a2 2 0 100-4H3.5V6a1 1 0 011-1H10V3.5z"/></svg>`;
+
+/* ============ audio ============ */
+let AC=null,MUTED=false;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type,vol,delay){
+  if(MUTED)return;const c=ac();if(!c)return;
+  const t=c.currentTime+(delay||0),o=c.createOscillator(),g=c.createGain();
+  o.type=type||'square';o.frequency.value=f;
+  g.gain.setValueAtTime(vol||.12,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05);
+}
+const sfx={
+  tap:()=>tone(620,.06,'square',.07),
+  pop:()=>{tone(500,.08,'triangle',.14);tone(750,.09,'triangle',.1,.05)},
+  good:()=>{tone(620,.09,'square',.1);tone(880,.12,'square',.1,.08)},
+  bad:()=>{tone(180,.2,'sawtooth',.12);tone(140,.22,'sawtooth',.1,.07)},
+  tick:()=>tone(950,.04,'square',.05),
+  roll:()=>{for(let i=0;i<8;i++)tone(140+Math.random()*40,.05,'triangle',.09,i*.09)},
+  win:()=>{[523,659,784,1047].forEach((f,i)=>tone(f,.16,'square',.11,i*.12));tone(1319,.3,'triangle',.1,.5)},
+  drum:()=>{for(let i=0;i<3;i++)tone(90,.12,'sine',.2,i*.16)}
+};
+function toggleMute(){MUTED=!MUTED;const b=$('#muteb');if(b)b.innerHTML=MUTED?I.mute:I.snd}
+
+/* ============ confetti ============ */
+function confetti(n){
+  const c=$('#fx'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+  const cols=['#ffc93d','#ff5d5d','#38d3c0','#4ecb71','#ff8f3d','#e86fa4'];
+  const ps=Array.from({length:n||130},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,w:6+Math.random()*7,h:4+Math.random()*5,v:2.2+Math.random()*3.6,r:Math.random()*Math.PI,vr:(Math.random()-.5)*.25,col:rnd(cols)}));
+  let t=0;
+  const loop=()=>{t++;x.clearRect(0,0,c.width,c.height);
+    ps.forEach(p=>{p.y+=p.v;p.r+=p.vr;if(p.y>c.height+20){p.y=-15;p.x=Math.random()*c.width}
+      x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.col;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});
+    if(t<300)requestAnimationFrame(loop);else x.clearRect(0,0,c.width,c.height)};
+  requestAnimationFrame(loop);
+}
+
+/* ============ DATA ============ */
+const CATS={
+  food:{n:'أكل',ic:'pizza',w:['بيتزا','برجر','كشري','مكرونة بالبشاميل','آيس كريم','محشي','سوشي','شاورما','فراخ مشوية','فتة','بان كيك','سمبوسك','بطاطس محمرة','شوربة عدس','كنافة','عيش بلدي']},
+  jobs:{n:'وظائف',ic:'brief',w:['دكتور','مهندس','مدرس','طيار','محامي','شيف','مصور','نجار','ممرضة','شرطي','مزارع','حلاق','كابتن أوبر','صحفي','كوافير','ميكانيكي']},
+  animals:{n:'حيوانات',ic:'paw',w:['أسد','قطة','كلب','فيل','قرد','بطريق','زرافة','نمر','جمل','حصان','أرنب','تمساح','حمامة','دلفين','غزال','سلحفاة']},
+  girls:{n:'قعدة بنات',ic:'dress',w:['ميكب','شنطة','فستان سواريه','كافيه','فرشاة شعر','فاونديشن','سيلفي','شوبنج','مشاهير','مشطة رطبة','أحمر شفايف','بارفيوم','توضيب هدايا','صبغة شعر','عرايس','قهوة على البحر']},
+  boys:{n:'قعدة ولاد',ic:'ball',w:['بلايستيشن','ماتش الديربي','فورتنات','فيفا','جيم','بريميرليج','هاتريك','شيشة','كوفي شوب','دراجة نارية','دمبل','تشامبيونز','بطولات كارتة','تعرض عربيات','درع الدوري','فايف']},
+  school:{n:'المدرسة',ic:'school',w:['حصة رياضيات','امتحان','شيت','ناظر','جرس الفسحة','دفتر','سبورة','واجب','سنة نهائية','نتيجة','حقيبة مدرسية','قلم رصاص','إجازة نص السنة','زحمة على السلم','أول يوم مدرسة','نقل']},
+  movies:{n:'أفلام ومسلسلات',ic:'film',w:['تيتانيك','سبايدرمان','هاري بوتر','الحريفة','الكيت كات','تراب الماس','عمر وسلمى','اللمبي','الكبير أوي','باب الحارة','فاست أند فيوريوس','هالك','العائلة','الرسام','جون ويك','بيت الروبي']},
+  games:{n:'ألعاب',ic:'pad',w:['فيفا','ببجي','فورتنايت','كول أوف ديوتي','ماين كرافت','سوبر ماريو','تتريس','جاتا','كراش','روبلكس','امونج أس','فري فاير','بول','لعبة الثعبان','بيد يو؟؟','سيركل']},
+  countries:{n:'بلاد',ic:'globe',w:['مصر','فرنسا','دبي','تركيا','لبنان','المغرب','اليابان','إيطاليا','البرازيل','السعودية','الأرجنتين','اليونان','لندن','ماليزيا','ألمانيا','قبرص']},
+  cars:{n:'عربيات',ic:'car',w:['بي إم','مرسيدس','هيونداي','سوزوكي','كيا','أوبل','شفروليه','جيب','سكودا','ميتسوبيشي','نيسان قمبرص','توك توك','ميكروباص','أتوبيس','موتوسيكل','تسلا']},
+  places:{n:'أماكن',ic:'beach',w:['شاطئ','سينما','ملعب','مطار','مستشفى','سوق','جنينة عامة','مول','صالة جيم','مكتبة','كافيه','ملاهي','متحف','جنينة حيوانات','مصنع','كورنيش']},
+  home:{n:'حاجات البيت',ic:'home',w:['تلاجة','غسالة','مكنة كهرباء','سرير','دش','كنبة','ترابيزة','مراية','دفاية','سخان','مكواة','مروحة','تلفزيون','خزنة','بلكونة','دولاب']},
+  scary:{n:'حاجات مرعبة',ic:'skull',w:['شبح','عفريت','جنية','تمساح','مقبرة','الساعة 3 الفجر','فيلم رعب','عنكبوت','فأر','غرفة مظلمة','حشرات','كابوس','صوت في السلم','مصعد قديم','بيت مهجور','دمية عينة']},
+  love:{n:'علاقات ومواقف',ic:'heart',w:['خطوبة','فرح','دعوة شبكة','حلقة','شقة الجواز','قصة حب','أول موعد','غيرتة','هدية عيد ميلاد','شات السهر','بلوك','أول كلام','مشهد رومنسي','خاتم ذهب','طلب اليد','فشل في كلام الحب']},
+  funny:{n:'حاجات مضحكة',ic:'laugh',w:['طرطارة','نكتة تايحة','دوشة','لخبطة','مسخرة','قعدة رخمة','تفحيطة','مشهد مدبلج','العريس بيرقص','كوسة في الوش','عصبي بيتخانق','زراية مطر','مدبلج أفلام هندية','قطة بتطارد مؤخرة','فرحة عارس','بالونة بتطير']},
+  general:{n:'معلومات عامة',ic:'brain',w:['الأهرامات','نهر النيل','برج إيفل','سور الصين','الشمس','القمر','المريخ','المحيط','البرق','الرعد','الجاذبية','الإنترنت','الكهرباء','الرماد البركاني','قوس قزح','النجوم']}
+};
+const NEAR={'بيتزا':'فطري','برجر':'ساندوتش','قطة':'كلب','أسد':'نمر','فيش؟':'','تلاجة':'فريزر','دكتور':'دكتور أسنان','طيار':'مضيف جوي','سينما':'مسرح','شاطئ':'حمام سباحة','مدرس':'مدرس خصوصي','مروحة':'تكيف','مقبرة':'مقبرة قديمة','قطة صغيرة':'','حصان':'حمار','أرنب':'هامستر','جمل':'لاما','حمامة':'غراب','سلحفاة':'ضفدع','تمساح':'وزغة عملاقة','نمر':'فهد','قرد':'شمبانزي','فيل':'زرافة','بطريق':'بطه','غزال':'حمار وحشي','دلفين':'قرش','مكرونة بالبشاميل':'لازانيا','كشري':'رز بالعدس','آيس كريم':'جيلاتي','محشي':'كوسا مسلوقة','شاورما':'فراخ شاورما','فراخ مشوية':'فراخ مسلوقة','بي إم':'مرسيدس','هيونداي':'كيا','توك توك':'ميكروباص','موتوسيكل':'دراجة','تلفزيون':'شاشة سينما','تلاجة غسالة':'','دش':'بانيو','سرير':'أريكة','كنبة':'كرسي','مطار':'محطة قطارات','ملعب':'صالة رياضية','كافيه':'مطعم','مكواة':'سشوار','شبح':'عفريت','عنكبوت':'عقرب','فيلم رعب':'حكاية مرعبة','خطوبة':'فرح','فرح':'خطوبة','الشمس':'القمر','المريخ':'القمر','نهر النيل':'البحر','برج إيفل':'برج القاهرة','تيتانيك':'بيرل هاربر','سبايدرمان':'باتمان','هاري بوتر':'ساحر أوز','مصر':'لبنان','اليابان':'الصين','البرازيل':'الأرجنتين','مول':'سوق','تتريس':'سودوكو','فيفا':'ببجي','ببجي':'كول أوف ديوتي'};
+const ASKME={
+  'مضحكة':['لو معاك مليون جنيه دلوقتي، أول حاجة هتشتريها إيه؟','لو بيتك مليان بطاريق فجأة، هتعمل إيه؟','لو شخصيتك كرتون، مين تكون؟','أغرب حاجة في جالك/موبايلك دلوقتي؟','لو شعرك بقى أزرق بكرة، أول حد هتقوله مين وليه؟','لو الحيوانات بتتكلم، مين أكتر واحد هيخصمك؟','لو الدنيا هتخلص بكرة الساعة 12، آخر أكلة هتاكلها إيه؟','لو اتعادت في الشارع قدام الناس، أول رد فعل هيكون إيه؟','لو اشتغلت مذيع أخبار، أول خبر هتقوله إيه؟','لو كراكيبك اتباعت بمزاد، إيه أغلى حاجة فيها؟','لو عمرك ما نمت تاني، هتعمل بالوقت الزيادة إيه؟','لو حد سرقلك سندوتشك في سينما، هتعمل إيه؟','لو عندك زرار بيسكت حد لمدة دقيقة، مين أول حد هتدوسه له؟','لو بقيت كابتن أوبر ليوم واحد، أظرف راكب هتوصله مين؟','لو صوتك بقى صوت كرتوني، تتمنى صوت مين؟'],
+  'شخصية':['إيه الحاجة اللي بتضايقك ومحدش عارف السبب؟','إيه أصعب قرار خدته في حياتك؟','مين أكتر حد غيّر فيك حاجة؟','إيه الحاجة اللي كنت بتعملها في صغرك وبتندم عليها؟','لو رجعت لعمر 12 سنة، إيه أول حاجة هتعملها؟','إيه الحاجة اللي بتخاف تعترف بيها لنفسك؟','إيه أجمّل نصيحة حد قالها لك؟','مين أكتر شخص بتشاور في قراراتك؟','إيه الحاجة اللي بتبررها لنفسك مع إنك عارف إنها غلط؟','لو تقدر تمسح ذكرى واحدة من دماغك، هتمسح إيه؟','إيه الحاجة اللي بتغير مزاجك في ثانية؟','لو حد يقرا أفكارك ليوم واحد، هتحرج من إيه؟'],
+  'جريئة':['آخر مرة كذبت كانت إيه الحقيقة؟','مين في الشلة لو اختفيت من حياته مش هتحس؟','إيه أكبر سر خبيته عن أهلك؟','لو الشلة هتخلي واحد بس يكمل معاكم، مين هتختار؟','إيه الحاجة اللي لو حد عملها فيك هتبطّل تكلمه؟','أكتر مرة اتكسفت في حياتك امتى؟','لو بصّوا في جالك دلوقتي، إيه أخطر حاجة فيه؟','مين في الشلة بيحاول يبان أحسن مما هو؟','آخر مرة قلت كلام في حد وراه امتى؟','لو معاك حقيقة واحدة تصفق بيها في الوش، لمين؟','إيه الحاجة اللي بتعملها وتشوفها عيب؟','لو حد عرض عليك مغادرة البلد النهارده ومحدش يعرف، هتمشي؟'],
+  'أفلام':['آخر فيلم خلّى نفسك في مشهدة؟','فيلم شفته أكتر من 3 مرات؟','مين الممثل اللي أي فيلم له تشوفه؟','أفلام تيتح؟؟','أكتر مشهد خلاك تعيط في فيلم؟','لو عشت في فيلم، تختار إيه؟','مين أشطر واش في الأفلام؟','آخر مسلسل قضيت عليه نهارك؟','فيلم الكل بيحبه وأنت مش بيحبه؟','المسلسل اللي كنت بتتفرج عليه في الخفا؟','لو فيلم حياتك، اسمه هيكون إيه ومين يجسدك؟','أكتر نهاية فيلم غضبتك؟'],
+  'موسيقى':['أغنية تقدر تسمعها 100 مرة ورا بعض؟','مين المغني اللي حفظت أغانيه كلها؟','أغنية بتفكرك بشخص، مين ومين؟','آخر أغنية سمعتها قبل ما تنام امبارح؟','أغنية بتشجع بيها نفسك الصبح؟','مهرجان ولا أغاني طرب؟ لي إيه؟','لو غنيت في الكاريوكي النهارده، تغني إيه؟','أغنية هزّت قلبك فعلاً؟','مين صوته اللي بترتاح له وأنت قلقان؟','آخر كونسيرت/حفلة رحتله؟','لو حياتك ليها أغنية واحدة بس، إيه هي؟'],
+  'رياضة':['مين الفريق اللي تموت فيه؟','أظرف لحظة شفتها في ماتش؟','لو تلعب رياضة محترف، إيه هي؟','أكتر لاعب بتتمنى تقابله؟','بتشجع من التراث ولا من هواك؟','ماتش فضّلت تسمع عنه من مشاهدته؟','لو دربي واحد بس تشوفه السنة، مين؟','إيه الرياضة اللي واخد فيها صفر؟','رياضة تشوفها ممتعة بس عمرك ما جربتها؟','لو معاك تكتين لكل ماتش، تكتب مين؟','أكتر خسارة كسرت قلبك؟'],
+  'ثقافة':['مكان في الدنيا عايز تشوفه قبل ما تموت؟','لو عشت في عصر تاريخي، تختار إيه؟','مين الشخصية التاريخية اللي تتمنى تقعد معاها؟','إيه الحاجة اللي كل الناس بتعملها وأنت شايفها غلط؟','لو تدرّس مادة في الجامعة، تدرّس إيه؟','مين أكتر مؤثر/كاتب بيحرك تفكيرك؟','اللغة اللي كنت حابب تتعلمها؟','عاصمة أي بلد حفظتها بالغلط؟','إيه المعلومة اللي عرفتها وفضلت مش مصدق؟','لو تحفظ 3 كتب بالظبط في دماغك، إيه هي؟','مين أذكى واحد قابلته في حياتك؟'],
+  'ولد؟و؟':['مين أكتر شخص في الشلة ممكن يعيش من غير موبايل؟','لو الشلة سنة في جزيرة، مين هيتخانق الأول؟','مين في الشلة لو بقى مشهور هينسى الرقم؟','مين أكتر واحد بيتأخر على القعدة؟','مين اللي لو اتصلت بيهم الساعة 3 الفجر هيرد؟','مين أكتر واحد بيعرف أسرارك؟','لو خسرت مبلغ كبير في رهان، مين اللي هتقوله؟','مين أول واحد هتبعت له الخبر الحلو؟','مين اللي شكله بريء وقسوته عالية؟','مين أكتر واحد بيتصل بيك من غير سبب؟','لو الشلة فريق كورة، مين كابتن ومين حارس؟','مين أكتر واحد بيعاند في قرار السفر؟','مين أكتر واحد لو زعل نص ساعة يرجع يمزح؟','مين بيطلب حاجة وكل الشلة تنفذ؟'],
+  'تخيل':['لو رجعت بالزمن 5 سنين، إيه أول حاجة تتغير؟','لو بقيت ملياردير فجأة، هتغير شلتك؟','لو عنك قوة خارقة، إيه هي؟','لو الدنيا بدون إنترنت لمدة سنة، هتتصرف إزاي؟','لو بقيت واحد من الشلة في لعبة رعب، تنجو ولا لأ؟','لو اتوظفت في وظيفة أحلامك بس بعيد عن بلدك؟','لو قدرت تعيش يوم واحد في جسد حد من الشلة، مين؟','لو كل اللي بتفكر فيه بيسمعه الناس، هتحرج؟','لو عندك آلة زمن مرة واحدة بس، رايح لفين؟','لو عمرك بقى 10 سنين تانية بس، هتعمل إيه غير الشغل؟','لو دخلت مسابقة الغباء؟؟','لو الشلة قررت تعيش في بيت واحد كبير، هتفلح؟'],
+  'بنات':['آخر فستان اشتريتيه كان في مناسبة إيه؟','متعلمة ميكب من يوتيوب ولا من حد؟','شنطتك فيها إيه مستحيل تطلعي؟','لو مكياج واحد بس الباقي عمره، تختاري إيه؟','مين أكتر مشهورة تحس إنك شبهها؟','الكوافيرة بتكسب منك كام في السنة تقريبا؟','أكتر موضة مشيت وراها وندمت؟','لو قعدة بنات النهارده، الفيلم هيكون إيه؟','قعدة بنات ولا سهرة عيلة؟','مين أعرف منك في الميكب؟','لو خطوبتك بكرة، اللون بتاع الفستان؟','مين أكتر واحدة بتثقي فيها بأسرارك؟'],
+  'ولاد':['مين أسرع واحد في الشلة في القيادة؟','لو معاك ميكروباص بأجرة، هتشغله إزاي؟','مين أعرف في العربيات؟','آخر مرة لعبت فيدرالي مع الشلة؟','مين اللي بيخربش في العبة ويقول اللعبة واخدة؟؟','لو فتحت ورشة، الشلة مين أول زبون؟','مين أقوى واحد في الشلة فعلًا؟','آخر هدف فرحت بيه كأنك اللي سجلته؟','مين اللي لو راح الجيم أسبوع يبقى مدرب؟','لو ماتش الشلة ضد فريق تاني، مين يشيل في الوسط؟','مين أكثر حد غامض مع البنات؟','مين أكرم واحد في القعدة؟'],
+  'معلومات':['أسرع حاجة عرفتها في حياتك إيه؟','لو سُئلت سؤال ذكاء واحدة تنجو، إيه هو؟','مين أذكى واحد قابلته؟','معلومة علمية صدقتها سنين وطلعت خرافة؟','لو مسابقة معلومات بقيمة مليون، أكبر ثغرة في معلوماتك إيه؟','لو جدت عن كلمة واحدة بالظبط تحب تمتحن فيها، مين؟','إيه الحاجة اللي بتحفظها بسرعة رهيبة؟','مين في الشلة لو سألته عن أي حاجة عنده رد؟','مين الشلة ذاكرته أقوى؟','لو مسابقة جيوغرافي، هتوصل لفين؟'],
+  'حياتية':['لو معاشك اتضاعف النهارده، أول تغيير؟','صحتك النهارده كام من 10؟','لو ممكن تشيل حاجة واحدة من روتينك؟','نصيحة صحية سمعتها وطبقتها فعلاً؟','لو مضطر تنام 5 ساعات بس طول عمرك؟','إيه اللي بيقطع نومك أكتر حاجة؟','مين أكتر حد بحس بالراحة معاه؟','لو قررت تبدأ رياضة بكرة، إيه هي؟','المكان اللي بتفتكر نفسك فيه بتريح؟','لو تقدر تسافر بس مرة كل سنة، وين؟','حد بتحس إنه قدوة في الانضبطة؟','مين في الشلة مرتب حياته أكتر؟']
+};
+const LIKELY=['مين أكتر واحد ممكن يتجوز فجأة؟','مين أكتر واحد هيقعد أعزب كل عمره؟','مين أكتر واحد هيبقى مليونير؟','مين أكتر واحد يقع في نصايب؟؟','مين أكتر واحد يتكسف في موقف رومانسي؟','مين أكتر واحد يقول كلام وينسى ينفذه؟','مين أكتر واحد يضحك في اللحظة الغلط؟','مين أكتر واحد لو زعل يرجع في نفس الساعة؟','مين أكتر واحد يقدم على حاجة من غير تفكير؟','مين أكتر واحد يبقى نجم تيك توك؟','مين أكتر واحد يعتذر بصدق؟','مين أكتر واحد بيجيب أعذار؟','مين أكتر واحد يقرأ رسالة ولا يرد؟','مين أكتر واحد ينام على القعدة؟','مين أكتر واحد يعيش في السفر؟','مين أكتر واحد يتصدق بمزاج؟؟','مين أكتر واحد يمسك قعدة بجد؟','مين أكتر واحد بيشيل الحنين؟','مين أكتر واحد لو اتجرح يبان أقوى؟','مين أكتر واحد يغير بيتي النهارده؟؟','مين أكتر واحد بيحب المشاير؟؟','مين أكتر واحد يعرف يتصرف في أزمة؟','مين أكتر واحد يخاف من طبيب أسنان؟','مين أكتر واحد يتكسف يرجع الأكل في المطعم؟','مين أكتر واحد يختلق أعذار ليتأخر؟','مين أكتر واحد ينجح في برنامج تلفزيوني؟','مين أكتر واحد يقول أفصح من كل الشلة؟','مين أكتر واحد يمزح في وقت الجد؟','مين أكتر واحد يبكي في فيلم؟','مين أكتر واحد يخبي أمواله؟','مين أكتر واحد لو غضب يكسر حاجة؟','مين أكتر واحد يصدق الخدع؟؟','مين أكتر واحد يفتي في كل موضوع؟','مين أكتر واحد يستيقظ متأخر عشانه؟','مين أكتر واحد يتحدث في التليفون بصوت عالي؟','مين أكتر واحد يطلب توصيلة في آخر لحظة؟','مين أكتر واحد يفرح بأتفه خبر؟','مين أكتر واحد يبقى أب مثالي؟؟','مين أكتر واحد يذهب للطبيب فقط عند الضرورة؟','مين أكتر واحد ينسى أعياد الميلاد؟','مين أكتر واحد يحرص على الاحتفالات؟','مين أكتر واحد يثق في نفسه أكثر من اللازم؟','مين أكتر واحد يشتري أشياء لا يحتاجها؟','مين أكتر واحد يعيش في هدوء وسط الدوشة؟'];
+const MISSIONS=['خلّي {p} يقول كلمة "{w}" في أي جملة','خلّي {p} يضحك بصوت عالي','قول لـ {p} جملة فيها كلمة "حبيبي" من غير سبب واضح','امدح {p} مرتين خلال الجولة','خلّي {p} يعتذر لك عن أي حاجة وهمية','اسأل {p} عن أكله المفضل','حاول تخلي {p} يشرب مياه','اسأل {p}: إيه أخبار الجو النهارده؟','اقعد صامت 30 ثانية متواصلة وقت النقاش ولو حد لاحظ قول "بفكر"','قول نكتة عن الحيوانات بدون أي مقدمة','لو حد سألك "مهمتك إيه؟" قول "مفيش" وابتسم','خلّي {p} يقول "معلش" مرتين','ادّي {p} توزيعة وهمية ("تسلم إيدك")','اسأل {p} عن رأيه في فريقه المفضل','خلّي حد يمدح رسمك/ذوقك النهارده بدون طلب','قول "أنا جعان" مرة كل خمس دقايق','اسأل {p} لو شاف آخر فيلم','خلّي {p} يقعد مكانك','قول كلمة "سلس" في سياق غريب','اسأل {p} عن أجمل يوم في حياته','خلّي اتنين من الشلة يصوتوا على نفس الشخص في أي تصويت','امدح رائحة القعدة بصوت عالي','خلّي {p} يكرر آخر جملة قالها مرتين','اسأل {p} عن الساعة وهو عارفها'];
+const WWORDS=['موبايل','قطة','بيتزا','تلاجة','كورة','شمس','قهوة','ساعة','عربية','مدرسة','فرح','مفتاح','نور','بحر','مكتبة'];
+const TRIVIA=[
+  ['عاصمة أستراليا؟',['سيدني','كانبرا','ملبورن','بيرث'],1],
+  ['أكبر كوكب في المجموعة الشمسية؟',['الأرض','زحل','المشتري','نبتون'],2],
+  ['مين مؤسس فيسبوك؟',['بيل جيتس','مارك زوكربيرج','ستيف جوبز','إيلون ماسك'],1],
+  ['كام لاعب في فريق كورة في الملعب؟',['10','11','12','9'],1],
+  ['مين رسم لوحة الموناليزا؟',['بيكاسو','ليوناردو دافنشي','مايكل أنجلو','فان جوخ'],1],
+  ['كام قلب للاخطبوط؟',['1','2','3','4'],2],
+  ['أكبر محيط في العالم؟',['الأطلنطي','الهندي','الهادي','المتجمد'],2],
+  ['أكبر عضو في جسم الإنسان؟',['الكبد','الجلد','الرئة','الدماغ'],1],
+  ['أسرع حيوان بري في العالم؟',['الأسد','الفهد','الحصان','الغزال'],1],
+  ['أكبر حيوان على وجه الأرض؟':['الفيل الأفريقي','الحوت الأزرق','القرش الأبيض','الزرافة'],1],
+  ['عملة اليابان الرسمية؟',['الين','الوان','الدولار','الروبل'],0],
+  ['عاصمة لبنان؟',['دمشق','بيروت','عمّان','تونس'],1],
+  ['كم عدد كواكب المجموعة الشمسية؟',['7','8','9','10'],1],
+  ['أقرب كوكب للشمس؟',['الزهرة','عطارد','المريخ','المشتري'],1],
+  ['الرمز الكيميائي للماء؟',['CO2','H2O','O2','NaCl'],1],
+  ['الشمس هي؟',['كوكب','نجم','قمر','مجرة'],1],
+  ['مين كأس العالم 2022؟',['فرنسا','الأرجنتين','البرازيل','ألمانيا'],1],
+  ['أطول نهر في أفريقيا؟',['الكونغو','النيل','النيجر','الزمبيزي'],1],
+  ['عدد لاعبي كرة السلة في الفريق داخل الملعب؟',['5','7','11','6'],0],
+  ['أكبر صحراء حارة في العالم؟',['صحراء الغوط؟؟','الصحراء الكبرى','صحراء النقب','الكالاهاري'],1],
+  ['سنة تأسيس الأهلي المصري؟',['1907','1911','1900','1920'],0],
+  ['سنة تأسيس الزمالك؟',['1907','1911','1905','1922'],1],
+  ['أطول برج في العالم؟',['برج إيفل','برج خليفة','برج المملكة','توكو سكاي تري'],1],
+  ['ارتفاع برج خليفة تقريبا؟',['450م','828م','650م','999م'],1],
+  ['الرمز الكيميائي للذهب؟',['Ag','Au','Go','Gd'],1],
+  ['عدد أسنان الإنسان البالغ؟',['28','30','32','34'],2],
+  ['مين أول من صنع الطيارة؟',['الأخوان رايت','توماس إديسون','نيكولا تسلا','جيمس وات'],0],
+  ['مين مؤسس مايكروسوفت؟',['ستيف جوبز','بيل جيتس','جيف بيزوس','لاري بيدج'],1],
+  ['مين كتب رواية "الأيام"؟',['نجيب محفوظ','طه حسين','توفيق الحكيم','يوسف إدريس'],1],
+  ['عاصمة المغرب؟',['الدار البيضاء','الرباط','مراكش','فاس'],1],
+  ['أسرع عداء في العالم 100 متر؟',['يوسين بولت','كارل لويس','تايسون غاي','موريس غرين'],0],
+  ['مين بطل فيلم الـ Black Panther؟',['ويول سميث','تشادويك بوزمان','روبرت داوني','مايكل جوردان'],1],
+  ['عملة المملكة المتحدة؟',['اليورو','الدولار','الجنيه الإسترليني','الفرنك'],2],
+  ['عدد الدول الأعضاء في جامعة الدول العربية؟',['20','22','24','26'],1],
+  ['أعمق نقطة في المحيطات؟',['خندق ماريانا','البحر الميت','خندق سوندا','بحر قزوين'],0],
+  ['لون دم الأخطبوط؟',['أزرق','أحمر','أخضر','شفاف'],0],
+  ['أكبر هرم في مصر؟',['هرم خفرع','هرم خوفو','هرم منقرع','الهرم الأحمر'],1],
+  ['أقدم جامعة في مصر؟',['القاهرة','الأزهر','الإسكندرية','عين شمس'],1],
+  ['كم عدد عجائب الدنيا القديمة؟',['5','7','9','10'],1],
+  ['مين اللي قال "العبقرية 1% إلهام و99% عرق"؟',['أينشتاين','إديسون','نيوتن','داروين'],1],
+  ['كوكب أحمر اللون؟',['الزهرة','المريخ','عطارد','زحل'],1],
+  ['مين مؤلف أغنية "سواح" الشهيرة (المغني)؟',['عمرو دياب','عبد الحليم حافظ','محمد منير','كارم محمود؟؟'],1],
+  ['مين يلقب بـ "العندليب الأسمر"؟',['فريد الأطرش','عبد الحليم حافظ','محمد عبد الوهاب','ماهر'],1],
+  ['أكبر مدينة عربية من حيث السكان؟',['القاهرة','الرياض','بغداد','الدار البيضاء'],0],
+  ['مين ألف موسيقى نشيد "بلادي بلادي"؟',['سيد درويش','محمد عبد الوهاب','رياض السنباطي','كمال الطويل'],0],
+  ['أسرع كائن بحري؟':['الدلفين','الحبار','القرش','السمكة'],1],
+  ['مين بطل مسلسل "الحرافة" (الممثل الرئيسي)؟',['أحمد حسين؟؟','أحمد مالك','كريم عبد العزيز','تامر حسني؟؟'],1],
+  ['الحيوان اللي ينام واقف؟',['الحصان','الأسد','القطة','الكلب'],0],
+  ['مين القائد المسلم اللي لقب بـ "الفاروق"؟',['علي بن أبي طالب','عمر بن الخطاب','أبو بكر','خالد'],1]
+];
+const EMOJI=[
+  ['🕷️🧑',['سبايدرمان','باتمان','هالك'],0],
+  ['🚢🧊💔',['تيتانيك','بيرل هاربر','بوابة؟؟'],0],
+  ['🧙‍♂️⚡📚',['هاري بوتر','ساحر أوز','ميرلين'],0],
+  ['🦁👑',['الأسد الملك','مدغشقر','عالم جوراسيك'],0],
+  ['🧁🍬🏭',['تشارلي ومصنع الشوكولاتة','هانس وجريتل','ويلي ونكا الثاني؟؟'],0],
+  ['🇪🇬👮😤',['الناظر','اللمبي','الجريمة والعقاب؟؟'],0],
+  ['💊😂🖤',['الكيت كات','تايتنز؟؟','هيبتا'],0],
+  ['💎🏜️🤵',['تراب الماس','الأراجوز؟؟','عسل أسود'],0],
+  ['⚽🎭',['الحريفة','الدوري مع ممثلين؟؟','ظهرة؟؟'],0],
+  ['👨‍👩‍👧💔',['عمر وسلمى','الأبيض والأبيض؟؟','بوشكاش؟؟'],0],
+  ['🤡🎈',['إيت (IT)','جوكر','دمية'],0],
+  ['🏠🎈🐕',['فوق (Up)','كرتبل؟؟','مشخصاتي؟؟'],0],
+  ['🐟🔍',['نيمو','شركة؟؟','البحث؟؟'],0],
+  ['🦕🦖🧬',['جوراسي وورلد','كينج كونج','كروكودايل؟؟'],0],
+  ['🕵️🍸',['جيمس بوند','جون ويك','جيسون بورن'],0],
+  ['🦈🌊',['الفك المفترس','موبي ديك','نيمو'],0],
+  ['👁️✨',['نور العين (عمرو دياب)','تملي معاك','نور الحياة؟؟'],0],
+  ['⏳♾️👩‍❤️‍👨',['تملي معاك (عمرو دياب)','سمرا يا سمرا','عشق؟؟'],0],
+  ['🎃🔦🚲',['Stranger Things','Dark','Riverdale'],0],
+  ['📞🔪',['سكريم','بول؟؟','رفقاء الجريمة؟؟'],0],
+  ['🎤🌹💔',['بتصلي فيا؟؟','يا حبيبي تعالى؟؟','وتملي؟؟؟'],0],
+  ['🇪🇬🎤🇬🇷؟؟',['أسمر؟؟','يا مصر؟؟','هو ده اللي حصل؟؟'],0]
+];
+const COMPLETE=[
+  ['في التأني السلامة وفي العجلة...',['الندامة','الغلط','الفشل','الخسارة'],0],
+  ['اللي يخاف من العفريت...',['يطلع له','يخاف منه','يهرب','ينام'],0],
+  ['إيد وحدها...',['متسقفش','تعمل حاجتين','تكفي','تصفق'],0],
+  ['العصفور في اليد...',['أحسن من عشرة على الشجرة','يساوي فرخة','يبقى عش','يطير'],0],
+  ['من طلع من داره...',['قل مقداره','سافر وندم','خسر','ارتح'],0],
+  ['اللي مالوش كبير...',['يشتري له كبير','يبقى كبير','يتعب','يمشي لوحده'],0],
+  ['اللي اختشوا...',['ماتوا','نجوا','اتكلموا','انتصروا'],0],
+  ['الجاي أحلى من...',['الرايح','اللي فات','بكره','امبارح'],0],
+  ['حبيبي يا نور العين...',['يا ساكن خيالي','يا نور القمر','يا أغلى من روحي','يا ليل يا ليل'],0],
+  ['رجعوني عينيك... (أغنية)',['لأيامي اللي فاتوا','ليالي حيرتي','لزمن الجميل','لشمس الأصيل'],0],
+  ['أهواك... (أغنية عبد الحليم)',['أهواك وأتمنى لو أنساك','وأعيش معاك','وأموت في هواك','وأصون لك حبي'],0],
+  ['سواح... لو حتى... (أغنية)',['عيني ما تشوفني','روحي تفارقني','الدنيا تنساني','الليل يطول'],0],
+  ['يا مصر... (في نشيد)',['هو أنتِ الأمل','يوم ما تنادي','قومي وخلي','خلّي القلوب'],0],
+  ['تملي معاك... (عمرو دياب)',['تملي في عنيا','تملي ليّا','تملي حواليا','تملي معايا'],0],
+  ['هو ده اللي حصل... (عمرو دياب)',['حصل وأنا مش مصدق','وأنا مكلوش؟؟','والدنيا اتغيرت','في يوم وليلة'],0],
+  ['يسعد صباحك... (محمود العسيلي)',['يا أحلى صباح','يا حبيبي','يا ناس','يا قمر'],0]
+];
+const DRAWW=['قطة بتشرب لبن','فيل في حمام سباحة','كشري','كابتن تاكسي','عريس بيغني','دكتور أسنان','عصفورة على شجرة','عصير قصب','كورة القدم','عمارة عالية','شاطئ بالصيف','فنجان قهوة','عجلة مدينة','حمامة زاجلة؟؟','ساعة حائط','أرنب ياكل جزر','جمل في الصحراء','بالونة هواء','باب بيت قديم','مسجد بقبة','عربية كارو؟؟','مروحة سقف','شمعة مضيية','مكتبة','دراجة','طيارة ورق','فراشة','عنكبوت ببيته','باص مدرسي','مثلثات الأهرامات','شمس وأشعة','ناس تطبخ','قطار فوق كوبري','دمية دب','نملة حاطة شيكولاتة','حصان يجري','بطة مع فراخها','كوباية شاي','بيت شعرية؟؟','لعبة سليدرز؟؟'];
+const SCRAM=['مكتبة','مفتاح','شمعة','قطار','حديقة','مطبخ','مروحة','زجاجة','سفينة','غيمة','نافذة','فراشة','عنكبوت','صاروخ','مظلة','حمامة','مدرسة','برتقال','مفتاحها؟؟','عربية','مكتبة1؟؟','قهوة','سيارة','شمسية'];
+
+/* ============ PROFILES ============ */
+let P={};
+try{P=JSON.parse(localStorage.getItem('shala_profiles')||'{}')}catch(e){P={}}
+function saveP(){localStorage.setItem('shala_profiles',JSON.stringify(P))}
+function pf(name){
+  if(!P[name])P[name]={xp:0,wins:0,streak:0,imp:0,trivia:0,draw:0,music:0,likely:0,games:0};
+  return P[name];
+}
+function award(name,xp,st){
+  const p=pf(name);p.xp+=xp;p.games=(p.games||0)+1;
+  if(st)Object.entries(st).forEach(([k,v])=>p[k]=(p[k]||0)+v);
+  saveP();
+}
+function levelOf(p){return Math.floor(p.xp/500)+1}
+function badgesOf(p){
+  const b=[];
+  if((p.imp||0)>=3)b.push(['Master Imposter','r']);
+  if((p.trivia||0)>=3)b.push(['Brain','t']);
+  if((p.draw||0)>=2)b.push(['Artist','y']);
+  if((p.music||0)>=2)b.push(['Music Freak','y']);
+  if((p.likely||0)>=3)b.push(['Clown of the Group','y']);
+  if(p.streak>=2)b.push(['On Fire','r']);
+  if(p.wins>=10)b.push(['Legend','r']);
+  return b;
+}
+
+/* ============ STATE / NAV ============ */
+const PCOLS=['#ffc93d','#ff5d5d','#38d3c0','#4ecb71','#ff8f3d','#e86fa4','#7fd0ff','#f4d06f'];
+let S={players:[]};
+try{const sv=JSON.parse(localStorage.getItem('shala_players')||'[]');if(Array.isArray(sv))sv.forEach(n=>S.players.push({name:n}))}catch(e){}
+function savePlayers(){localStorage.setItem('shala_players',JSON.stringify(S.players.map(p=>p.name)))}
+function pcol(i){return PCOLS[i%PCOLS.length]}
+function avHTML(i,cls){return `<div class="av ${cls||''}" style="background:${pcol(i)}">${esc(S.players[i].name[0]||'؟')}</div>`}
+
+let NAV=[],CUR=null,NOBACK=false;
+function go(fn){
+  if(CUR&&!NOBACK)NAV.push(CUR);
+  NOBACK=false;
+  paint(fn,true);
+}
+function paint(fn,fwd){
+  clearTimers();
+  const old=$('#stage .scr');
+  if(old){const o=old;o.classList.add(fwd?'back':'rev');setTimeout(()=>o.remove(),280)}
+  const sc=document.createElement('div');sc.className='scr';$('#stage').appendChild(sc);
+  CUR=()=>fn();fn(sc);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>sc.classList.add('in')));
+}
+function back(){
+  sfx.tap();
+  const f=NAV.pop();
+  if(f)paint(f,false);else tabs.games();
+}
+const hdr=(t,btns)=>`<div class="hdr"><button class="hbtn" onclick="back()">${I.back}</button><div class="htitle">${t}</div><button class="hbtn" onclick="toggleMute()" id="muteb">${MUTED?I.mute:I.snd}</button></div>`;
+
+/* ============ SPLASH ============ */
+function splash(){
+  $('#stage').innerHTML='';
+  const sc=document.createElement('div');sc.className='scr in';$('#stage').appendChild(sc);
+  const t='SHALA'.split('').map((c,i)=>`<span style="transform:rotate(${(i%2?1:-1)*(3+i)}deg);animation-delay:${.08*i}s">${c}</span>`).join('');
+  sc.innerHTML=`
+  <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1">
+    <div style="animation:floaty 3s ease-in-out infinite">
+      <div class="logo">${t}</div>
+      <div class="logo-sub">PARTY</div>
+    </div>
+    <p class="sub" style="margin-top:10px">شلتك — ألعاب، ضحك، وفضايح 🎉؟؟</p>
+    <p class="sub" style="font-size:13px;color:var(--dim)">شلة واحدة • هاتف واحد • ذكريات كتير</p>
+    <button class="btn mt2" style="max-width:280px" onclick="sfx.pop();tabs.games()">${I.play} ابدأوا اللعب</button>
+    <button class="btn ghost sm mt" style="max-width:280px" onclick="sfx.pop();tabs.crew()">شلتك والبروفايلات</button>
+  </div>`;
+}
+
+/* ============ TABS ============ */
+const tabs={};
+function setTab(sc,active,inner,hideHdr){
+  sc.innerHTML=`${hideHdr?'':`<div class="hdr"><div class="htitle"><span style="font-family:'Lilita One';color:var(--yl);letter-spacing:2px">SHALA</span> <span style="font-size:14px;color:var(--dim)">PARTY</span></div><button class="hbtn" onclick="toggleMute()" id="muteb">${MUTED?I.mute:I.snd}</button></div>`}
+  <div class="body">${inner}</div>
+  <div class="tabbar">
+    <div class="tab ${active==='games'?'on':''}" onclick="tabs.games()">${I.dice}<span>الألعاب</span></div>
+    <div class="tab ${active==='crew'?'on':''}" onclick="tabs.crew()">${I.users}<span>شلّتك</span></div>
+    <div class="tab ${active==='solo'?'on':''}" onclick="tabs.solo()">${I.pad}<span>لوحدي</span></div>
+    <div class="tab ${active==='champ'?'on':''}" onclick="tabs.champ()">${I.crown}<span>البطولة</span></div>
+  </div>`;
+}
+tabs.games=sc=>{
+  sfx.pop();
+  const n=S.players.length;
+  const list=[
+    ['IMPOSTER WORLD','ست طرق لعب وكلمات في كل المجالات',I.ghost,'var(--red)',()=>imposterSetup()],
+    ['ASK ME — سؤال بالدور','مئات الأسئلة، كل واحد دوره يجاوب',I.mic,'var(--tl)',()=>askmeSetup()],
+    ['WHO IS MOST LIKELY؟','مين أكتر واحد... والتصويت يحسم',I.q,'var(--yl)',()=>likelySetup()],
+    ['SECRET MISSION','مهمة سرية لكل لاعب — من غير ما حد ياخد باله',I.eye,'var(--gr)',()=>missionSetup()],
+    ['WHO IS LYING؟','جملتين صدق ووحدة كذب — مين الكذاب؟',I.skull,'var(--pk)',()=>lyingSetup()],
+    ['DRAW &amp; GUESS','ارسم وسيبهم يخمنوا',I.brush,'var(--or)',()=>drawSetup()],
+    ['MUSIC BATTLE','لغز الإيموجي + كمّلها — أول واحد يدوس!',I.music,'var(--pk)',()=>musicSetup()],
+    ['1 VS 1 ARENA','مبارزة بين اتنين من الشلة',I.swords,'var(--tl)',()=>arenaMenu()],
+    ['TEAM BATTLE','فريق ضد فريق',I.users,'var(--yl)',()=>teamSetup()]
+  ].map(g=>`<div class="grow" onclick="sfx.tap()"><div onclick="event.stopPropagation();${g[4].toString?'':''}" style="display:flex;align-items:center;gap:13px;flex:1" onclick="${''}">
+    <div class="gic" style="background:${g[3]}">${g[2]}</div>
+    <div><div class="gt">${g[0]}</div><div class="gs">${g[1]}</div></div>
+    <div class="arr">${I.back}</div></div>`).join('');
+  // wrap onclick properly
+  const rows=[
+    ['IMPOSTER WORLD','ست طرق لعب وكلمات في كل المجالات',I.ghost,'var(--red)','imposterSetup()'],
+    ['ASK ME — سؤال بالدور','مئات الأسئلة، كل واحد دوره يجاوب',I.mic,'var(--tl)','askmeSetup()'],
+    ['WHO IS MOST LIKELY؟','مين أكتر واحد... والتصويت يحسم',I.q,'var(--yl)','likelySetup()'],
+    ['SECRET MISSION','مهمة سرية لكل لاعب — من غير ما حد ياخد باله',I.eye,'var(--gr)','missionSetup()'],
+    ['WHO IS LYING؟','جملتين صدق ووحدة كذب — مين الكذاب؟',I.skull,'var(--pk)','lyingSetup()'],
+    ['DRAW &amp; GUESS','ارسم وسيبهم يخمنوا',I.brush,'var(--or)','drawSetup()'],
+    ['MUSIC BATTLE','لغز الإيموجي + كمّلها — أول واحد يدوس!',I.music,'var(--pk)','musicSetup()'],
+    ['1 VS 1 ARENA','مبارزة بين اتنين من الشلة',I.swords,'var(--tl)','arenaMenu()'],
+    ['TEAM BATTLE','فريق ضد فريق',I.users,'var(--yl)','teamSetup()']
+  ].map(g=>`<div class="grow" onclick="sfx.tap();${g[4]}">
+      <div class="gic" style="background:${g[3]}">${g[2]}</div>
+      <div><div class="gt">${g[0]}</div><div class="gs">${g[1]}</div></div>
+      <div class="arr">${I.back}</div></div>`).join('');
+  setTab(sc,'games',`
+    <div class="hero" style="background:var(--card2)">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="gic" style="background:var(--yl);width:54px;height:54px">${I.dice}</div>
+        <div><div class="big">RANDOM PARTY</div><div class="sub">سيب الحظ يقرر اللعبة النهارده</div></div>
+      </div>
+      <button class="btn red mt" onclick="sfx.pop();randomParty()">${I.dice} لعبوا عشوائي</button>
+    </div>
+    <div class="card mt" style="display:flex;align-items:center;gap:11px;cursor:pointer" onclick="sfx.tap();tabs.crew()">
+      <div style="display:flex;gap:-8px;flex:0 0 auto;flex-wrap:wrap;gap:3px">${S.players.slice(0,5).map((p,i)=>`<div class="av" style="width:34px;height:34px;font-size:15px;border-radius:11px;background:${pcol(i)}">${esc(p.name[0])}</div>`).join('')}</div>
+      <div style="flex:1"><b>${n} لاعب${n>2?'ين':''} جاهزين</b><div class="sub" style="font-size:13px">اضغط لإدارة الشلة</div></div>
+      <div class="arr">${I.back}</div>
+    </div>
+    ${n<2?`<div class="card mt" style="border-color:var(--red)"><b style="color:var(--red)">محتاجين لاعبين اتنين على الأقل</b><div class="sub" style="font-size:13px">بعض الألعاب محتاجة 3+ — ضيفوا الباقي من تبويب "شلّتك"</div></div>`:''}
+    <div class="mt2">${rows}</div>
+  `);
+};
+tabs.crew=sc=>{
+  sfx.pop();
+  const cards=S.players.map((p,i)=>{
+    const pr=pf(p.name);
+    const bdg=badgesOf(pr).map(b=>`<span class="tag ${b[1]}">${b[0]}</span>`).join(' ');
+    return `<div class="card mt" style="display:flex;gap:12px;align-items:flex-start">
+      ${avHTML(i,'lg')}
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:18px">${esc(p.name)}</b><span class="tag t">LVL ${levelOf(pr)}</span></div>
+        <div class="sub" style="font-size:13px;margin-top:2px">${pr.xp} XP • ${pr.wins||0} فوز • ${pr.streak||0} streak</div>
+        <div class="mt" style="display:flex;flex-wrap:wrap;gap:5px">${bdg||'<span class="tag"> новичок؟؟ جديد — العبوا اكتر</span>'.replace('новичок؟؟','')}</div>
+      </div>
+      <button class="hbtn" style="width:34px;height:34px" onclick="event.stopPropagation();removePlayer(${i})">✕</button>
+    </div>`;
+  }).join('');
+  setTab(sc,'crew',`
+    <div class="big center">شلّتك</div>
+    <div class="sub center">بروفايل كل واحد بيتحفظ على الفون</div>
+    <div class="card mt">
+      <input id="pn" placeholder="اسم اللاعب الجديد..." maxlength="14" onkeydown="if(event.key==='Enter')addPlayer()">
+      <button class="btn sm mt" onclick="addPlayer()">${I.users} ضيف لاعب</button>
+    </div>
+    ${cards||'<div class="card mt sub">لسه مفيش حد — ابدأوا بإضافة الأسماء</div>'}
+  `);
+};
+tabs.solo=sc=>{
+  sfx.pop();
+  const best=JSON.parse(localStorage.getItem('shala_solo')||'{}');
+  const g=[
+    ['Reaction — سرعة البديهة','استنى الأخضر وادوس بأسرع ما يمكن',I.zap,'reaction',best.reaction?best.reaction+'ms':''],
+    ['Number Rush','دوس الأرقام 1-25 بالترتيب بأسرع وقت',I.brain,'numbers',best.numbers?best.numbers+'s':''],
+    ['Memory Cards','قلّب وطابق الأزواج',I.eye,'cards',best.cards?best.cards+' نقلة':''],
+    ['Word Scramble','رتب الحروف وطلّع الكلمة',I.puzzle,'scramble',best.scramble?best.scramble+' كلمة':''],
+    ['Pattern','احفظ النمط وكمله',I.target,'pattern',best.pattern?best.pattern+' مستوى':''],
+    ['Aim — تصويب','أهداف تظهر وتختفي في 30 ثانية',I.target,'aim',best.aim?best.aim+' نقطة':'']
+  ].map(x=>`<div class="grow" onclick="sfx.tap();soloStart('${x[3]}')">
+      <div class="gic" style="background:var(--tl)">${x[2]}</div>
+      <div><div class="gt">${x[0]}</div><div class="gs">${x[1]}</div></div>
+      ${x[4]?`<span class="tag y">${x[4]}</span>`:''}
+    </div>`).join('');
+  setTab(sc,'solo',`
+    <div class="big center">SOLO ZONE</div>
+    <div class="sub center">لوحدك؟ اكسب XP وارفع أرقامك القياسية</div>
+    <div class="mt2">${g}</div>
+  `);
+};
+tabs.champ=sc=>{
+  sfx.pop();
+  const enough=S.players.length>=3;
+  setTab(sc,'champ',`
+    <div class="big center">PARTY CHAMPIONSHIP</div>
+    <div class="sub center">بطولة كاملة — 7 جولات متنوعة ونقاط متجمعة، وفي الآخر واحد بس بياخد التاج</div>
+    <div class="card mt">
+      <b>الجولات:</b>
+      <div class="sub" style="font-size:14px;margin-top:6px;line-height:1.9">
+      1. Imposter &nbsp;2. Trivia Buzz &nbsp;3. Reaction &nbsp;4. Most Likely<br>5. Secret Mission &nbsp;6. Number Rush &nbsp;7. Final 1v1 — Chaos</div>
+    </div>
+    ${enough?'<button class="btn mt2" onclick="sfx.pop();champStart()">'+I.crown+' ابدأوا البطولة</button>':'<div class="card mt" style="border-color:var(--red)"><b style="color:var(--red)">البطولة محتاجة 3 لاعبين على الأقل</b></div>'}
+    ${!enough?`<button class="btn ghost sm mt" onclick="tabs.crew()">ضيفوا لاعبين الأول</button>`:''}
+  `);
+};
+function addPlayer(){
+  const i=$('#pn'),v=i.value.trim();
+  if(!v)return toast('اكتب الاسم الأول');
+  if(S.players.some(p=>p.name===v))return toast('الاسم موجود');
+  if(S.players.length>=10)return toast('الحد الأقصى 10 لاعبين');
+  S.players.push({name:v});savePlayers();i.value='';sfx.pop();tabs.crew();
+  pf(v);saveP();
+}
+function removePlayer(i){
+  S.players.splice(i,1);savePlayers();sfx.bad();tabs.crew();
+}
+
+/* ============ generic pieces ============ */
+function passScreen(sc,pIdx,subtitle,nextFn,btnTxt){
+  sfx.drum();
+  sc.innerHTML=`
+  ${hdr('سلّم الهاتف')}
+  <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;flex:1">
+    <div class="sub center" style="font-size:17px">${subtitle}</div>
+    ${avHTML(pIdx,'big')}
+    <div class="big center">${esc(S.players[pIdx].name)}</div>
+    <button class="btn" style="max-width:300px" onclick="sfx.pop();${''}">${btnTxt||'أنا '+esc(S.players[pIdx].name)+' — يلا'}</button>
+  </div>`;
+  sc.querySelector('.btn').onclick=()=>{sfx.pop();nextFn()};
+}
+function goPass(pIdx,subtitle,nextFn,btnTxt){
+  NOBACK=true;go(sc=>passScreen(sc,pIdx,subtitle,nextFn,btnTxt));
+}
+function countdown(sc,secs,onEnd,onTick){
+  sc.insertAdjacentHTML('beforeend',`<div class="cd" style="position:absolute;inset:0;background:rgba(13,11,9,.92);display:flex;align-items:center;justify-content:center;z-index:5"><div style="font-family:'Lilita One';font-size:110px;color:var(--yl);text-shadow:6px 6px 0 #000">${secs}</div></div>`);
+  const cd=sc.querySelector('.cd');
+  let n=secs;
+  iv(()=>{
+    n--;onTick&&onTick(n);
+    if(n<=0){cd.remove();onEnd()}
+    else{cd.firstElementChild.textContent=n;cd.firstElementChild.style.transform='scale(1.15)';setTimeout(()=>cd.firstElementChild.style.transform='scale(1)',120);sfx.tick()}
+  },1000);
+  sfx.tick();
+}
+
+/* ============ IMPOSTER WORLD ============ */
+let IM={};
+const IMMODES=[
+  ['classic','Classic','واحد Imposter — الشلة تحاول تكشفه'],
+  ['double','Double Trouble','اتنين Imposters'],
+  ['secret','Secret Team','الـ Imposters يعرفوا بعض'],
+  ['blind','Blind Imposter','الـ Imposter نفسه مش عارف! يكتشف في الآخر'],
+  ['two','Two Words','الـ Imposter عنده كلمة قريبة جدًا'],
+  ['no','No Talking','ممنوع الكلام — كل واحد يكتب Hint بس']
+];
+let CUSTOM=[];
+try{CUSTOM=JSON.parse(localStorage.getItem('shala_custom')||'[]')}catch(e){}
+function imposterSetup(){
+  NOBACK=false;
+  go(sc=>{
+    const catChips=Object.entries(CATS).map(([k,c])=>`<div class="chip catc" data-k="${k}" onclick="impPickCat('${k}')">${I[c.ic]} ${c.n}</div>`).join('')+`<div class="chip catc ${IM.cat==='custom'?'on':''}" data-k="custom" onclick="impPickCat('custom')">${I.puzzle} كلماتكم</div>`;
+    const modeChips=IMMODES.map(m=>`<div class="chip modc ${IM.mode===m[0]?'on':''}" data-m="${m[0]}" onclick="impPickMode('${m[0]}')">${m[1]}</div>`).join('');
+    const modeInfo=IMMODES.find(m=>m[0]===(IM.mode||'classic'));
+    const mins=[[0,'من غير مؤقت'],[60,'دقيقة'],[120,'دقيقتين'],[180,'3 دقايق'],[300,'5 دقايق']];
+    sc.innerHTML=`${hdr('IMPOSTER WORLD')}
+    <div class="body">
+      <div class="big">اختاروا المجال</div>
+      <div class="sub">كل جولة كلمة عشوائية من المجال</div>
+      <div class="chips mt">${catChips}</div>
+      <div class="big mt2">طريقة اللعب</div>
+      <div class="chips mt">${modeChips}</div>
+      <div class="card mt"><b>${modeInfo?modeInfo[1]:''}</b><div class="sub" style="font-size:14px">${modeInfo?modeInfo[2]:''}</div></div>
+      <div class="big mt2">وقت النقاش</div>
+      <div class="chips mt">${mins.map(m=>`<div class="chip tmc ${IM.disc===m[0]?'on':''}" data-t="${m[0]}" onclick="impPickTime(${m[0]})">${m[1]}</div>`).join('')}</div>
+      ${IM.cat==='custom'?`<div class="card mt"><b>كلماتكم الخاصة (${CUSTOM.length})</b><input id="cwin" class="mt" placeholder="اكتب كلمة واضغط إضافة" onkeydown="if(event.key==='Enter')addCustomW()"><button class="btn sm ghost mt" onclick="addCustomW()">ضيف الكلمة</button><div class="chips mt">${CUSTOM.map((w,i)=>`<div class="chip">${esc(w)} <span style="color:var(--red)" onclick="delCustomW(${i})">✕</span></div>`).join('')}</div></div>`:''}
+      <button class="btn red mt2" ${S.players.length<3?'disabled':''} onclick="imposterStart()">${I.ghost} ابدأوا الجولة</button>
+      ${S.players.length<3?'<div class="sub center mt" style="color:var(--red)">أقل عدد 3 لاعبين</div>':''}
+    </div>`;
+  });
+}
+function impPickCat(k){IM.cat=k;sfx.tap();imposterSetup()}
+function impPickMode(m){IM.mode=m;sfx.tap();imposterSetup()}
+function impPickTime(t){IM.disc=t;sfx.tap();imposterSetup()}
+function addCustomW(){
+  const v=$('#cwin').value.trim();if(!v)return;
+  CUSTOM.push(v);localStorage.setItem('shala_custom',JSON.stringify(CUSTOM));sfx.pop();imposterSetup();
+}
+function delCustomW(i){CUSTOM.splice(i,1);localStorage.setItem('shala_custom',JSON.stringify(CUSTOM));imposterSetup()}
+function imposterStart(){
+  const cat=IM.cat||'food';
+  const pool=(cat==='custom'?CUSTOM:CATS[cat].w).filter(Boolean);
+  if(pool.length<4)return toast('المجال محتاج 4 كلمات على الأقل');
+  const word=rnd(pool);
+  const n=S.players.length;
+  const mode=IM.mode||'classic';
+  const impN=(mode==='double'||mode==='secret')?2:1;
+  const imps=shuffle([...Array(n).keys()]).slice(0,impN);
+  IM={cat,mode,disc:IM.disc||0,word,imps,hints:[],votes:{},blindWord:rnd(pool.filter(w=>w!==word)),near:NEAR[word]||rnd(pool.filter(w=>w!==word)),revealed:0};
+  imposterReveal(0);
+}
+function imposterReveal(i){
+  if(i>=S.players.length)return imposterDiscuss();
+  goPass(i,'خلّي صاحب الهاتف يشوف كلمته بِحْتِرامية — الباقي يبعدوا النظر',()=>impSecret(i),'أنا '+esc(S.players[i].name)+' — ورّوني');
+}
+function impSecret(i){
+  NOBACK=true;
+  go(sc=>{
+    const isImp=IM.imps.includes(i);
+    let inner;
+    if(isImp&&IM.mode!=='blind'){
+      let extra='';
+      if(IM.mode==='secret'&&IM.imps.length>1)extra=`<div class="card mt" style="border-color:var(--red)"><b>شريكك في السر:</b> ${esc(S.players[IM.imps.find(x=>x!==i)].name)}</div>`;
+      if(IM.mode==='two')extra=`<div class="sub">الكلمة دي قريبة من كلمة الشلة — انتبه، الفرق بسيط!</div>`;
+      inner=`<div class="wordcard red"><div class="sub" style="color:var(--red);font-weight:800">أنت الـ IMPOSTER</div><div class="w" style="font-size:26px">${IM.mode==='two'?esc(IM.near):'؟؟؟'}</div>
+      <div class="sub" style="font-size:13.5px;margin-top:8px">${IM.mode==='two'?'هاوصف كلمة قريبة خالص — اسمع كويس وامتث':'اسمع وصف الشلة وامتث كأنك عارف الكلمة'}</div></div>${extra}`;
+    }else if(isImp&&IM.mode==='blind'){
+      inner=`<div class="wordcard"><div class="sub" style="font-weight:800">الكلمة السرية</div><div class="w">${esc(IM.blindWord)}</div><div class="sub" style="font-size:13.5px;margin-top:8px">اوصفها بذكاء من غير ما تذكرها</div></div>`;
+    }else{
+      inner=`<div class="wordcard"><div class="sub" style="font-weight:800">الكلمة السرية</div><div class="w">${esc(IM.word)}</div><div class="sub" style="font-size:13.5px;margin-top:8px">اوصفها بذكاء من غير ما تذكرها بالاسم</div></div>`;
+    }
+    sc.innerHTML=`${hdr('شاشتك الخاصة')}
+    <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">
+      ${avHTML(i)}
+      <div class="sub center">يا ${esc(S.players[i].name)} — محدش غيرك يشوف الشاشة دي</div>
+      ${inner}
+      <button class="btn" onclick="sfx.pop();imposterReveal(${i+1})">${I.check} شفتها — سلّم الهاتف</button>
+    </div>`;
+  });
+}
+function imposterDiscuss(){
+  NOBACK=true;
+  const starter=rnd(S.players).name;
+  if(IM.mode==='no')return impHints(0);
+  go(sc=>{
+    sc.innerHTML=`${hdr('ابدأوا النقاش')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <div class="gic" style="background:var(--yl);width:70px;height:70px">${I.mic}</div>
+      <div class="big center">يبدأ النقاش: ${esc(starter)}</div>
+      <div class="sub center">كل واحد يوصف الكلمة بجملة واحدة، والـ Imposter يحاول يمسك الخيط</div>
+      ${IM.disc>0?`<div class="card center" style="width:100%"><div style="font-family:'Lilita One';font-size:44px;color:var(--yl)" id="dt">${pad2(Math.floor(IM.disc/60))}:${pad2(IM.disc%60)}</div></div>
+      <button class="btn red" onclick="sfx.pop();imposterVote(0)">${I.q} خلص النقاش — التصويت</button>`:
+      `<button class="btn red mt" onclick="sfx.pop();imposterVote(0)">${I.q} خلص النقاش — التصويت</button>`}
+    </div>`;
+    if(IM.disc>0){
+      let t=IM.disc;
+      iv(()=>{t--;const el=$('#dt');if(el)el.textContent=pad2(Math.floor(t/60))+':'+pad2(t%60);if(t<=10&&t>0)sfx.tick();if(t<=0){sfx.bad();toast('الوقت خلص! صوّتوا')};},1000);
+    }
+  });
+}
+function impHints(i){
+  if(i>=S.players.length)return impHintsShow();
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('Hint سرّي')}
+    <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">
+      ${avHTML(i)}
+      <div class="big center">اكتب Hint واحد بس</div>
+      <div class="sub center">كلمة أو جملة قصيرة توصّح ${IM.imps.includes(i)&&IM.mode!=='blind'?'(انت الـ Imposter — الّف بذكاء)':'الكلمة'} — من غير ذكرها</div>
+      <input id="hint" placeholder="اكتب الهنت هنا..." maxlength="40">
+      <button class="btn" onclick="impSaveHint(${i})">${I.check} تم</button>
+    </div>`;
+  });
+}
+function impSaveHint(i){
+  const v=$('#hint').value.trim();if(!v)return toast('اكتب حاجة!');
+  IM.hints.push(v);sfx.pop();impHints(i+1);
+}
+function impHintsShow(){
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('Hints الشلة')}
+    <div class="body">
+      <div class="big center">شوفوا الهنتات</div>
+      <div class="sub center">20 ثانية للكل — والـ Imposter برضه من يعرف كلمة!</div>
+      ${IM.hints.map((h,i)=>`<div class="card mt" style="text-align:center"><b style="color:var(--yl)">Hint ${i+1}</b><div style="font-size:18px;font-weight:700;margin-top:4px">${esc(h)}</div></div>`).join('')}
+      <div class="timerbar mt2"><div id="hb" style="width:100%"></div></div>
+      <button class="btn red mt2" onclick="sfx.pop();imposterVote(0)">${I.q} يلا نصوّت</button>
+    </div>`;
+    let t=20;
+    iv(()=>{t--;const b=$('#hb');if(b)b.style.width=(t/20*100)+'%';if(t<=0){toast('خلص الوقت!')};},1000);
+  });
+}
+function imposterVote(i){
+  if(i>=S.players.length)return impResults();
+  goPass(i,'دورك تصوّت — مين الـ Imposter؟',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('التصويت')}
+      <div class="body">
+        ${avHTML(i)}
+        <div class="big center mt">${esc(S.players[i].name)} — صوّت على مين؟</div>
+        <div class="mt">${S.players.map((p,j)=>j===i?'':`<div class="grow" onclick="impVoteCast(${i},${j})">${avHTML(j)}<div class="gt">${esc(p.name)}</div><div class="arr">${I.back}</div></div>`).join('')}</div>
+      </div>`;
+    });
+  });
+}
+function impVoteCast(i,j){
+  IM.votes[i]=j;sfx.pop();imposterVote(i+1);
+}
+function impResults(){
+  NOBACK=true;
+  go(sc=>{
+    sfx.roll();
+    sc.innerHTML=`${hdr('النتيجة')}
+    <div class="body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px">
+      <div class="sub" style="font-size:18px">التصويت خلص...</div>
+      <div class="gic" style="background:var(--red);width:80px;height:80px;animation:blink .8s infinite">${I.ghost}</div>
+      <div class="big center blink">لازم نكشف الـ IMPOSTER</div>
+      <button class="btn red" style="max-width:280px" onclick="sfx.drum();impRevealFinal()">اضغطوا للكشف</button>
+    </div>`;
+  });
+}
+function impRevealFinal(){
+  NOBACK=true;
+  go(sc=>{
+    const n=S.players.length;
+    const cnt=Array(n).fill(0);Object.values(IM.votes).forEach(j=>cnt[j]++);
+    const order=[...Array(n).keys()].sort((a,b)=>cnt[b]-cnt[a]);
+    const twoMode=IM.mode==='double'||IM.mode==='secret';
+    const topSet=twoMode?new Set(order.slice(0,2)):new Set([order[0]]);
+    const caught=IM.imps.filter(x=>topSet.has(x)).length;
+    const full=caught===IM.imps.length;
+    const civWin=full||(caught>0&&!twoMode);
+    const modeTxt={classic:'',double:'Double Trouble',secret:'Secret Team',blind:'BLIND IMPOSTER — كان شايف كلمة تانية خالص: "'+IM.blindWord+'" وعمرو ما عرف إنه Imposter!',two:'TWO WORDS — كان عنده كلمة قريبة: "'+IM.near+'"',no:'No Talking'};
+    const bars=S.players.map((p,i)=>`<div class="mt"><div style="display:flex;justify-content:space-between"><b>${esc(p.name)}${IM.imps.includes(i)?` <span class="tag r">IMPOSTER</span>`:''}</b><span>${cnt[i]} صوت</span></div><div class="bar"><div style="width:${Math.max(8,cnt[i]/Math.max(1,...cnt)*100)}%;background:${IM.imps.includes(i)?'var(--red)':'var(--yl)'}">${cnt[i]}</div></div></div>`).join('');
+    sc.innerHTML=`${hdr('النتيجة')}
+    <div class="body">
+      <div class="wordcard ${civWin?'':'red'}" style="animation:pop .5s">
+        <div class="sub" style="font-weight:800;color:${civWin?'var(--gr)':'var(--red)'}">${civWin?'الشلة كشفت الـ Imposter!':'الـ Imposter نجا بالتصويت!'}</div>
+        <div class="w" style="font-size:30px">${IM.imps.map(i=>esc(S.players[i].name)).join(' + ')}</div>
+        ${IM.mode!=='classic'?`<div class="sub" style="font-size:13.5px;margin-top:6px">${modeTxt[IM.mode]}</div>`:''}
+        <div class="sub" style="margin-top:8px">الكلمة كانت: <b style="color:var(--yl)">${esc(IM.word)}</b></div>
+      </div>
+      <div class="card mt"><b>الأصوات:</b>${bars}</div>
+      <div class="card mt"><b>النقاط:</b>
+        <div class="sub" style="font-size:14px">${civWin?`الأبرياء +${full?'80':'50'} XP — والـ Imposter +25 على المحاولة`:`الـ Imposter(s) +150 XP — هرب من العدالة!`}</div>
+      </div>
+      <button class="btn mt2" onclick="impAward(${civWin},${full})">${I.trophy} وزّعوا النقاط — جولة جديدة</button>
+    </div>`;
+    if(civWin){confetti(120);sfx.win()}else sfx.bad();
+  });
+}
+function impAward(civWin,full){
+  S.players.forEach((p,i)=>{
+    const isImp=IM.imps.includes(i);
+    if(isImp)award(p.name,civWin?25:150,{imp:civWin?0:1,wins:civWin?0:1,streak:civWin?0:1});
+    else award(p.name,civWin?(full?80:50):15,{wins:civWin?1:0,streak:civWin?1:0});
+  });
+  saveP();if(civWin)sfx.good();
+  imposterSetup();
+}
+
+/* ============ ASK ME ============ */
+let AM={};
+function askmeSetup(){
+  NOBACK=false;
+  go(sc=>{
+    if(!AM.cats)AM.cats=new Set(['مضحكة','شخصية','للشلة']);
+    const chips=Object.keys(ASKME).map(c=>`<div class="chip ${AM.cats.has(c)?'on':''}" onclick="amCat('${c}')">${c}</div>`).join('');
+    sc.innerHTML=`${hdr('ASK ME')}
+    <div class="body">
+      <div class="big">اختاروا أنواع الأسئلة</div>
+      <div class="sub">بنك فيه مئات الأسئلة — اختاروا اللي يعجبكم</div>
+      <div class="chips mt">${chips}</div>
+      <div class="big mt2">كل لاعب جولات</div>
+      <div class="chips mt">${[1,2,3].map(r=>`<div class="chip ${AM.rounds===r?'on':''}" onclick="amRounds(${r})">${r}</div>`).join('')}</div>
+      <button class="btn tl mt2" ${S.players.length<2||!AM.cats.size?'disabled':''} onclick="amStart()">${I.mic} ابدأوا</button>
+    </div>`;
+  });
+}
+function amCat(c){AM.cats.has(c)?AM.cats.delete(c):AM.cats.add(c);AM.cats=new Set(AM.cats);sfx.tap();askmeSetup()}
+function amRounds(r){AM.rounds=r;sfx.tap();askmeSetup()}
+function amStart(){
+  let pool=[];
+  AM.cats.forEach(c=>pool=pool.concat(ASKME[c]||[]));
+  AM.qs=shuffle(pool).slice(0,S.players.length*(AM.rounds||2));
+  AM.i=0;amTurn();
+}
+function amTurn(){
+  if(AM.i>=AM.qs.length)return amEnd();
+  const pi=AM.i%S.players.length;
+  goPass(pi,'الدور عليه يجاوب بصوت عالي للشلة',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('ASK ME — سؤال '+ (AM.i+1))}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">
+        ${avHTML(pi)}
+        <div class="sub center" style="font-weight:800;color:var(--tl);font-size:17px">الدور على ${esc(S.players[pi].name)}</div>
+        <div class="wordcard"><div class="w" style="font-size:24px;line-height:1.5">${esc(AM.qs[AM.i])}</div></div>
+        <button class="btn tl" onclick="sfx.pop();award('${esc(S.players[pi].name)}',8);amNext()">${I.check} جاوبت — الدور على اللي بعدي</button>
+      </div>`;
+    });
+  });
+}
+function amNext(){AM.i++;amTurn()}
+function amEnd(){
+  NOBACK=true;
+  go(sc=>{
+    confetti(90);sfx.win();
+    sc.innerHTML=`${hdr('ASK ME')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+      <div class="gic" style="background:var(--tl);width:80px;height:80px">${I.mic}</div>
+      <div class="big center">خلصت الأسئلة!</div>
+      <div class="sub center">كل واحد +8 XP لكل سؤال جاوبه — اتمنى ما حدش اتحرج</div>
+      <button class="btn" onclick="sfx.tap();tabs.games()">${I.back} ارجعوا للألعاب</button>
+    </div>`;
+  });
+}
+
+/* ============ MOST LIKELY ============ */
+let LK={};
+function likelySetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('WHO IS MOST LIKELY؟')}
+    <div class="body">
+      <div class="big">مين أكتر واحد...؟</div>
+      <div class="sub">تظهر جملة، وكل واحد يصوّت — والمرشح الأكتر ياخد الفضيحة</div>
+      <div class="big mt2">عدد الجولات</div>
+      <div class="chips mt">${[3,5,8].map(r=>`<div class="chip ${LK.rounds===r?'on':''}" onclick="lkRounds(${r})">${r}</div>`).join('')}</div>
+      <button class="btn mt2" ${S.players.length<3?'disabled':''} onclick="lkStart()">${I.q} ابدأوا</button>
+      ${S.players.length<3?'<div class="sub center mt" style="color:var(--red)">محتاجين 3 لاعبين</div>':''}
+    </div>`;
+  });
+}
+function lkRounds(r){LK.rounds=r;sfx.tap();likelySetup()}
+function lkStart(){
+  LK.qs=shuffle(LIKELY).slice(0,LK.rounds||5);
+  LK.i=0;LK.scores={};LK.got={};
+  lkVote(0);
+}
+function lkVote(pi){
+  if(pi>=S.players.length)return lkResult();
+  goPass(pi,'صوّت: مين أكتر واحد؟',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('تصويت سري')}
+      <div class="body">
+        <div class="wordcard"><div class="sub" style="font-weight:800">مين أكتر واحد...</div><div class="w" style="font-size:24px">${esc(LK.qs[LK.i])}</div></div>
+        <div class="sub center mt">${esc(S.players[pi].name)} — اختار (مش نفسك)</div>
+        <div class="mt">${S.players.map((p,j)=>j===pi?'':`<div class="grow" onclick="lkCast(${pi},${j})">${avHTML(j)}<div class="gt">${esc(p.name)}</div></div>`).join('')}</div>
+      </div>`;
+    });
+  });
+}
+function lkCast(pi,j){
+  LK.scores[j]=(LK.scores[j]||0)+1;sfx.pop();
+  lkVote(pi+1);
+}
+function lkResult(){
+  NOBACK=true;
+  go(sc=>{
+    const entries=S.players.map((p,i)=>[p.name,LK.scores[i]||0]);
+    const top=entries.reduce((a,b)=>b[1]>a[1]?b:a,['',-1]);
+    LK.got[top[0]]=(LK.got[top[0]]||0)+1;
+    const total=entries.reduce((s,e)=>s+e[1],0)||1;
+    sc.innerHTML=`${hdr('نتيجة الجولة '+(LK.i+1))}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center;flex:1">
+      <div class="wordcard"><div class="sub">مين أكتر واحد...</div><div class="w" style="font-size:26px">${esc(LK.qs[LK.i])}</div></div>
+      <div class="wordcard ${top[1]>0?'':'red'}"><div class="sub">الفائز بالتصويت</div><div class="w" style="font-size:34px">${esc(top[0])}</div><div class="sub">${top[1]} من ${total} صوت (${Math.round(top[1]/total*100)}%)</div></div>
+      ${entries.map(e=>`<div class="bar"><div style="width:${Math.max(10,e[1]/total*100)}%;background:${e[0]===top[0]?'var(--yl)':'var(--tl)'}">${e[1]}</div></div>`).join('')}
+      <button class="btn" onclick="sfx.pop();lkNext()">${I.next} ${LK.i+1<LK.qs.length?'الجولة اللي بعدها':'النتيجة النهائية'}</button>
+    </div>`;
+    if(top[1]>0){award(top[0],25,{likely:1});saveP();confetti(60);sfx.good()}
+  });
+}
+function lkNext(){
+  LK.i++;
+  if(LK.i<LK.qs.length)return lkVote(0);
+  NOBACK=true;
+  go(sc=>{
+    const ranked=Object.entries(LK.got).sort((a,b)=>b[1]-a[1]);
+    sc.innerHTML=`${hdr('MOST LIKELY — النهاية')}
+    <div class="body">
+      <div class="big center">أكتر واحد اترشح في اللعبة كلها</div>
+      <div class="wordcard mt"><div class="w">${esc(ranked[0]?ranked[0][0]:'مححدش')}</div><div class="sub">اترشح ${ranked[0]?ranked[0][1]:0} مرة — عارف نفسك كويس يا صاحبي</div></div>
+      ${ranked.slice(1).map(r=>`<div class="score-pill"><span>${esc(r[0])}</span><span>${r[1]} ترشيحات</span></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.tap();tabs.games()">${I.back} خلصنا</button>
+    </div>`;
+  });
+}
+
+/* ============ SECRET MISSION ============ */
+let MS={};
+function missionSetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('SECRET MISSION')}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="wordcard"><div class="w" style="font-size:22px">كل واحد هياخد مهمة سرية — ينفذها من غير ما حد ياخد باله</div><div class="sub">لو حد كشف مهمتك، خسرت!</div></div>
+      <div class="big mt2">مدة اللعب</div>
+      <div class="chips mt">${[[5,'5 دقايق'],[10,'10 دقايق'],[15,'15 دقيقة']].map(m=>`<div class="chip ${MS.mins===m[0]?'on':''}" onclick="MS.mins=${m[0]};sfx.tap();missionSetup()">${m[1]}</div>`).join('')}</div>
+      <button class="btn gr mt2" ${S.players.length<3?'disabled':''} onclick="msStart()">${I.eye} ابدأوا المهام</button>
+    </div>`;
+  });
+}
+function msStart(){
+  const ms=shuffle(MISSIONS).slice(0,S.players.length);
+  MS.list=S.players.map((p,i)=>{
+    let m=ms[i%ms.length];
+    const other=S.players[(i+rnd([1,2,3].filter(x=>i+x<S.players.length))||1)%S.players.length].name;
+    return m.replace('{p}',other).replace('{w}',rnd(WWORDS));
+  });
+  MS.i=0;msReveal(0);
+}
+function msReveal(i){
+  if(i>=S.players.length)return msPlay();
+  goPass(i,'مهمتك السرية — محدش غيرك يشوفها',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('المهمة السرية')}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">
+        ${avHTML(i)}
+        <div class="wordcard"><div class="sub" style="font-weight:800;color:var(--gr)">مهمتك يا ${esc(S.players[i].name)}:</div><div class="w" style="font-size:22px;line-height:1.5">${esc(MS.list[i])}</div><div class="sub" style="font-size:13px">احفظها — ودي كانت آخر مرة تشوفها</div></div>
+        <button class="btn gr" onclick="sfx.pop();msReveal(${i+1})">${I.check} حفظتها — سلّم</button>
+      </div>`;
+    });
+  });
+}
+function msPlay(){
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('نفّذوا المهام')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <div class="gic" style="background:var(--gr);width:80px;height:80px">${I.eye}</div>
+      <div class="big center">كل واحد ينفذ مهمته دلوقتي!</div>
+      <div class="sub center">اتكلموا، العبوا، امزحوا — والمهمات تتنفذ في الخفا. محدش يقول "مهمتي"!</div>
+      <div class="card center" style="width:100%"><div style="font-family:'Lilita One';font-size:46px;color:var(--gr)" id="mt">${MS.mins||10}:00</div></div>
+      <button class="btn gr mt" onclick="sfx.pop();msDeclare(0)">${I.check} خلص الوقت — مين نفّذ؟</button>
+    </div>`;
+    let t=(MS.mins||10)*60;
+    iv(()=>{
+      t--;const el=$('#mt');if(el)el.textContent=Math.floor(t/60)+':'+pad2(t%60);
+      if(t<=10&&t>0)sfx.tick();
+    },1000);
+  });
+}
+function msDeclare(i){
+  if(i>=S.players.length)return msResults();
+  goPass(i,'وقت الحساب — بضميرك',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('نفّذتها؟')}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">
+        ${avHTML(i)}
+        <div class="big center">${esc(S.players[i].name)} — نفّذت مهمتك؟</div>
+        <div class="sub center">${esc(MS.list[i])}</div>
+        <div class="row mt"><button class="btn gr" onclick="msMark(${i},1)">${I.check} نفّذتها!</button><button class="btn red" onclick="msMark(${i},0)">معرفتش</button></div>
+      </div>`;
+    });
+  });
+}
+function msMark(i,ok){MS.list[i]=MS.list[i]+'||'+(ok?'1':'0');sfx.pop();msDeclare(i+1)}
+function msResults(){
+  NOBACK=true;
+  go(sc=>{
+    const done=S.players.filter((p,i)=>MS.list[i].endsWith('||1'));
+    done.forEach(p=>award(p.name,100,{wins:1,streak:1}));
+    saveP();
+    sc.innerHTML=`${hdr('SECRET MISSION — النتيجة')}
+    <div class="body">
+      <div class="wordcard"><div class="sub" style="color:${done.length?'var(--gr)':'var(--red)'}">${done.length?done.length+' نجحوا في مهماتهم!':'مححدش نفّذ حاجة... خجلتموناش'}</div><div class="w" style="font-size:24px">عملاء ناجحون: ${done.map(p=>esc(p.name)).join('، ')||'ولا واحد'}</div><div class="sub">كل ناجح +100 XP</div></div>
+      ${S.players.map((p,i)=>`<div class="score-pill" style="border-color:${MS.list[i].endsWith('||1')?'var(--gr)':'var(--line)'}"><span>${esc(p.name)}</span><span>${MS.list[i].endsWith('||1')?'نفّذها':'فشل'}</span></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.tap();tabs.games()">${I.back} خلصنا</button>
+    </div>`;
+    if(done.length){confetti(100);sfx.win()}
+  });
+}
+
+/* ============ WHO IS LYING ============ */
+let LY={};
+function lyingSetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('WHO IS LYING؟')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="wordcard"><div class="w" style="font-size:22px">اكتب 3 جمل عن نفسك: اتنين صدق وواحدة كذب</div><div class="sub">الشلة تناقش وتصوّت على الجملة الكاذبة</div></div>
+      <button class="btn mt2" ${S.players.length<3?'disabled':''} onclick="lyStart()">${I.skull} ابدأوا</button>
+      ${S.players.length<3?'<div class="sub center" style="color:var(--red)">محتاجين 3 لاعبين</div>':''}
+    </div>`;
+  });
+}
+function lyStart(){
+  LY.writes=S.players.map(()=>['','','']);
+  LY.i=0;lyWrite(0);
+}
+function lyWrite(i){
+  if(i>=S.players.length)return lyGuess(0);
+  goPass(i,'اكتب جملك التلاتة — التالتة لازم تكون كذب',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('جملك التلاتة')}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+        ${avHTML(i)}
+        <div class="sub center">جملتين صدق (1,2) — وواحدة كذب (3)</div>
+        ${[0,1,2].map(k=>`<input id="ly${k}" placeholder="${k===2?'الكذبة...':'حقيقة #'+(k+1)}" maxlength="60" value="${esc(LY.writes[i][k])}">`).join('')}
+        <button class="btn" onclick="lySave(${i})">${I.check} تم</button>
+      </div>`;
+    });
+  });
+}
+function lySave(i){
+  const vals=[0,1,2].map(k=>$('#ly'+k).value.trim());
+  if(vals.some(v=>!v))return toast('اكمل الجمل التلاتة');
+  LY.writes[i]=vals;sfx.pop();lyWrite(i+1);
+}
+function lyGuess(i){
+  if(i>=S.players.length)return lyFinal();
+  const order=shuffle([0,1,2]);
+  NOBACK=true;
+  go(sc=>{
+    LY.curVotes={};LY.curOrder=order;
+    sc.innerHTML=`${hdr('جمل '+esc(S.players[i].name))}
+    <div class="body">
+      <div class="big center">جمل ${esc(S.players[i].name)} التلاتة</div>
+      <div class="sub center">الجملة رقم 1 و2 صادقة — وحدة بس كاذبة (متتسمعش هو!)</div>
+      ${order.map((k,pos)=>`<div class="wordcard mt" style="padding:20px"><div class="sub" style="font-weight:800;color:var(--yl)">جملة ${pos+1}</div><div class="w" style="font-size:19px">${esc(LY.writes[i][k])}</div></div>`).join('')}
+      <div class="big mt2 center">الشلة تناقش... بعدين كل واحد يصوّت</div>
+      <button class="btn red mt" onclick="sfx.pop();lyVoteStart(${i})">${I.q} ابدأوا التصويت</button>
+    </div>`;
+  });
+}
+function lyVoteStart(owner){
+  LY.owner=owner;LY.vi=0;
+  lyVoteOne(0);
+}
+function lyVoteOne(vi){
+  if(vi>=S.players.length)return lyTally();
+  if(vi===LY.owner)return lyVoteOne(vi+1);
+  goPass(vi,'صوّت: أنهي جملة كذب؟',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('تصويت')}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+        ${avHTML(vi)}
+        <div class="big center">جمل ${esc(S.players[LY.owner].name)} — أنهي واحدة كذب؟</div>
+        ${[0,1,2].map(pos=>`<button class="btn ghost" onclick="lyCast(${vi},${LY.curOrder[pos]})">جملة ${pos+1}</button>`).join('')}
+      </div>`;
+    });
+  });
+}
+function lyCast(vi,k){LY.curVotes[vi]=k;sfx.pop();lyVoteOne(vi+1)}
+function lyTally(){
+  NOBACK=true;
+  go(sc=>{
+    const votes=Object.values(LY.curVotes);
+    const cnt=[0,0,0];votes.forEach(v=>cnt[v]++);
+    const top=cnt.indexOf(Math.max(...cnt));
+    const caught=top===2;
+    sc.innerHTML=`${hdr('نتيجة '+esc(S.players[LY.owner].name))}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="wordcard ${caught?'':'red'}">
+        <div class="sub" style="color:${caught?'var(--gr)':'var(--red)'}">${caught?'الشلة كشفت الكذاب!':'الكذاب ضحك على الشلة!'}</div>
+        <div class="w" style="font-size:22px">الكذبة كانت: "${esc(LY.writes[LY.owner][2])}"</div>
+      </div>
+      <div class="card"><b>الأصوات على الجمل:</b>
+        ${LY.curOrder.map((k,pos)=>`<div class="mt"><div style="display:flex;justify-content:space-between"><span>جملة ${pos+1} ${k===2?'(الكذب)':''}</span><b>${cnt[k]}</b></div><div class="bar"><div style="width:${Math.max(8,cnt[k]/Math.max(1,votes.length)*100)}%;background:${k===2?'var(--red)':'var(--tl)'}">${cnt[k]}</div></div></div>`).join('')}
+      </div>
+      <button class="btn" onclick="lyScore(${caught})">${I.next} اللي بعده</button>
+    </div>`;
+    if(caught){confetti(70);sfx.win()}else sfx.bad();
+  });
+}
+function lyScore(caught){
+  Object.keys(LY.curVotes).forEach(vi=>{
+    if(LY.curVotes[vi]===2)award(S.players[vi].name,50,{});
+  });
+  award(S.players[LY.owner].name,caught?0:120,{wins:caught?0:1,streak:caught?0:1});
+  saveP();
+  LY.i=(LY.i||0)+1;
+  const nextOwner=(LY.owner+1)%S.players.length;
+  lyGuess(nextOwner);
+}
+function lyFinal(){
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('WHO IS LYING — النهاية')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+      <div class="gic" style="background:var(--pk);width:80px;height:80px">${I.skull}</div>
+      <div class="big center">الكل كشف أسراره!</div>
+      <button class="btn" onclick="sfx.tap();tabs.games()">${I.back} ارجعوا للألعاب</button>
+    </div>`;
+  });
+}
+
+/* ============ DRAW & GUESS ============ */
+let DW={};
+const DCOLS=['#2b2b2b','#ff5d5d','#ffc93d','#38d3c0','#4ecb71','#e86fa4'];
+function drawSetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('DRAW &amp; GUESS')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="wordcard"><div class="w" style="font-size:22px">واحد يرسم والباقي يخمنوا بالتتابع</div><div class="sub">نقاط على سرعة التخمين + جوائز في الآخر</div></div>
+      <button class="btn mt2" ${S.players.length<3?'disabled':''} onclick="dwStart()">${I.brush} ابدأوا الرسم</button>
+      ${S.players.length<3?'<div class="sub center" style="color:var(--red)">محتاجين 3 لاعبين (رسام + مخمنين)</div>':''}
+    </div>`;
+  });
+}
+function mountPad(sc,onDone,secs,word){
+  let drawing=false,strokes=[],cur=[];
+  const paint=()=>{
+    const cv=sc.querySelector('canvas.pad'),x=cv.getContext('2d');
+    x.fillStyle='#f7efdd';x.fillRect(0,0,cv.width,cv.height);
+    [...strokes,cur].forEach(s=>{if(!s.length)return;x.strokeStyle=s.color;x.lineWidth=s.w;x.lineCap='round';x.lineJoin='round';x.beginPath();s.forEach((p,i)=>i?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y));x.stroke()});
+  };
+  sc.innerHTML=`${hdr('ارسم: '+esc(word))}
+  <div class="body" style="display:flex;flex-direction:column;gap:12px">
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px"><b style="color:var(--yl)">${esc(word)}</b><span style="font-family:'Lilita One';font-size:22px" id="dwt">${secs}</span></div>
+    <canvas class="pad" width="340" height="360"></canvas>
+    <div style="display:flex;gap:8px;align-items:center">
+      ${DCOLS.map((c,i)=>`<div class="dcol" data-i="${i}" style="width:34px;height:34px;border-radius:11px;background:${c};border:3px solid ${i===0?'var(--yl)':'#1a1408'};cursor:pointer;flex:0 0 auto"></div>`).join('')}
+      <div class="dcol" data-i="e" style="width:34px;height:34px;border-radius:11px;background:var(--card2);border:3px solid #1a1408;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:15px;cursor:pointer">⌫؟؟</div>
+    </div>
+    <button class="btn" onclick="sfx.pop()">${I.check} خلصت الرسمة</button>
+  </div>`;
+  sc.querySelector('.dcol[data-i="e"]').textContent='ممحاة';
+  let color=DCOLS[0],lw=7;
+  const cv=sc.querySelector('canvas.pad');
+  const pos=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return {x:(t.clientX-r.left)*cv.width/r.width,y:(t.clientY-r.top)*cv.height/r.height}};
+  const start=e=>{e.preventDefault();drawing=true;cur=[{...pos(e),color,w:lw}]};
+  const move=e=>{e.preventDefault();if(!drawing)return;cur.push({...pos(e),color,w:lw});paint()};
+  const end=()=>{if(drawing&&cur.length>1)strokes.push(cur);else if(drawing)strokes.push(cur);cur=[];drawing=false;paint()};
+  cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});
+  cv.addEventListener('touchend',end);cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',e=>{if(drawing)move(e)});window.addEventListener('mouseup',end);
+  sc.querySelectorAll('.dcol').forEach(d=>d.onclick=()=>{
+    const v=d.dataset.i;
+    color=v==='e'?'#f7efdd':DCOLS[+v];lw=v==='e'?26:7;sfx.tap();
+    sc.querySelectorAll('.dcol').forEach(x=>x.style.borderColor='#1a1408');d.style.borderColor='var(--yl)';
+  });
+  let t=secs;const tiv=iv(()=>{t--;const el=$('#dwt');if(el)el.textContent=t;if(t<=5&&t>0)sfx.tick();if(t<=0){clearInterval(tiv);toast('خلص وقت الرسم!');onDone(cv)}},1000);
+  sc.querySelector('.btn').onclick=()=>{clearInterval(tiv);onDone(cv)};
+  paint();
+}
+function dwStart(){
+  DW.i=0;DW.points={};DW.pics=[];
+  dwTurn();
+}
+function dwTurn(){
+  if(DW.i>=S.players.length)return dwResults();
+  const word=rnd(DRAWW);
+  goPass(DW.i,'ارسم الكلمة — الباقي ميشوفوش',()=>{
+    NOBACK=true;
+    go(sc=>{
+      mountPad(sc,cv=>{
+        DW.pics.push({artist:DW.i,word,img:cv.toDataURL()});
+        dwGuess(0);
+      },45,word);
+    });
+  });
+}
+function dwGuess(g){
+  if(g>=S.players.length)return dwTurnNext();
+  if(g===DW.i)return dwGuess(g+1);
+  goPass(g,'اكتب تخمينك للرسمة',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('خمّن الرسمة')}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">
+        ${avHTML(g)}
+        <img src="${DW.pics[DW.pics.length-1].img}" style="width:100%;border-radius:16px;border:3px solid #1a1408;box-shadow:5px 5px 0 rgba(0,0,0,.45)">
+        <input id="gval" placeholder="الرسمة دي إيه؟..." maxlength="30">
+        <button class="btn" onclick="dwCheck(${g})">${I.check} ده تخميني</button>
+      </div>`;
+    });
+  });
+}
+function dwCheck(g){
+  const v=$('#gval').value.trim();
+  if(!v)return toast('اكتب تخمين!');
+  const w=DW.pics[DW.pics.length-1];
+  const ok=v===w.word||v.replace('ة','ه')===w.word.replace('ة','ه');
+  if(ok){
+    sfx.good();confetti(40);
+    DW.points[g]=(DW.points[g]||0)+20;
+    DW.points[w.artist]=(DW.points[w.artist]||0)+10;
+    toast('صح! +20 لك و+10 للرسام');
+  }else{sfx.bad();toast('لأ... جرب حد تاني')}
+  dwGuess(g+1);
+}
+function dwTurnNext(){
+  DW.i++;
+  if(DW.i<S.players.length)dwTurn();else dwResults();
+}
+function dwResults(){
+  NOBACK=true;
+  go(sc=>{
+    const ranked=S.players.map((p,i)=>[p.name,DW.points[i]||0]).sort((a,b)=>b[1]-a[1]);
+    ranked.forEach(r=>{if(r[1]>0)award(r[0],r[1],{draw:r[1]>=20?1:0})});
+    saveP();
+    const bestArtist=S.players[DW.pics.reduce((bi,p,i,arr)=>((DW.points[p.artist]||0)>(DW.points[arr[bi].artist]||0)?i:bi),0)];
+    sc.innerHTML=`${hdr('DRAW &amp; GUESS — النتيجة')}
+    <div class="body">
+      <div class="wordcard"><div class="sub">أفضل رسام</div><div class="w">${esc(bestArtist.name)}</div><div class="sub">أسرع مخمن: ${esc(ranked[0][0])}</div></div>
+      ${DW.pics.map(p=>`<div class="card mt"><img src="${p.img}" style="width:100%;border-radius:12px"><div class="sub mt" style="font-size:13px">"${esc(p.word)}" — بريشة ${esc(S.players[p.artist].name)}</div></div>`).join('')}
+      ${ranked.map(r=>`<div class="score-pill"><span>${esc(r[0])}</span><span>${r[1]} نقطة</span></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.tap();tabs.games()">${I.back} خلصنا</button>
+    </div>`;
+    confetti(110);sfx.win();
+  });
+}
+
+/* ============ MUSIC BATTLE ============ */
+let MU={};
+function musicSetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('MUSIC BATTLE')}
+    <div class="body">
+      <div class="wordcard"><div class="w" style="font-size:22px">أول واحد يعرف — يدوس اسمه!</div><div class="sub">اللعبة تقفل باسم أول ضاغط، وهو اللي بيجاوب</div></div>
+      <button class="btn mt2" style="background:var(--pk);color:#fff" ${S.players.length<2?'disabled':''} onclick="muStart('emoji')">${I.music} لغز الإيموجي</button>
+      <button class="btn mt" style="background:var(--pk);color:#fff" ${S.players.length<2?'disabled':''} onclick="muStart('complete')">${I.mic} كمّلها! (أمثال وأغاني)</button>
+    </div>`;
+  });
+}
+function muStart(mode){
+  MU={mode,scores:{},qs:shuffle(mode==='emoji'?EMOJI:COMPLETE).slice(0,8),i:0,dead:new Set()};
+  muQuestion();
+}
+function muQuestion(){
+  if(MU.i>=MU.qs.length)return muEnd();
+  const q=MU.qs[MU.i];
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('MUSIC — سؤال '+(MU.i+1))}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="wordcard"><div class="w" style="font-size:34px;letter-spacing:4px">${MU.mode==='emoji'?q[0]:'كمّل: "'+esc(q[0])+'..."'}</div>
+      <div class="sub center mt blink" style="font-weight:800;color:var(--pk)">أول واحد يعرف يدوس اسمه!</div></div>
+      <div class="row" style="flex-wrap:wrap;gap:9px">
+        ${S.players.map((p,i)=>`<button class="btn sm ${MU.dead.has(i)?'':''}" style="flex:1 1 45%;${MU.dead.has(i)?'opacity:.35':''}" id="bz${i}" onclick="muBuzz(${i})">${esc(p.name)}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+}
+function muBuzz(i){
+  if(MU.dead.has(i))return;
+  sfx.pop();drumLock(i);
+}
+function drumLock(i){
+  const q=MU.qs[MU.i];
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('دور '+esc(S.players[i].name))}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="text-align:center;border-color:var(--pk)"><b style="color:var(--pk);font-size:20px">${esc(S.players[i].name)} قبض على السؤال!</b></div>
+      <div class="wordcard"><div class="w" style="font-size:30px;letter-spacing:3px">${MU.mode==='emoji'?q[0]:'كمّل: "'+esc(q[0])+'..."'}</div></div>
+      ${q[1].map((opt,k)=>`<button class="btn ghost" onclick="muAnswer(${i},${k})">${esc(opt)}</button>`).join('')}
+      <button class="btn red sm" onclick="muAnswer(${i},-1)">معرفش!</button>
+    </div>`;
+  });
+}
+function muAnswer(i,k){
+  const q=MU.qs[MU.i];
+  if(k===q[2]){
+    MU.scores[i]=(MU.scores[i]||0)+15;
+    sfx.win();confetti(50);
+    award(S.players[i].name,15,{music:1});saveP();
+    toast('صح يا '+S.players[i].name+'! +15');
+    MU.i++;muQuestion();
+  }else{
+    MU.dead.add(i);
+    sfx.bad();
+    toast('غلط! '+S.players[i].name+' خارج من السؤال ده');
+    if(MU.dead.size>=S.players.length){
+      MU.dead=new Set();MU.i++;
+      toast('الكل غلط — ننتقل للسؤال اللي بعده');
+      muQuestion();
+    }else{
+      NOBACK=true;
+      go(sc2=>{
+        sc2.innerHTML=`${hdr('غلط!')}
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px">
+          <div class="gic" style="background:var(--red);width:70px;height:70px">${I.q}</div>
+          <div class="big center">${esc(S.players[i].name)} غلط — الفرصة لسه مفتوحة!</div>
+          <button class="btn" onclick="muQuestion()">${I.next} كمّلوا — اللي بعده يدوس</button>
+        </div>`;
+      });
+    }
+  }
+}
+function muEnd(){
+  NOBACK=true;
+  go(sc=>{
+    const ranked=S.players.map((p,i)=>[p.name,MU.scores[i]||0]).sort((a,b)=>b[1]-a[1]);
+    sc.innerHTML=`${hdr('MUSIC BATTLE — النتيجة')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="wordcard"><div class="sub">ملك الميوزيك</div><div class="w">${esc(ranked[0][0])}</div></div>
+      ${ranked.map(r=>`<div class="score-pill"><span>${esc(r[0])}</span><span>${r[1]} نقطة</span></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.tap();tabs.games()">${I.back} خلصنا</button>
+    </div>`;
+    if(ranked[0][1]>0){confetti(100);sfx.win()}
+  });
+}
+
+/* ============ 1v1 ARENA ============ */
+let AR={};
+const AGAMES=[
+  ['Fastest Finger','مين يدوس أسرع بعد الإشارة',I.zap],
+  ['Trivia Duel','6 أسئلة بالتبادل',I.brain],
+  ['Word Battle','كلمة تبدأ بآخر حرف',I.puzzle],
+  ['Memory Duel','احفظ الرقم واكتبه',I.eye],
+  ['Target','أهداف بسرعة',I.target],
+  ['Drawing Duel','نفس الكلمة — أحسن رسمة',I.brush]
+];
+function arenaMenu(){
+  NOBACK=false;
+  go(sc=>{
+    AR.sel=new Set();
+    sc.innerHTML=`${hdr('1 VS 1 ARENA')}
+    <div class="body">
+      <div class="big">اختاروا المتبارزين</div>
+      <div class="mt">${S.players.map((p,i)=>`<div class="grow" id="sel${i}" onclick="arSel(${i})">${avHTML(i)}<div class="gt">${esc(p.name)}</div><div class="arr" id="ck${i}">${AR.sel.has(i)?I.check:''}</div></div>`).join('')}</div>
+      <div class="big mt2">اختاروا اللعبة</div>
+      <div class="mt">${AGAMES.map((g,i)=>`<div class="grow" onclick="arGame(${i})"><div class="gic" style="background:var(--tl)">${g[2]}</div><div><div class="gt">${g[0]}</div><div class="gs">${g[1]}</div></div><div class="arr">${I.back}</div></div>`).join('')}</div>
+    </div>`;
+  });
+}
+function arSel(i){
+  if(AR.sel.has(i))AR.sel.delete(i);
+  else{if(AR.sel.size>=2)return toast('اتنين بس!');AR.sel.add(i)}
+  sfx.tap();arenaMenu();
+}
+function arGame(gi){
+  if(AR.sel.size!==2)return toast('اختاروا لاعبين اتنين الأول');
+  const [a,b]=[...AR.sel];
+  AR={a,b,game:gi,sa:0,sb:0};
+  arStart();
+}
+function arStart(){
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('1 VS 1 — '+AGAMES[AR.game][0])}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+      <div class="vs">
+        <div class="p">${avHTML(AR.a)}<b>${esc(S.players[AR.a].name)}</b><span class="tag t" id="sa">${AR.sa}</span></div>
+        <div class="x">VS</div>
+        <div class="p">${avHTML(AR.b)}<b>${esc(S.players[AR.b].name)}</b><span class="tag r" id="sb">${AR.sb}</span></div>
+      </div>
+      <div class="card center"><b>${AGAMES[AR.game][0]}</b><div class="sub">${AGAMES[AR.game][1]}</div></div>
+      <button class="btn tl" onclick="sfx.pop();${['arFastest','arTrivia','arWord','arMemory','arTarget','arDrawDuel'][AR.game]}()">${I.play} ابدأوا المباراة</button>
+    </div>`;
+  });
+}
+function arScore(a,b){
+  AR.sa+=a;AR.sb+=b;
+  const ea=$('#sa'),eb=$('#sb');if(ea)ea.textContent=AR.sa;if(eb)eb.textContent=AR.sb;
+}
+function arEnd(){
+  NOBACK=true;
+  go(sc=>{
+    const win=AR.sa>AR.sb?AR.a:AR.sa<AR.sb?AR.b:-1;
+    if(win>=0){award(S.players[win].name,80,{wins:1,streak:1});saveP();confetti(120);sfx.win()}
+    sc.innerHTML=`${hdr('نتيجة المواجهة')}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+      <div class="vs"><div class="p">${avHTML(AR.a)}<b>${esc(S.players[AR.a].name)}</b><span class="tag t">${AR.sa}</span></div><div class="x">VS</div><div class="p">${avHTML(AR.b)}<b>${esc(S.players[AR.b].name)}</b><span class="tag r">${AR.sb}</span></div></div>
+      <div class="wordcard"><div class="w">${win<0?'تعادل!':'الفائز: '+esc(S.players[win].name)}</div><div class="sub">${win<0?'':'+80 XP'}</div></div>
+      <button class="btn" onclick="sfx.tap();arenaMenu()">${I.swords} مباراة تانية</button>
+    </div>`;
+  });
+}
+/* fastest finger */
+function arFastest(){
+  NOBACK=true;
+  go(sc=>{
+    let round=0,ready=false,goT=null;
+    const arm=()=>round>=5?arEnd():arm();
+    const name=side=>side===0?S.players[AR.a].name:S.players[AR.b].name;
+    const colr=side=>side===0?pcol(AR.a):pcol(AR.b);
+    sc.innerHTML=`${hdr('Fastest Finger — الأفضل من 5')}
+    <div class="halves" style="flex:1">
+      <div class="half" id="h0" style="background:${colr(0)}33"><div class="hname" style="color:${colr(0)}">${esc(name(0))}</div><div class="big blink" id="st0">استعدوا...</div></div>
+      <div class="half" id="h1" style="background:${colr(1)}33;border-inline-start:3px solid var(--line)"><div class="hname" style="color:${colr(1)}">${esc(name(1))}</div><div class="big blink" id="st1">استعدوا...</div></div>
+    </div>`;
+    const finish=(winnr,why)=>{
+      ready=false;clearTimeout(goT);
+      $('#st0').textContent=why;$('#st1').textContent='';
+      $('#st0').classList.remove('blink');
+      if(winnr>=0){arScore(winnr===0?1:0,0);sfx.good()}
+      else sfx.bad();
+      wait(1500,()=>{round++;if(round>=5)arEnd();else newRound()});
+    };
+    const newRound=()=>{
+      if(!sc.isConnected)return;
+      $('#st0').textContent='استعدوا...';$('#st1').textContent='';
+      $('#st0').classList.add('blink');
+      ready=false;
+      goT=tm(()=>{ready=true;$('#st0').textContent='دوس!';
+        $('#st0').classList.remove('blink');$('#st0').style.fontSize='64px';sfx.pop();
+        tm(()=>{$('#st0').style.fontSize='';if(ready)finish(-1,'عدى الوقت!')},1200);
+      },1500+Math.random()*2500);
+    };
+    [0,1].forEach(side=>{
+      const el=$('#h'+side);
+      const h=e=>{e.preventDefault();
+        if(!sc.isConnected)return;
+        if(ready){finish(side,name(side)+' كان أسرع!')}
+        else{finish(side===0?1:0,name(side)+' داس بدري! خسارة النقطة')}
+      };
+      el.addEventListener('touchstart',h,{passive:false});
+      el.addEventListener('mousedown',h);
+    });
+    newRound();
+  });
+}
+/* trivia duel */
+function arTrivia(){
+  NOBACK=true;
+  const qs=shuffle(TRIVIA).slice(0,6);
+  let qi=0,turn=0;
+  go(sc=>{
+    const q=qs[qi];
+    sc.innerHTML=`${hdr('Trivia Duel — '+(qi+1)+'/6')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+      <div class="card center" style="border-color:${turn===0?pcol(AR.a):pcol(AR.b)}"><b>دور:</b> ${esc(S.players[turn===0?AR.a:AR.b].name)}</div>
+      <div class="wordcard"><div class="w" style="font-size:22px">${esc(q[0])}</div></div>
+      ${q[1].map((o,k)=>`<button class="btn ghost" onclick="arTAns(${k},${q[2]},${turn})">${esc(o)}</button>`).join('')}
+    </div>`;
+  });
+  window.arTAns=(k,ans,t)=>{
+    if(k===ans){sfx.good();toast('صح!');if(t===0)arScore(1,0);else arScore(0,1)}
+    else{sfx.bad();toast('غلط!')}
+    qi++;turn=1-turn;
+    if(qi>=6)arEnd();else arTrivia();
+  };
+}
+/* word battle */
+function arWord(){
+  NOBACK=true;
+  const used=new Set();
+  let cur=rnd(['مكتبة','عربية','قهوة','مدرسة','فرح','شتا','نهار','بيت','لعب','كورة']);
+  let turn=0,tries=0;
+  go(sc=>{
+    sc.innerHTML=`${hdr('Word Battle')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+      <div class="card center" style="border-color:${turn===0?pcol(AR.a):pcol(AR.b)}"><b>دور:</b> ${esc(S.players[turn===0?AR.a:AR.b].name)} — <span class="tag y">نقاط: ${AR.sa} - ${AR.sb}</span></div>
+      <div class="wordcard"><div class="sub">الكلمة الحالية</div><div class="w">${esc(cur)}</div><div class="sub">اكتب كلمة تبدأ بـ "${esc(cur[cur.length-1])}" — عندك 12 ثانية</div></div>
+      <input id="wv" placeholder="كلمتك..." maxlength="20">
+      <button class="btn" onclick="arWSend()">${I.check} ابعت</button>
+      <div class="timerbar"><div id="wb" style="width:100%"></div></div>
+    </div>`;
+    let t=12;
+    iv(()=>{t--;const b=$('#wb');if(b)b.style.width=(t/12*100)+'%';if(t<=3&&t>0)sfx.tick();
+      if(t<=0){sfx.bad();toast('خلص الوقت! نقطة للخصم');
+        if(turn===0)arScore(0,1);else arScore(1,0);
+        checkEnd();
+      }},1000);
+  });
+  window.arWSend=()=>{
+    const v=$('#wv').value.trim();
+    if(!v)return toast('اكتب كلمة!');
+    const norm=c=>c.replace(/[ةه]/g,'ه').replace(/[ىي]/g,'ي').replace(/[أإآا]/g,'ا');
+    if(norm(v[0])!==norm(cur[cur.length-1])){sfx.bad();toast('أول حرف غلط! نقطة للخصم');
+      if(turn===0)arScore(0,1);else arScore(1,0);return checkEnd()}
+    if(used.has(v)){sfx.bad();toast('مكررة! نقطة للخصم');if(turn===0)arScore(0,1);else arScore(1,0);return checkEnd()}
+    used.add(v);cur=v;sfx.good();toast('كلمة سليمة!');
+    turn=1-turn;
+    if(sc.isConnected)arWord();
+  };
+  function checkEnd(){
+    if(AR.sa>=3||AR.sb>=3||used.size>12)arEnd();
+    else if(sc.isConnected)arWord();
+  }
+}
+/* memory duel */
+function arMemory(){
+  NOBACK=true;
+  let len=4,turn=0,gen=0;
+  const showNum=()=>{
+    if(AR.sa+AR.sb>=6||gen>=8)return arEnd();
+    gen++;
+    const num=String(Array.from({length:len},()=>Math.floor(Math.random()*10)).join(''));
+    go(sc=>{
+      sc.innerHTML=`${hdr('Memory Duel')}
+      <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+        <div class="card center" style="border-color:${turn===0?pcol(AR.a):pcol(AR.b)}"><b>دور:</b> ${esc(S.players[turn===0?AR.a:AR.b].name)}</div>
+        <div class="wordcard"><div class="w blink" id="nm" style="font-size:44px;letter-spacing:8px">${num}</div><div class="sub">احفظها!</div></div>
+      </div>`;
+      sfx.tick();
+      wait(2600,()=>{
+        const nm=$('#nm');if(nm){nm.textContent='؟؟؟؟';nm.classList.remove('blink')}
+        wait(600,()=>{if(!sc.isConnected)return;
+          go(sc2=>{
+            sc2.innerHTML=`${hdr('اكتب الرقم')}
+            <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+              <div class="card center"><b>${esc(S.players[turn===0?AR.a:AR.b].name)} — الرقم كان إيه؟ (${len} خانات)</b></div>
+              <input id="mv" inputmode="numeric" maxlength="10" placeholder="الرقم...">
+              <button class="btn" onclick="arMSend('${num}')">${I.check} ابعت</button>
+            </div>`;
+          });
+        });
+      });
+    });
+  };
+  window.arMSend=num=>{
+    const v=$('#mv').value.trim();
+    if(v===num){sfx.good();toast('صح! الطول بيزيد');len++;}
+    else{sfx.bad();toast('غلط! نقطة للخصم');if(turn===0)arScore(0,1);else arScore(1,1-(1));if(turn===1)arScore(0,1);arScore(0,0);}
+    if(v!==num){if(turn===0){arScore(0,1)}else{arScore(1,0)}}
+    turn=1-turn;
+    showNum();
+  };
+  showNum();
+}
+/* target */
+function arTarget(){
+  NOBACK=true;
+  go(sc=>{
+    let shots=0;
+    sc.innerHTML=`${hdr('Target — 8 أهداف')}
+    <div style="flex:1;position:relative;overflow:hidden;background:#14100c">
+      <div class="card" style="position:absolute;top:12px;left:12px;right:12px;text-align:center;z-index:2"><b>الهدف بيظهر في نص مين — هو اللي يضغطه خلال 1.4 ثانية!</b><div id="tgt-info" class="sub">جاهزين...</div></div>
+      <div id="tgt" style="position:absolute;width:70px;height:70px;border-radius:50%;background:var(--yl);border:4px solid #1a1408;box-shadow:4px 4px 0 rgba(0,0,0,.5);display:none;cursor:pointer;z-index:3"></div>
+    </div>`;
+    const spawn=()=>{
+      if(!sc.isConnected)return;
+      if(shots>=8)return arEnd();
+      shots++;
+      const side=Math.random()<.5?0:1;
+      const info=$('#tgt-info');if(info)info.textContent='هدف في نص '+S.players[side===0?AR.a:AR.b].name+'!';
+      const t=$('#tgt');
+      t.style.display='block';
+      t.style.background=side===0?pcol(AR.a):pcol(AR.b);
+      t.style.left=(side===0?10+Math.random()*35:55+Math.random()*35)+'%';
+      t.style.top=(25+Math.random()*55)+'%';
+      sfx.tick();
+      let done=false;
+      const hit=()=>{if(done)return;done=true;clearTimeout(to);
+        arScore(side===0?1:0,0);sfx.good();
+        t.style.display='none';wait(700,spawn)};
+      t.onpointerdown=hit;t.ontouchstart=e=>{e.preventDefault();hit()};
+      const to=tm(()=>{if(done)return;done=true;sfx.bad();
+        t.style.display='none';wait(700,spawn)},1400);
+    };
+    wait(1000,spawn);
+  });
+}
+/* drawing duel */
+function arDrawDuel(){
+  if(S.players.length<3){
+    toast('Drawing Duel محتاجة 3+ لاعبين للتحكيم');
+    return arStart();
+  }
+  const word=rnd(DRAWW);
+  const pics=[];
+  const painter=pi=>{
+    goPass(pi,'ارسم الكلمة في 30 ثانية',()=>{
+      NOBACK=true;
+      go(sc=>{
+        mountPad(sc,cv=>{pics.push({pi,img:cv.toDataURL()});next()},30,word);
+      });
+    });
+  };
+  let idx=0;
+  const next=()=>{
+    if(idx<2){painter(idx===0?AR.a:AR.b);idx++;return}
+    judge(0);
+  };
+  const votes={};
+  const judge=vi=>{
+    const others=S.players.map((p,i)=>i).filter(i=>i!==AR.a&&i!==AR.b);
+    if(vi>=others.length)return finish();
+    goPass(others[vi],'صوّت على أحسن رسمة',()=>{
+      NOBACK=true;
+      go(sc=>{
+        sc.innerHTML=`${hdr('التحكيم')}
+        <div class="body" style="display:flex;flex-direction:column;gap:12px">
+          <div class="big center">أحسن رسمة لي مين؟</div>
+          <img src="${pics[0].img}" style="width:100%;border-radius:14px;border:3px solid ${pcol(AR.a)}" onclick="arDV(0)" >
+          <div class="sub center">${esc(S.players[AR.a].name)} — اضغط للتصويت</div>
+          <img src="${pics[1].img}" style="width:100%;border-radius:14px;border:3px solid ${pcol(AR.b)}" onclick="arDV(1)">
+          <div class="sub center">${esc(S.players[AR.b].name)} — اضغط للتصويت</div>
+        </div>`;
+      });
+    });
+  };
+  window.arDV=side=>{
+    if(side===0)arScore(1,0);else arScore(0,1);
+    sfx.pop();
+    const others=S.players.map((p,i)=>i).filter(i=>i!==AR.a&&i!==AR.b);
+    judge(votes.n=(votes.n||0)+1, votes.n);
+    judge(votes.n);
+  };
+  const finish=()=>arEnd();
+  next();
+}
+
+/* ============ SOLO ============ */
+let SO={};
+const SOLOBEST=()=>JSON.parse(localStorage.getItem('shala_solo')||'{}');
+const sbest=(k,v,lowerBetter)=>{
+  const b=SOLOBEST();
+  if(!b[k]||(lowerBetter?v<b[k]:v>b[k])){b[k]=v;localStorage.setItem('shala_solo',JSON.stringify(b));return true}
+  return false;
+};
+function soloStart(g){
+  NOBACK=true;
+  ({reaction:soloReaction,numbers:soloNumbers,cards:soloCards,scramble:soloScramble,pattern:soloPattern,aim:soloAim})[g]();
+}
+function soloReaction(){
+  go(sc=>{
+    let state='wait',t0=0,tries=0,sum=0;
+    sc.innerHTML=`${hdr('Reaction — سرعة البديهة')}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+      <div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:300px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;cursor:pointer;background:var(--red);color:#fff">استنى الأخضر...</div>
+      <div class="sub center" id="rxr">3 محاولات — كلما أسرع كلما أفضل</div>
+    </div>`;
+    const box=$('#rx');
+    const arm=()=>{
+      state='wait';box.style.background='var(--red)';box.textContent='استنى الأخضر...';
+      tm(()=>{if(state!=='wait')return;state='go';box.style.background='var(--gr)';box.textContent='دوس!!!';t0=Date.now();sfx.pop()},1200+Math.random()*2600);
+    };
+    const press=()=>{
+      if(state==='go'){
+        const ms=Date.now()-t0;sum+=ms;tries++;
+        state='idle';box.style.background='var(--yl)';box.style.color='#221a08';box.textContent=ms+'ms';
+        sfx.good();
+        if(tries>=3){
+          const avg=Math.round(sum/3);
+          const rec=sbest('reaction',avg,true);
+          const me=S.players[0];
+          if(me)award(me.name,Math.max(10,Math.round(Math.max(0,700-avg))),{});
+          if(avg<300&&me){P[me.name].streak=(P[me.name].streak||0);saveP()}
+          saveP();
+          box.textContent=avg+'ms متوسط'+(rec?' — رقم قياسي جديد!':'');
+          $('#rxr').innerHTML='<b>خلصت!</b>'+(avg<300?' سرعة رهيبة — Speed Demon!':'');
+          confetti(70);sfx.win();
+          wait(2200,()=>tabs.solo());
+        }else arm();
+      }else if(state==='wait'){
+        state='idle';box.style.background='var(--red)';box.textContent='دست بدري! استنى...';
+        sfx.bad();tries++;sum+=700;
+        if(tries>=3){wait(1500,()=>tabs.solo())}else arm();
+      }
+    };
+    box.onpointerdown=press;
+    box.ontouchstart=e=>{e.preventDefault();press()};
+  });
+}
+function soloNumbers(){
+  go(sc=>{
+    const nums=shuffle([...Array(25).keys()].map(x=>x+1));
+    let next=1,t0=Date.now();
+    sc.innerHTML=`${hdr('Number Rush — 1 إلى 25')}
+    <div class="body">
+      <div class="card center"><b>دوس بالترتيب:</b> <span class="tag y" id="nn">1</span></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px">
+        ${nums.map(n=>`<button class="btn sm num" data-n="${n}" style="padding:0;height:58px;font-size:20px">${n}</button>`).join('')}
+      </div>
+    </div>`;
+    sc.querySelectorAll('.num').forEach(b=>b.onclick=()=>{
+      const n=+b.dataset.n;
+      if(n===next){
+        b.style.background='var(--tl)';b.style.color='#062723';b.disabled=true;sfx.tick();
+        next++;
+        const el=$('#nn');if(el)el.textContent=next<=25?next:'تم!';
+        if(next>25){
+          const secs=(Date.now()-t0)/1000;
+          const rec=sbest('numbers',+secs.toFixed(1),true);
+          if(S.players[0])award(S.players[0].name,Math.max(10,Math.round(150-secs)),{});
+          saveP();confetti(80);sfx.win();
+          toast('خلصت في '+secs.toFixed(1)+' ثانية'+(rec?' — رقم قياسي!':''));
+          wait(2000,()=>tabs.solo());
+        }
+      }else{b.classList.add('shake');sfx.bad();setTimeout(()=>b.classList.remove('shake'),400)}
+    });
+  });
+}
+const SYMS=['star','heart','crown','zap','fire','ghost','ball','music'];
+function symSVG(s){
+  const c=SYMS.indexOf(s);
+  const col=['#ffc93d','#ff5d5d','#38d3c0','#ff8f3d','#e86fa4','#4ecb71','#7fd0ff','#f4d06f'][c];
+  return `<span style="color:${col};display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:0">${I[s].replace('<svg','<svg width="34" height="34"')}</span>`;
+}
+function soloCards(){
+  go(sc=>{
+    const deck=shuffle([...SYMS,...SYMS]).map((s,i)=>({s,i,open:false,done:false}));
+    let open=[],moves=0,t0=Date.now();
+    const render=()=>{
+      sc.innerHTML=`${hdr('Memory Cards')}
+      <div class="body">
+        <div class="card center"><b>نقلات: <span id="mv">${moves}</span></b> — طابق الأزواج الثمانية</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px">
+          ${deck.map(c=>`<button class="btn sm mc" data-i="${c.i}" style="padding:0;height:74px;${c.done?'background:var(--gr)':''};${c.open?'background:#f7efdd':''}">${c.open||c.done?symSVG(c.s):I.q.replace('<svg','<svg width="30" height="30"')}</button>`).join('')}
+        </div>
+      </div>`;
+      sc.querySelectorAll('.mc').forEach(b=>b.onclick=()=>flip(+b.dataset.i));
+    };
+    const flip=i=>{
+      const c=deck[i];
+      if(c.done||c.open)return;
+      c.open=true;open.push(c);sfx.tick();
+      if(open.length===2){
+        moves++;const mv=$('#mv');if(mv)mv.textContent=moves;
+        const [a,b]=open;
+        if(a.s===b.s){a.done=b.done=true;open=[];sfx.good();render();
+          if(deck.every(x=>x.done)){
+            const secs=(Date.now()-t0)/1000;
+            const rec=sbest('cards',moves,true);
+            if(S.players[0])award(S.players[0].name,Math.max(10,60-moves*2),{});
+            saveP();confetti(90);sfx.win();
+            toast('خلصت في '+moves+' نقلة'+(rec?' — رقم قياسي!':''));
+            wait(2200,()=>tabs.solo());
+          }
+        }else{
+          sfx.bad();
+          wait(750,()=>{a.open=b.open=false;open=[];render()});
+        }
+      }
+      render();
+    };
+    render();
+  });
+}
+function soloScramble(){
+  go(sc=>{
+    const words=shuffle(SCRAM.filter(w=>w.length>=4)).slice(0,10);
+    let wi=0,build='';
+    const word=()=>words[wi];
+    const render=()=>{
+      const letters=word();
+      sc.innerHTML=`${hdr('Word Scramble — '+(wi+1)+'/10')}
+      <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+        <div class="wordcard"><div class="sub">رتب الحروف:</div><div class="w" style="font-size:30px;letter-spacing:5px">${shuffle(letters.split('')).join(' ')}</div></div>
+        <div class="card center" style="font-size:26px;font-weight:800;letter-spacing:4px;min-height:60px">${build.split('').join(' ')}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+          ${letters.split('').map((l,i)=>`<button class="btn sm sc" data-i="${i}" style="width:58px;padding:0;height:58px;font-size:22px">${l}</button>`).join('')}
+        </div>
+        <div class="row"><button class="btn ghost sm" onclick="sclr()">مسح</button><button class="btn ghost sm" onclick="sclh()">حرف مساعد</button></div>
+      </div>`;
+      sc.querySelectorAll('.sc').forEach(b=>b.onclick=()=>{
+        build+=letters[+b.dataset.i];
+        b.disabled=true;b.style.opacity=.25;
+        sfx.tick();
+        const slot=sc.querySelector('.card.center');
+        slot.textContent=build.split('').join(' ');
+        if(build===letters){
+          sfx.good();wi++;build='';
+          if(wi>=words.length){
+            const rec=sbest('scramble',10,true);
+            if(S.players[0])award(S.players[0].name,50,{});
+            saveP();confetti(80);sfx.win();
+            NOBACK=true;
+            go(s2=>{
+              s2.innerHTML=`${hdr('Word Scramble')}
+              <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+                <div class="wordcard"><div class="w">10/10!</div><div class="sub">${rec?'رقم قياسي كامل!':'كملت الكلمات العشرة'}</div></div>
+                <button class="btn" onclick="tabs.solo()">${I.back} ارجع</button>
+              </div>`;
+            });
+          }else wait(500,render);
+        }else if(build.length>=letters.length){sfx.bad();build='';wait(300,render)}
+      });
+    };
+    window.sclr=()=>{build='';render()};
+    window.sclh=()=>{toast('الحرف الجاي: "'+word()[build.length]+'"')};
+    render();
+  });
+}
+function soloPattern(){
+  go(sc=>{
+    let seq=[Math.floor(Math.random()*4)],showing=true,level=1;
+    const PCOL=['#ff5d5d','#ffc93d','#38d3c0','#4ecb71'];
+    const render=(hl=-1)=>{
+      sc.innerHTML=`${hdr('Pattern — مستوى '+level)}
+      <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+        <div class="sub center" id="pst">راقب النمط...</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          ${[0,1,2,3].map(i=>`<button class="btn pp" data-i="${i}" style="padding:0;height:110px;background:${PCOL[i]};${hl===i?'outline:6px solid #fff':''}"></button>`).join('')}
+        </div>
+      </div>`;
+      sc.querySelectorAll('.pp').forEach(b=>b.onclick=()=>tap(+b.dataset.i));
+    };
+    const play=()=>{
+      showing=true;
+      seq.forEach((p,k)=>tm(()=>{
+        render(p);sfx.tick();
+        tm(()=>render(),380);
+        if(k===seq.length-1)tm(()=>{showing=false;const e=$('#pst');if(e)e.textContent='دلوقتي كده النمط!'},k===seq.length-1?600:0);
+      },700+k*650));
+    };
+    let idx=0;
+    const tap=i=>{
+      if(showing)return;
+      sfx.tap();render(i);tm(()=>render(),150);
+      if(seq[idx]===i){idx++;if(idx>=seq.length){level++;idx=0;seq.push(Math.floor(Math.random()*4));sfx.good();tm(play,800)}}
+      else{
+        sfx.bad();
+        const rec=sbest('pattern',level-1,false);
+        if(S.players[0])award(S.players[0].name,(level-1)*10,{});
+        saveP();
+        NOBACK=true;
+        go(s2=>{
+          s2.innerHTML=`${hdr('Pattern — النتيجة')}
+          <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+            <div class="wordcard"><div class="sub">وصلت لمستوى</div><div class="w">${level-1}</div><div class="sub">${rec?'رقم قياسي جديد!':''}</div></div>
+            <button class="btn" onclick="tabs.solo()">${I.back} ارجع</button>
+          </div>`;
+        });
+      }
+    };
+    render();play();
+  });
+}
+function soloAim(){
+  go(sc=>{
+    let score=0,t=30;
+    sc.innerHTML=`${hdr('Aim — 30 ثانية')}
+    <div class="body">
+      <div class="card center" style="display:flex;justify-content:space-around"><b>نقاط: <span id="asc">0</span></b><b>وقت: <span id="atm">30</span></b></div>
+      <div id="field" style="position:relative;height:420px;margin-top:12px;border:3px dashed var(--line2);border-radius:18px;overflow:hidden">
+        <div id="aim" style="position:absolute;width:56px;height:56px;border-radius:50%;background:var(--red);border:4px solid #1a1408;box-shadow:3px 3px 0 rgba(0,0,0,.4);cursor:pointer;left:40%;top:40%"></div>
+      </div>
+    </div>`;
+    const spot=()=>{
+      const f=$('#field'),a=$('#aim');
+      if(!a||!f)return;
+      a.style.left=(Math.random()*(f.clientWidth-60))+'px';
+      a.style.top=(Math.random()*(f.clientHeight-60))+'px';
+      a.style.background=rnd(['var(--red)','var(--yl)','var(--tl)','var(--or)']);
+    };
+    $('#aim').onpointerdown=()=>{score++;sfx.tick();const e=$('#asc');if(e)e.textContent=score;spot()};
+    iv(()=>{t--;const e=$('#atm');if(e)e.textContent=t;if(t<=5)sfx.tick();
+      if(t<=0){
+        const rec=sbest('aim',score,false);
+        if(S.players[0])award(S.players[0].name,score*2,{});
+        saveP();confetti(80);sfx.win();
+        NOBACK=true;
+        go(s2=>{
+          s2.innerHTML=`${hdr('Aim — النتيجة')}
+          <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+            <div class="wordcard"><div class="w">${score} نقطة</div><div class="sub">${rec?'رقم قياسي جديد!':''}</div></div>
+            <button class="btn" onclick="tabs.solo()">${I.back} ارجع</button>
+          </div>`;
+        });
+      }else spot();
+    },1000);
+  });
+}
+
+/* ============ TEAM BATTLE ============ */
+let TE={};
+function teamSetup(){
+  NOBACK=false;
+  go(sc=>{
+    sc.innerHTML=`${hdr('TEAM BATTLE')}
+    <div class="body">
+      <div class="wordcard"><div class="w" style="font-size:21px">الشلة بتتقسم فريقين — والنقاط بتتلم للفريق</div></div>
+      <div class="big mt2">اختاروا اللعبة</div>
+      <div class="mt">
+        <div class="grow" onclick="teStart('trivia')"><div class="gic" style="background:var(--tl)">${I.brain}</div><div><div class="gt">Team Trivia</div><div class="gs">10 أسئلة بالتبادل بين الفريقين</div></div></div>
+        <div class="grow" onclick="teStart('chain')"><div class="gic" style="background:var(--yl)">${I.puzzle}</div><div><div class="gt">Chain Relay</div><div class="gs">كل عضو يكمل كلمة بسلسلة — و8 ثواني بس!</div></div></div>
+        <div class="grow" onclick="teStart('relay')"><div class="gic" style="background:var(--or)">${I.zap}</div><div><div class="gt">Reaction Relay</div><div class="gs">كل عضو يختبر سرعته — المتوسط يحسم</div></div></div>
+      </div>
+    </div>`;
+  });
+}
+function teStart(mode){
+  if(S.players.length<4)return toast('محتاجين 4 لاعبين على الأقل لفريقين');
+  const idx=shuffle([...Array(S.players.length).keys()]);
+  TE={mode,A:idx.slice(0,Math.ceil(idx.length/2)),B:idx.slice(Math.ceil(idx.length/2)),sa:0,sb:0};
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('تقسيم الفرق')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="vs"><div class="p" style="background:var(--tl);border-radius:14px;padding:14px">${TE.A.map(i=>avHTML(i)).join('')}<b>الفريق الأزرق</b><span class="tag t">${TE.A.length} لاعبين</span></div>
+      <div class="x">VS</div><div class="p" style="background:var(--red);border-radius:14px;padding:14px">${TE.B.map(i=>avHTML(i)).join('')}<b>الفريق الأحمر</b><span class="tag r">${TE.B.length} لاعبين</span></div></div>
+      <button class="btn" onclick="sfx.pop();teGame()">${I.play} يلا نبدأ</button>
+    </div>`;
+  });
+}
+function teGame(){
+  ({trivia:teTrivia,chain:teChain,relay:teRelay})[TE.mode]();
+}
+function teEnd(){
+  NOBACK=true;
+  go(sc=>{
+    const win=TE.sa>TE.sb?'A':TE.sb>TE.sa?'B':'T';
+    if(win!=='T'){(win==='A'?TE.A:TE.B).forEach(i=>award(S.players[i].name,60,{wins:1,streak:1}));saveP();confetti(120);sfx.win()}
+    sc.innerHTML=`${hdr('TEAM BATTLE — النتيجة')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="vs"><div class="p">${TE.A.map(i=>avHTML(i)).join('')}<b>${TE.sa}</b></div><div class="x">VS</div><div class="p">${TE.B.map(i=>avHTML(i)).join('')}<b>${TE.sb}</b></div></div>
+      <div class="wordcard"><div class="w">${win==='T'?'تعادل!':'الفريق '+(win==='A'?'الأزرق كسب!':'الأحمر كسب!')}</div></div>
+      <button class="btn" onclick="sfx.tap();tabs.games()">${I.back} خلصنا</button>
+    </div>`;
+  });
+}
+function teTrivia(){
+  const qs=shuffle(TRIVIA).slice(0,10);
+  let qi=0,turnA=true;
+  const ask=()=>{
+    if(qi>=10)return teEnd();
+    const q=qs[qi];
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('Team Trivia — '+(qi+1)+'/10')}
+      <div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+        <div class="card center" style="border-color:${turnA?'var(--tl)':'var(--red)'}"><b>دور:</b> الفريق ${turnA?'الأزرق':'الأحمر'} — اتفقوا واختاروا</div>
+        <div class="wordcard"><div class="w" style="font-size:22px">${esc(q[0])}</div></div>
+        ${q[1].map((o,k)=>`<button class="btn ghost" onclick="teAns(${k},${q[2]})">${esc(o)}</button>`).join('')}
+      </div>`;
+    });
+  };
+  window.teAns=(k,ans)=>{
+    if(k===ans){sfx.good();toast('صح للفريق!');turnA?TE.sa++:TE.sb++}
+    else sfx.bad(),toast('غلط!');
+    qi++;turnA=!turnA;ask();
+  };
+  ask();
+}
+function teChain(){
+  let cur=rnd(['مدرسة','عربية','كورة','نهار','بيت','فرح']),used=new Set(),round=0;
+  const next=()=>{
+    if(round>=12||TE.sa+TE.sb>=6)return teEnd();
+    round++;
+    const team=round%2?TE.A:TE.B;
+    const pi=team[round%team.length];
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('Chain Relay')}
+      <div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+        <div class="card center" style="border-color:${round%2?'var(--tl)':'var(--red)'}"><b>الفريق ${round%2?'الأزرق':'الأحمر'}</b> — <b>${esc(S.players[pi].name)}</b> عليه الدور</div>
+        <div class="wordcard"><div class="sub">الكلمة:</div><div class="w">${esc(cur)}</div><div class="sub">اكتب كلمة تبدأ بـ "${esc(cur[cur.length-1])}"</div></div>
+        <input id="tcw" placeholder="كلمتك..." maxlength="20">
+        <button class="btn" onclick="teChainSend(${pi})">${I.check} ابعت</button>
+        <div class="timerbar"><div id="tcb" style="width:100%"></div></div>
+      </div>`;
+      let t=8;
+      iv(()=>{t--;const b=$('#tcb');if(b)b.style.width=(t/8*100)+'%';
+        if(t<=0){sfx.bad();toast('الوقت خلص! نقطة للخصم');
+          round%2?TE.sb++:TE.sa++;cur=rnd(['بيت','لعب','نهار','كورة']);next();}},1000);
+    });
+  };
+  window.teChainSend=pi=>{
+    const v=$('#tcw').value.trim();
+    if(!v)return toast('اكتب كلمة!');
+    const norm=c=>c.replace(/[ةه]/g,'ه').replace(/[ىي]/g,'ي').replace(/[أإآا]/g,'ا');
+    if(norm(v[0])!==norm(cur[cur.length-1])||used.has(v)){
+      sfx.bad();toast('غلط! نقطة للخصم');round%2?TE.sb++:TE.sa++;
+    }else{used.add(v);cur=v;sfx.good();round%2?TE.sa++:TE.sb++;toast('صح!')}
+    next();
+  };
+  next();
+}
+function teRelay(){
+  const times={A:[],B:[]};
+  const run=(team,member)=>{
+    if(member>=team.length){
+      if(team===TE.A)return run(TE.B,0);
+      return finish();
+    }
+    goPass(team[member],'اختبر سرعة بديهتك للفريق',()=>{
+      NOBACK=true;
+      go(sc=>{
+        sc.innerHTML=`${hdr('Reaction Relay')}
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+          <div class="sub center">${esc(S.players[team[member]].name)} — استنى الأخضر</div>
+          <div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:280px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;background:var(--red);color:#fff;cursor:pointer">استنى...</div>
+        </div>`;
+        const box=$('#rx');let state='wait',t0;
+        tm(()=>{if(state!=='wait')return;state='go';box.style.background='var(--gr)';box.textContent='دوس!';t0=Date.now();sfx.pop()},1200+Math.random()*2200);
+        const press=()=>{
+          if(state==='go'){
+            const ms=Date.now()-t0;
+            (team===TE.A?times.A:times.B).push(ms);
+            sfx.good();toast(ms+'ms');
+            run(team,member+1);
+          }else{state='early';box.textContent='بدري! محاولة تانية';sfx.bad();tm(()=>{state='wait'},1000)}
+        };
+        box.onpointerdown=press;box.ontouchstart=e=>{e.preventDefault();press()};
+      });
+    });
+  };
+  const finish=()=>{
+    const avg=a=>Math.round(a.reduce((s,x)=>s+x,0)/a.length);
+    TE.sa=Math.max(0,700-avg(times.A));
+    TE.sb=Math.max(0,700-avg(times.B));
+    toast('متوسط الأزرق: '+avg(times.A)+'ms — الأحمر: '+avg(times.B)+'ms');
+    teEnd();
+  };
+  run(TE.A,0);
+}
+
+/* ============ CHAMPIONSHIP ============ */
+let CH={};
+function champStart(){
+  CH={scores:{},round:0};
+  S.players.forEach(p=>CH.scores[p.name]=0);
+  champIntro();
+}
+function champIntro(){
+  NOBACK=true;
+  const ROUNDS=['IMPOSTER','Trivia Buzz','Reaction','Most Likely','Secret Mission','Number Rush','FINAL 1v1 Chaos'];
+  go(sc=>{
+    sc.innerHTML=`${hdr('PARTY CHAMPIONSHIP')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+      <div class="gic" style="background:var(--yl);width:80px;height:80px;animation:floaty 3s infinite">${I.crown}</div>
+      <div class="big center">7 جولات. شلة واحدة.<br>تاج واحد.</div>
+      <div class="sub center">${ROUNDS.map((r,i)=>(i+1)+'. '+r).join('<br>')}</div>
+      <button class="btn" onclick="sfx.win();champRound(0)">${I.play} يلا بينا</button>
+    </div>`;
+  });
+}
+function champStandings(nextFn){
+  NOBACK=true;
+  go(sc=>{
+    const ranked=Object.entries(CH.scores).sort((a,b)=>b[1]-a[1]);
+    sc.innerHTML=`${hdr('الترتيب — جولة '+CH.round)}
+    <div class="body">
+      <div class="big center">الوضع الحالي</div>
+      ${ranked.map((r,i)=>`<div class="score-pill" style="${i===0?'border-color:var(--yl)':''}"><span>${i===0?'👑؟؟ ':''}${i+1}. ${esc(r[0])}</span><b>${r[1]} نقطة</b></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.pop();${nextFn}">${I.next} الجولة اللي بعدها</button>
+    </div>`;
+  });
+}
+function champRound(r){
+  CH.round=r+1;
+  if(r===0)return chImposter();
+  if(r===1)return chTrivia(0);
+  if(r===2)return chReaction(0);
+  if(r===3)return chLikely(0);
+  if(r===4)return chMission();
+  if(r===5)return chNumbers(0);
+  return chFinal();
+}
+/* R1 imposter */
+function chImposter(){
+  IM.mode='classic';IM.cat=rnd(Object.keys(CATS));IM.disc=0;
+  const n=S.players.length;
+  const pool=CATS[IM.cat].w;
+  IM.word=rnd(pool);
+  IM.imps=[Math.floor(Math.random()*n)];
+  IM.votes={};IM.hints=[];
+  imposterRevealCh(0);
+}
+function imposterRevealCh(i){
+  if(i>=S.players.length)return imposterDiscuss();
+  goPass(i,'(بطولة) شوف كلمتك بسرعة',()=>impSecret(i));
+}
+/* R2 trivia buzz */
+function chTrivia(qi){
+  if(qi>=6)return champStandings('champRound(2)');
+  const q=shuffle(TRIVIA)[0];
+  NOBACK=true;
+  go(sc=>{
+    CH.q=q;
+    sc.innerHTML=`${hdr('الجولة 2 — Trivia '+(qi+1)+'/6')}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px">
+      <div class="wordcard"><div class="sub">أول واحد يعرف يدوس اسمه — +15 نقطة</div><div class="w" style="font-size:22px">${esc(q[0])}</div></div>
+      <div class="row" style="flex-wrap:wrap;gap:9px">
+        ${S.players.map((p,i)=>`<button class="btn sm" style="flex:1 1 45%" onclick="chBuzz(${i},${qi})">${esc(p.name)}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+}
+function chBuzz(i,qi){
+  const q=CH.q;
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('دور '+esc(S.players[i].name))}
+    <div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+      <div class="wordcard"><div class="w" style="font-size:22px">${esc(q[0])}</div></div>
+      ${q[1].map((o,k)=>`<button class="btn ghost" onclick="chTrAns(${i},${k},${q[2]},${qi})">${esc(o)}</button>`).join('')}
+    </div>`;
+  });
+}
+function chTrAns(i,k,ans,qi){
+  if(k===ans){CH.scores[S.players[i].name]+=15;award(S.players[i].name,15,{trivia:1});saveP();sfx.good();confetti(40)}
+  else{sfx.bad();toast('غلط!')}
+  chTrivia(qi+1);
+}
+/* R3 reaction */
+function chReaction(i){
+  if(i>=S.players.length)return champStandings('champRound(3)');
+  goPass(i,'(بطولة) اختبر رد فعلك',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('Reaction — '+esc(S.players[i].name))}
+      <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+        <div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:280px;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;background:var(--red);color:#fff;cursor:pointer">استنى الأخضر...</div>
+      </div>`;
+      const box=$('#rx');let state='wait',t0;
+      tm(()=>{if(state!=='wait')return;state='go';box.style.background='var(--gr)';box.textContent='دوس!';t0=Date.now();sfx.pop()},1200+Math.random()*2500);
+      const press=()=>{
+        if(state==='go'){
+          const ms=Date.now()-t0;const pts=Math.max(0,600-ms);
+          CH.scores[S.players[i].name]+=pts;award(S.players[i].name,Math.round(pts/4),{});saveP();
+          sfx.good();toast(ms+'ms — +'+pts+' نقطة');
+          chReaction(i+1);
+        }
+      };
+      box.onpointerdown=press;box.ontouchstart=e=>{e.preventDefault();press()};
+    });
+  });
+}
+/* R4 most likely */
+function chLikely(ri){
+  if(ri>=4)return champStandings('champRound(4)');
+  CH.lkQ=rnd(LIKELY);CH.lkVotes={};CH.lkI=0;
+  chLkVote(0);
+}
+function chLkVote(vi){
+  if(vi>=S.players.length){
+    const cnt={};Object.values(CH.lkVotes).forEach(j=>cnt[j]=(cnt[j]||0)+1);
+    const top=+Object.keys(cnt).reduce((a,b)=>cnt[b]>cnt[a]?b:a);
+    CH.scores[S.players[top].name]+=25;award(S.players[top].name,25,{likely:1});saveP();
+    sfx.win();confetti(50);
+    toast('الشلة اختارت: '+S.players[top].name+'! +25');
+    return chLikely(CH.lkI+1);
+  }
+  goPass(vi,'مين أكتر واحد...؟',()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('Most Likely — بطولة')}
+      <div class="body">
+        <div class="wordcard"><div class="sub">مين أكتر واحد...</div><div class="w" style="font-size:23px">${esc(CH.lkQ)}</div></div>
+        ${S.players.map((p,j)=>j===vi?'':`<div class="grow" onclick="chLkCast(${vi},${j})">${avHTML(j)}<div class="gt">${esc(p.name)}</div></div>`).join('')}
+      </div>`;
+    });
+  });
+}
+function chLkCast(vi,j){CH.lkVotes[vi]=j;sfx.pop();chLkVote(vi+1)}
+/* R5 mission */
+function chMission(){
+  const ms=shuffle(MISSIONS).slice(0,S.players.length);
+  CH.mlist=S.players.map((p,i)=>{
+    const other=S.players[(i+1)%S.players.length].name;
+    return ms[i].replace('{p}',other).replace('{w}',rnd(WWORDS));
+  });
+  CH.mi=0;
+  const reveal=i=>{
+    if(i>=S.players.length)return chMPlay();
+    goPass(i,'(بطولة) مهمتك السرية',()=>{
+      NOBACK=true;
+      go(sc=>{
+        sc.innerHTML=`${hdr('المهمة السرية')}
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">
+          ${avHTML(i)}
+          <div class="wordcard"><div class="w" style="font-size:21px">${esc(CH.mlist[i])}</div></div>
+          <button class="btn" onclick="sfx.pop();reveal(${i+1})">${I.check} حفظتها — سلّم</button>
+        </div>`;
+      });
+    });
+  };
+  const chMPlay=()=>{
+    NOBACK=true;
+    go(sc=>{
+      sc.innerHTML=`${hdr('نفّذوا المهام')}
+      <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
+        <div class="big center">5 دقايق — نفّذوا مهامكم في الخفا</div>
+        <button class="btn gr" onclick="sfx.pop();chMDeclare(0)">${I.check} مين نفّذ؟</button>
+      </div>`;
+    });
+  };
+  window.chMDeclare=i=>{
+    if(i>=S.players.length)return champStandings('champRound(5)');
+    goPass(i,'نفّذت مهمتك؟ (بضميرك)',()=>{
+      NOBACK=true;
+      go(sc=>{
+        sc.innerHTML=`${hdr('المهمة — '+esc(S.players[i].name))}
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+          <div class="card center">${esc(CH.mlist[i])}</div>
+          <div class="row"><button class="btn gr" onclick="chMMark(${i},1)">${I.check} نفّذتها (+100)</button><button class="btn red" onclick="chMMark(${i},0)">لأ</button></div>
+        </div>`;
+      });
+    });
+  };
+  window.chMMark=(i,ok)=>{
+    if(ok){CH.scores[S.players[i].name]+=100;award(S.players[i].name,100,{wins:1,streak:1});saveP();sfx.good()}
+    chMDeclare(i+1);
+  };
+  reveal(0);
+}
+/* R6 numbers */
+function chNumbers(i){
+  if(i>=S.players.length)return champStandings('champRound(6)');
+  goPass(i,'(بطولة) Number Rush',()=>{
+    NOBACK=true;
+    go(sc=>{
+      const nums=shuffle([...Array(25).keys()].map(x=>x+1));
+      let next=1;const t0=Date.now();
+      sc.innerHTML=`${hdr('Number Rush — '+esc(S.players[i].name))}
+      <div class="body">
+        <div class="card center"><b>دوس بالترتيب:</b> <span class="tag y" id="nn">1</span></div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px">
+          ${nums.map(n=>`<button class="btn sm num" data-n="${n}" style="padding:0;height:56px;font-size:20px">${n}</button>`).join('')}
+        </div>
+      </div>`;
+      sc.querySelectorAll('.num').forEach(b=>b.onclick=()=>{
+        if(+b.dataset.n===next){
+          b.style.background='var(--tl)';b.disabled=true;sfx.tick();next++;
+          const el=$('#nn');if(el)el.textContent=next<=25?next:'تم';
+          if(next>25){
+            const secs=(Date.now()-t0)/1000;
+            const pts=Math.max(0,Math.round(150-secs));
+            CH.scores[S.players[i].name]+=pts;award(S.players[i].name,Math.round(pts/3),{});saveP();
+            toast(secs.toFixed(1)+' ثانية — +'+pts);
+            chNumbers(i+1);
+          }
+        }else sfx.bad();
+      });
+    });
+  });
+}
+/* R7 final */
+function chFinal(){
+  const ranked=Object.entries(CH.scores).sort((a,b)=>b[1]-a[1]);
+  const top2=ranked.slice(0,2);
+  const iA=S.players.findIndex(p=>p.name===top2[0][0]);
+  const iB=S.players.findIndex(p=>p.name===top2[1][0]);
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('FINAL CHAOS')}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">
+      <div class="big center">النهائي!</div>
+      <div class="vs"><div class="p">${avHTML(iA)}<b>${esc(S.players[iA].name)}</b></div><div class="x">VS</div><div class="p">${avHTML(iB)}<b>${esc(S.players[iB].name)}</b></div></div>
+      <div class="sub center">Fastest Finger — أول 2 انتصارات بياخد الجولة (+250 نقطة)</div>
+      <button class="btn" onclick="sfx.pop();chFinalGo(${iA},${iB})">${I.play} FINAL GO</button>
+    </div>`;
+  });
+}
+function chFinalGo(a,b){
+  AR={a,b,game:0,sa:0,sb:0,final:true};
+  arFastestFinal(a,b);
+}
+function arFastestFinal(a,b){
+  NOBACK=true;
+  go(sc=>{
+    let round=0;
+    sc.innerHTML=`${hdr('FINAL — Fastest Finger')}
+    <div class="halves" style="flex:1">
+      <div class="half" id="h0" style="background:${pcol(a)}33"><div class="hname" style="color:${pcol(a)}">${esc(S.players[a].name)}</div><div class="big blink" id="st0">استعدوا...</div><div class="sub" id="ss0">0</div></div>
+      <div class="half" id="h1" style="background:${pcol(b)}33;border-inline-start:3px solid var(--line)"><div class="hname" style="color:${pcol(b)}">${esc(S.players[b].name)}</div><div class="big blink" id="st1">استعدوا...</div><div class="sub" id="ss1">0</div></div>
+    </div>`;
+    let sa=0,sb=0,ready=false,goT=null;
+    const upd=()=>{const x=$('#ss0'),y=$('#ss1');if(x)x.textContent=sa;if(y)y.textContent=sb};
+    const newRound=()=>{
+      if(sa>=2||sb>=2)return finish();
+      if(!sc.isConnected)return;
+      $('#st0').textContent='استعدوا...';$('#st0').classList.add('blink');
+      ready=false;
+      goT=tm(()=>{ready=true;$('#st0').textContent='دوس!';$('#st0').classList.remove('blink');sfx.pop();
+        tm(()=>{if(ready)finish(-1)},1300);
+      },1500+Math.random()*2500);
+    };
+    const finish=(side)=>{
+      ready=false;clearTimeout(goT);
+      if(side>=0){
+        if(side===0)sa++;else sb++;
+        upd();sfx.good();
+      }
+      if(sa>=2||sb>=2){
+        const winner=sa>sb?a:b;
+        CH.scores[S.players[winner].name]+=250;
+        award(S.players[winner].name,300,{wins:1,streak:1});
+        S.players.forEach(p=>{if(p.name!==S.players[winner].name)P[p.name].streak=0});
+        saveP();
+        return chEnd(winner);
+      }
+      wait(1300,newRound);
+    };
+    [0,1].forEach(side=>{
+      const el=$('#h'+side);
+      const h=e=>{e.preventDefault();if(!sc.isConnected||!ready&&true){};
+        if(ready)finish(side);
+        else if(goT){finish(side===0?1:0)}
+      };
+      el.addEventListener('touchstart',h,{passive:false});
+      el.addEventListener('mousedown',h);
+    });
+    newRound();
+  });
+}
+function chEnd(winner){
+  NOBACK=true;
+  go(sc=>{
+    const ranked=Object.entries(CH.scores).sort((a,b)=>b[1]-a[1]);
+    confetti(200);sfx.win();
+    sc.innerHTML=`${hdr('PARTY CHAMPION')}
+    <div class="body" style="display:flex;flex-direction:column;gap:14px">
+      <div class="wordcard" style="border-color:var(--yl)">
+        <div class="gic" style="background:var(--yl);width:70px;height:70px;margin:0 auto 10px">${I.crown}</div>
+        <div class="sub">ملك الشلة لهذا اليوم</div>
+        <div class="w" style="font-size:38px">${esc(S.players[winner].name)}</div>
+        <div class="sub">${CH.scores[S.players[winner].name]} نقطة • +300 XP • Streak محفوظ</div>
+      </div>
+      ${ranked.map((r,i)=>`<div class="score-pill" style="${i===0?'border-color:var(--yl)':''}"><span>${i+1}. ${esc(r[0])}</span><b>${r[1]}</b></div>`).join('')}
+      <button class="btn mt2" onclick="sfx.tap();tabs.champ()">${I.crown} بطولة تانية</button>
+    </div>`;
+  });
+}
+
+/* ============ RANDOM PARTY ============ */
+function randomParty(){
+  const opts=['imposterSetup()','askmeSetup()','likelySetup()','missionSetup()','lyingSetup()','musicSetup()'];
+  const names=['IMPOSTER!','ASK ME!','MOST LIKELY!','SECRET MISSION!','WHO IS LYING؟','MUSIC BATTLE!'];
+  NOBACK=true;
+  go(sc=>{
+    sc.innerHTML=`${hdr('RANDOM PARTY')}
+    <div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">
+      <div class="gic" style="background:var(--yl);width:80px;height:80px;animation:floaty 2s infinite">${I.dice}</div>
+      <div class="big" id="rr" style="font-size:34px;text-align:center">؟؟؟</div>
+      <div class="sub">بنلف على لعبة النهارده...</div>
+    </div>`;
+    let i=0,n=0;
+    const total=18;
+    iv(()=>{
+      i=(i+1)%names.length;
+      $('#rr').textContent=names[i];
+      sfx.tick();n++;
+      if(n>=total){
+        const pick=Math.floor(Math.random()*opts.length);
+        $('#rr').textContent=names[pick];
+        sfx.win();
+        tm(()=>{NOBACK=false;eval(opts[pick])},900);
+      }
+    },110);
+  });
+}
+
+/* ============ boot ============ */
+splash();
+document.addEventListener('pointerdown',()=>ac(),{once:true});
+</script>
+</body>
+</html>
