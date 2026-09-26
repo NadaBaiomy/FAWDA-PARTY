@@ -120,6 +120,7 @@ I.swords='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 I.zap='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>';
 I.play='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
 I.check='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 6.5"/></svg>';
+I.brain=I.q;
 
 var AC=null,MUTED=false;
 function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC&&AC.state==='suspended')AC.resume();}catch(e){AC=null}return AC}
@@ -321,7 +322,7 @@ function tabSolo(){
   ['Number Rush','دوس الأرقام بالترتيب','numbers',I.pad],
   ['Memory Cards','قلّب وطابق الأزواج','cards',I.q],
   ['Pattern','احفظ النمط وكمله','pattern',I.music],
-   ['Aim','أهداف بسرعة','aim',I.swords],
+  ['Aim','أهداف بسرعة','aim',I.swords],
   ['Puzzle','رتّبي اللوحة بتحريك المربعات','puzzle',I.brain]];
   var rows='';
   for(var i=0;i<g.length;i++){
@@ -774,1645 +775,972 @@ function amEnd(){
 }
 
 /* ===== MOST LIKELY ===== */
-var LK={rounds:5,i:0,qs:[],votes:{},got:{}};
+var LK={rounds:5,i:0,qs:[],votes:{},got:[]};
 function lkSetup(){
   go(function(){
-    var rch='';
-    var rv=[3,5,8];
+    var rch='';var rv=[3,5,8];
     for(var i=0;i<rv.length;i++)rch+='<div class="chip '+(LK.rounds===rv[i]?'on':'')+'" data-act="lkR" data-arg="'+rv[i]+'">'+rv[i]+'</div>';
     return {html:hdr('MOST LIKELY')+'<div class="body">'+
-    '<div class="big">مين أكتر واحد...؟</div><div class="sub">كل واحد يصوّت في دوره</div>'+
-    '<div class="big mt2">عدد الجولات</div><div class="chips mt">'+rch+'</div>'+
+    '<div class="big">عدد الجولات</div><div class="chips mt">'+rch+'</div>'+
     '<button class="btn mt2" '+(S.players.length<3?'disabled':'')+' data-act="lkStart">'+I.q+' ابدأوا</button></div>'};
   });
 }
 ACTS.lkR=function(a){LK.rounds=parseInt(a,10);sfx.tap();lkSetup()};
-ACTS.lkStart=function(){
-  LK.qs=shuffle(LIKELY).slice(0,LK.rounds);
-  LK.i=0;LK.got={};lkVote(0);
-};
-function lkVote(pi){
-  if(pi>=S.players.length)return lkResult();
-  passGo(pi,'صوّت: مين أكتر واحد؟',function(){
+ACTS.lkStart=function(){LK.qs=shuffle(LIKELY).slice(0,LK.rounds);LK.i=0;lkTurn()};
+function lkTurn(){
+  if(LK.i>=LK.qs.length)return lkEnd();
+  var q=LK.qs[LK.i];
+  go(function(){
+    return {html:hdr('MOST LIKELY — '+(LK.i+1)+'/'+LK.qs.length)+
+    '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">'+
+    '<div class="wordcard"><div class="w" style="font-size:22px">'+esc(q)+'</div></div>'+
+    '<div class="sub center">كل واحد يقول اسم حد ويعدي التليفون</div>'+
+    '<button class="btn" data-act="lkVote">'+I.check+' اتفقنا — يلا نصوّت</button></div>'};
+  });
+}
+ACTS.lkVote=function(){LK.votes={};lkCast(0)};
+function lkCast(i){
+  if(i>=S.players.length)return lkResult();
+  passGo(i,'صوّت: مين أكتر واحد يستاهل؟',function(){
+    var btns='';
+    for(var j=0;j<S.players.length;j++){
+      if(j===i)continue;
+      btns+='<div class="grow" data-act="lkCast2" data-arg="'+i+':'+j+'">'+avHTML(j)+'<div class="gt">'+esc(S.players[j].name)+'</div></div>';
+    }
     go(function(){
-      var btns='';
-      for(var j=0;j<S.players.length;j++){
-        if(j===pi)continue;
-        btns+='<div class="grow" data-act="lkCast" data-arg="'+pi+':'+j+'">'+avHTML(j)+'<div class="gt">'+esc(S.players[j].name)+'</div></div>';
-      }
-      return {html:hdr('تصويت')+'<div class="body">'+
-      '<div class="wordcard"><div class="w" style="font-size:20px">'+esc(LK.qs[LK.i])+'</div></div>'+
-      '<div class="mt">'+btns+'</div></div>'};
+      return {html:hdr('التصويت')+'<div class="body">'+avHTML(i)+'<div class="big center mt">'+esc(S.players[i].name)+' — صوتك على مين؟</div><div class="mt">'+btns+'</div></div>'};
     });
   });
 }
-ACTS.lkCast=function(a){
+ACTS.lkCast2=function(a){
   var p=a.split(':');
-  LK.votes[parseInt(p[0],10)]=parseInt(p[1],10);
-  sfx.pop();lkVote(parseInt(p[0],10)+1);
+  var v=parseInt(p[1],10);
+  LK.votes[v]=(LK.votes[v]||0)+1;
+  sfx.pop();lkCast(parseInt(p[0],10)+1);
 };
 function lkResult(){
-  var n=S.players.length,cnt=[],i;
-  for(i=0;i<n;i++)cnt.push(0);
-  for(var k in LK.votes)cnt[LK.votes[k]]++;
-  var top=0;
-  for(i=1;i<n;i++)if(cnt[i]>cnt[top])top=i;
-  var total=1;
-  for(i=0;i<n;i++)total+=cnt[i];
-  if(cnt[top]>0){
-    award(S.players[top].name,25,{likely:1});saveP();
-    if(IM.champ&&CH.active)CH.scores[S.players[top].name]+=25;
-    confetti(60);sfx.good();
-  }
+  var q=LK.qs[LK.i];
+  var winner=null,mx=-1;
+  for(var k in LK.votes)if(LK.votes[k]>mx){mx=LK.votes[k];winner=parseInt(k,10)}
+  LK.got[LK.i]=winner;
   go(function(){
-    var bars='';
-    for(i=0;i<n;i++)bars+='<div class="bar"><div style="width:'+Math.max(10,cnt[i]/total*100)+'%;background:'+(i===top?'var(--yl)':'var(--tl)')+'">'+cnt[i]+'</div></div>';
-    return {html:hdr('الجولة '+(LK.i+1))+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-    '<div class="wordcard"><div class="w" style="font-size:22px">'+esc(LK.qs[LK.i])+'</div></div>'+
-    '<div class="wordcard"><div class="sub">الفائز</div><div class="w" style="font-size:28px">'+esc(S.players[top].name)+'</div><div class="sub">'+cnt[top]+' من '+total+' صوت</div></div>'+
-    bars+
-    '<button class="btn" data-act="lkNext">'+I.check+' '+(LK.i+1<LK.qs.length?'الجولة اللي بعدها':'النتيجة')+'</button></div>'};
+    return {html:hdr('النتيجة')+
+    '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
+    '<div class="sub center">'+esc(q)+'</div>'+
+    (winner!==null?avHTML(winner,'big'):'<div class="big">محدا صوّت!</div>')+
+    (winner!==null?'<div class="big center">'+esc(S.players[winner].name)+'</div>':'')+
+    '<button class="btn mt" data-act="lkNext">الجولة اللي بعدها</button></div>'};
   });
+  if(winner!==null){confetti(60);sfx.good()}else sfx.bad();
 }
 ACTS.lkNext=function(){
-  LK.i++;
-  if(IM.champ&&CH.active){
-    if(LK.i<3){LK.qs=[rnd(LIKELY)];lkVote(0)}
-    else{IM.champ=false;champStandings(3)}
-    return;
-  }
-  if(LK.i<LK.qs.length)return lkVote(0);
-  var rk=[];
-  for(var k in LK.got)rk.push([k,LK.got[k]]);
-  rk.sort(function(a,b){return b[1]-a[1]});
-  go(function(){
-    return {html:hdr('النهاية')+'<div class="body">'+
-    '<div class="big center">أكتر واحد اترشح</div>'+
-    '<div class="wordcard mt"><div class="w">'+esc(rk.length?rk[0][0]:'-')+'</div></div>'+
-    '<button class="btn mt2" data-act="tab" data-arg="games">'+I.back+' خلصنا</button></div>'};
-  });
+  var w=LK.got[LK.i];
+  if(w!==null&&w!==undefined&&S.players[w]){award(S.players[w].name,20,{likely:1});saveP()}
+  sfx.pop();LK.i++;lkTurn();
 };
+function lkEnd(){
+  confetti(90);sfx.win();
+  go(function(){
+    return {html:hdr('MOST LIKELY')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="gic" style="background:var(--yl);width:80px;height:80px">'+I.q+'</div>'+
+    '<div class="big center">خلصت الجولات!</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
+  });
+}
 
 /* ===== SECRET MISSION ===== */
-var MS={mins:10};
+var MS={};
 function msSetup(){
   go(function(){
-    var ch='';
-    var mv=[5,10,15];
-    for(var i=0;i<mv.length;i++)ch+='<div class="chip '+(MS.mins===mv[i]?'on':'')+'" data-act="msMins" data-arg="'+mv[i]+'">'+mv[i]+' دقايق</div>';
-    return {html:hdr('SECRET MISSION')+'<div class="body" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="wordcard"><div class="w" style="font-size:19px">كل واحد مهمة سرية — ينفذها من غير ما حد ياخد باله</div></div>'+
-    '<div class="big">مدة اللعب</div><div class="chips">'+ch+'</div>'+
-    '<button class="btn gr mt2" '+(S.players.length<3?'disabled':'')+' data-act="msStart">'+I.eye+' ابدأوا المهام</button></div>'};
+    return {html:hdr('SECRET MISSION')+'<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">'+
+    '<div class="sub center">كل لاعب هياخد مهمة سرية ينفذها خلال القعدة من غير حد يحس</div>'+
+    '<button class="btn gr mt2" '+(S.players.length<3?'disabled':'')+' data-act="msStart">'+I.eye+' وزّعوا المهام</button></div>'};
   });
 }
-ACTS.msMins=function(a){MS.mins=parseInt(a,10);sfx.tap();msSetup()};
-ACTS.msStart=function(){
-  var ms=shuffle(MISSIONS).slice(0,S.players.length);
-  MS.list=[];
-  for(var i=0;i<S.players.length;i++){
-    var other=S.players[(i+1)%S.players.length].name;
-    MS.list.push(ms[i].replace('{p}',other).replace('{w}',rnd(WWORDS)));
-  }
-  MS.marks=[];msReveal(0);
-};
+ACTS.msStart=function(){msReveal(0)};
 function msReveal(i){
-  if(i>=S.players.length)return msPlay();
-  passGo(i,'مهمتك السرية — محدش غيرك يشوفها',function(){
+  if(i>=S.players.length)return msEnd();
+  passGo(i,'بص على مهمتك بس — لو حد شافها خسرت!',function(){
+    var m=MISSIONS[i%MISSIONS.length].replace('{p}',S.players[(i+1)%S.players.length].name).replace('{w}',rnd(WWORDS));
     go(function(){
-      return {html:hdr('المهمة السرية')+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">'+
+      return {html:hdr('مهمتك السرية')+
+      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px;align-items:center">'+
       avHTML(i)+
-      '<div class="wordcard"><div class="w" style="font-size:18px">'+esc(MS.list[i])+'</div></div>'+
-      '<button class="btn gr" data-act="msRevNext" data-arg="'+(i+1)+'">'+I.check+' حفظتها — سلّم</button></div>'};
+      '<div class="wordcard"><div class="sub" style="font-weight:800">انفذها بالسر</div><div class="w" style="font-size:20px">'+esc(m)+'</div></div>'+
+      '<button class="btn" data-act="msNext" data-arg="'+(i+1)+'">'+I.check+' فهمتها — سلّم الهاتف</button></div>'};
     });
   });
 }
-ACTS.msRevNext=function(a){sfx.pop();msReveal(parseInt(a,10))};
-function msPlay(){
+ACTS.msNext=function(a){sfx.pop();msReveal(parseInt(a,10))};
+function msEnd(){
+  confetti(80);sfx.win();
   go(function(){
-    return {html:hdr('نفّذوا المهام')+
-    '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
-    '<div class="big center">نفّذوا مهامكم دلوقتي!</div>'+
-    '<div class="card center" style="width:100%"><div style="font-size:40px;color:var(--gr)" id="mt">'+MS.mins+':00</div></div>'+
-    '<button class="btn gr mt" data-act="msDecl">'+I.check+' خلص الوقت — مين نفّذ؟</button></div>'};
-  });
-  var t=MS.mins*60;
-  iv(function(){
-    t--;
-    var el=$('#mt');
-    if(el&&t>=0)el.textContent=Math.floor(t/60)+':'+pad2(t%60);
-  },1000);
-}
-ACTS.msDecl=function(){sfx.pop();msDecl(0)};
-function msDecl(i){
-  if(i>=S.players.length)return msResults();
-  passGo(i,'نفّذت مهمتك؟ (بضميرك)',function(){
-    go(function(){
-      return {html:hdr('نفّذتها؟')+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:16px">'+
-      avHTML(i)+
-      '<div class="big center">'+esc(S.players[i].name)+'</div>'+
-      '<div class="sub center">'+esc(MS.list[i])+'</div>'+
-      '<div class="row"><button class="btn gr" data-act="msMark" data-arg="'+i+':1">'+I.check+' نفّذتها (+100)</button>'+
-      '<button class="btn red" data-act="msMark" data-arg="'+i+':0">معرفتش</button></div></div>'};
-    });
+    return {html:hdr('SECRET MISSION')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="gic" style="background:var(--gr);width:80px;height:80px">'+I.eye+'</div>'+
+    '<div class="big center">المهام اتوزعت!</div>'+
+    '<div class="sub center">في آخر القعدة اسألوا: مين نفذ مهمته؟</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
   });
 }
-ACTS.msMark=function(a){
-  var p=a.split(':');
-  MS.marks[parseInt(p[0],10)]=(p[1]==='1');
-  sfx.pop();msDecl(parseInt(p[0],10)+1);
-};
-function msResults(){
-  var done=[];
-  for(var i=0;i<S.players.length;i++){
-    if(MS.marks[i]){
-      done.push(S.players[i]);
-      award(S.players[i].name,100,{wins:1});
-      if(IM.champ&&CH.active)CH.scores[S.players[i].name]+=100;
-    }
-  }
-  saveP();
-  IM.champ=false;
-  go(function(){
-    var pills='';
-    for(i=0;i<S.players.length;i++)pills+='<div class="score-pill" style="border-color:'+(MS.marks[i]?'var(--gr)':'var(--line)')+'"><span>'+esc(S.players[i].name)+'</span><span>'+(MS.marks[i]?'نفّذها':'فشل')+'</span></div>';
-    var names='';
-    for(i=0;i<done.length;i++){if(i>0)names+='، ';names+=esc(done[i].name)}
-    return {html:hdr('MISSION — النتيجة')+'<div class="body">'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">ناجحين: '+(names||'ولا واحد')+'</div></div>'+pills+
-    (CH.active?'<button class="btn mt2" data-act="chStand" data-arg="4">'+I.crown+' كمّلوا البطولة</button>':'<button class="btn mt2" data-act="tab" data-arg="games">'+I.back+' خلصنا</button>')+
-    '</div>'};
-  });
-  if(done.length){confetti(100);sfx.win()}
-}
-ACTS.chStand=function(a){champStandings(parseInt(a,10))};
 
 /* ===== WHO IS LYING ===== */
-var LY={writes:[],owner:0,curVotes:{},curOrder:[]};
+var LY={i:0,vi:0,lines:[]};
 function lySetup(){
   go(function(){
-    return {html:hdr('WHO IS LYING؟')+'<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="wordcard"><div class="w" style="font-size:19px">اكتب 3 جمل: اتنين صدق وواحدة كذب</div></div>'+
-    '<button class="btn mt2" '+(S.players.length<3?'disabled':'')+' data-act="lyStart">'+I.skull+' ابدأوا</button></div>'};
+    return {html:hdr('WHO IS LYING؟')+'<div class="body">'+
+    '<div class="big center">جملتين صدق وجملة كذب</div>'+
+    '<div class="sub center mt">كل لاعب يكتب 3 جمل عن نفسه — واحدة فيهم كذب — والشلة تخمن الكذبة</div>'+
+    '<button class="btn mt2" style="background:var(--pk);color:#fff" '+(S.players.length<3?'disabled':'')+' data-act="lyStart">'+I.skull+' يلا نبدأ</button></div>'};
   });
 }
-ACTS.lyStart=function(){
-  LY.writes=[];
-  for(var i=0;i<S.players.length;i++)LY.writes.push(['','','']);
-  lyWrite(0);
-};
-function lyWrite(i){
-  if(i>=S.players.length)return lyGuess(0);
-  passGo(i,'اكتب جملك — التالتة كذب',function(){
+ACTS.lyStart=function(){LY.i=0;LY.lines=[];lyEnter()};
+function lyEnter(){
+  if(LY.i>=S.players.length){LY.vi=0;lyTurn();return}
+  passGo(LY.i,'اكتب جملتين صدق وجملة كذب — متخليش حد يشوف',function(){
     go(function(){
-      return {html:hdr('جملك التلاتة')+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">'+
-      avHTML(i)+
-      '<input id="ly0" placeholder="حقيقة رقم 1" maxlength="60">'+
-      '<input id="ly1" placeholder="حقيقة رقم 2" maxlength="60">'+
-      '<input id="ly2" placeholder="الكذبة..." maxlength="60">'+
-      '<button class="btn" data-act="lySave" data-arg="'+i+'">'+I.check+' تم</button></div>'};
+      return {html:hdr('جملك يا '+esc(S.players[LY.i].name))+'<div class="body">'+
+      '<input id="l1" dir="auto" placeholder="جملة 1" maxlength="60">'+
+      '<input id="l2" dir="auto" placeholder="جملة 2" class="mt" maxlength="60">'+
+      '<input id="l3" dir="auto" placeholder="جملة 3 (دي الكذبة)" class="mt" maxlength="60">'+
+      '<button class="btn mt2" data-act="lySave">'+I.check+' خلاص اكتبوا</button></div>'};
     });
   });
 }
-ACTS.lySave=function(a){
-  var i=parseInt(a,10);
-  var v=[$('#ly0').value.trim(),$('#ly1').value.trim(),$('#ly2').value.trim()];
-  if(!v[0]||!v[1]||!v[2])return toast('اكمل الجمل');
-  LY.writes[i]=v;sfx.pop();lyWrite(i+1);
+ACTS.lySave=function(){
+  var a=$('#l1').value.trim(),b=$('#l2').value.trim(),c=$('#l3').value.trim();
+  if(!a||!b||!c)return toast('اكتبوا الجمل الثلاثة');
+  var order=shuffle([{t:a,l:0},{t:b,l:0},{t:c,l:1}]);
+  var lieIdx=0;
+  for(var k=0;k<3;k++)if(order[k].l===1)lieIdx=k;
+  LY.lines[LY.i]={who:LY.i,items:order,lie:lieIdx,votes:{}};
+  sfx.pop();LY.i++;lyEnter();
 };
-function lyGuess(owner){
-  LY.owner=owner;
-  LY.curOrder=shuffle([0,1,2]);
-  go(function(){
+function lyTurn(){
+  if(LY.vi>=S.players.length)return lyEnd();
+  var L=LY.lines[LY.vi];
+  passGo(L.who,'اقرأ جملك التلاتة بصوت عالي — وبعدين الشلة تصوّت',function(){lyVote(0)});
+}
+function lyVote(v){
+  var L=LY.lines[LY.vi];
+  if(v>=S.players.length)return lyResult();
+  if(v===L.who)return lyVote(v+1);
+  passGo(v,'مين الجملة الكذب؟',function(){
     var cards='';
-    for(var k=0;k<3;k++){
-      var idx=LY.curOrder[k];
-      cards+='<div class="card mt" style="text-align:center"><b style="color:var(--yl)">جملة '+(k+1)+'</b><div style="font-size:15px;font-weight:700;margin-top:4px">'+esc(LY.writes[owner][idx])+'</div></div>';
-    }
-    return {html:hdr('جمل '+esc(S.players[owner].name))+'<div class="body">'+
-    '<div class="big center">واحدة بس كاذبة</div>'+cards+
-    '<button class="btn red mt" data-act="lyVoteStart">'+I.q+' الشلة تصوّت</button></div>'};
-  });
-}
-ACTS.lyVoteStart=function(){lyVoteOne(0)};
-function lyVoteOne(vi){
-  if(vi>=S.players.length)return lyTally();
-  if(vi===LY.owner)return lyVoteOne(vi+1);
-  passGo(vi,'أنهي جملة كذب؟',function(){
+    for(var j=0;j<3;j++)cards+='<div class="grow" data-act="lyPick" data-arg="'+v+':'+j+'"><div class="gt">جملة '+(j+1)+'</div><div class="gs">'+esc(L.items[j].t)+'</div></div>';
     go(function(){
-      var btns='';
-      for(var k=0;k<3;k++)btns+='<button class="btn ghost" data-act="lyCast" data-arg="'+vi+':'+LY.curOrder[k]+'">جملة '+(k+1)+'</button>';
-      return {html:hdr('التصويت')+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">'+
-      avHTML(vi)+btns+'</div>'};
+      return {html:hdr('الكذبة مين؟')+'<div class="body">'+avHTML(v)+'<div class="big center mt">'+esc(S.players[v].name)+' — اختار</div><div class="mt">'+cards+'</div></div>'};
     });
   });
 }
-ACTS.lyCast=function(a){
+ACTS.lyPick=function(a){
   var p=a.split(':');
-  LY.curVotes[parseInt(p[0],10)]=parseInt(p[1],10);
-  sfx.pop();lyVoteOne(parseInt(p[0],10)+1);
+  LY.lines[LY.vi].votes[parseInt(p[0],10)]=parseInt(p[1],10);
+  sfx.pop();lyVote(parseInt(p[0],10)+1);
 };
-function lyTally(){
-  var cnt=[0,0,0];
-  for(var k in LY.curVotes)cnt[LY.curVotes[k]]++;
-  var top=0;
-  if(cnt[1]>cnt[top])top=1;
-  if(cnt[2]>cnt[top])top=2;
-  var caught=top===2;
-  award(S.players[LY.owner].name,caught?0:120,{wins:caught?0:1});saveP();
-  go(function(){
-    var bars='';
-    for(var i=0;i<3;i++)bars+='<div class="mt"><div style="display:flex;justify-content:space-between"><span>جملة '+(LY.curOrder.indexOf(i)+1)+(i===2?' (الكذب)':'')+'</span><b>'+cnt[i]+'</b></div><div class="bar"><div style="width:'+Math.max(10,cnt[i]*30)+'%;background:'+(i===2?'var(--red)':'var(--tl)')+'">'+cnt[i]+'</div></div></div>';
-    return {html:hdr('النتيجة')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="wordcard '+(caught?'':'red')+'"><div class="sub">'+(caught?'كشفوه!':'الكذاب ضحك عليهم!')+'</div><div class="w" style="font-size:16px">الكذبة: '+esc(LY.writes[LY.owner][2])+'</div></div>'+
-    '<div class="card"><b>الأصوات:</b>'+bars+'</div>'+
-    '<button class="btn" data-act="lyNext">'+I.check+' اللي بعده</button></div>'};
-  });
-  if(caught){confetti(70);sfx.win()}else sfx.bad();
-}
-ACTS.lyNext=function(){lyGuess((LY.owner+1)%S.players.length)};
-
-/* ===== DRAW & GUESS ===== */
-var DW={};
-function dwSetup(){
-  go(function(){
-    return {html:hdr('DRAW and GUESS')+'<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="wordcard"><div class="w" style="font-size:19px">واحد يرسم والباقي يخمنوا</div></div>'+
-    '<button class="btn mt2" '+(S.players.length<3?'disabled':'')+' data-act="dwStart">'+I.brush+' ابدأوا الرسم</button></div>'};
-  });
-}
-ACTS.dwStart=function(){DW.i=0;DW.points={};DW.pics=[];dwTurn()};
-function dwTurn(){
-  if(DW.i>=S.players.length)return dwResults();
-  DW.curWord=rnd(DRAWW);
-  passGo(DW.i,'ارسم الكلمة — الباقي ميشوفوش',function(){dwPad(45)});
-}
-function dwPad(secs){
-  go(function(){
-    return {html:hdr('ارسم!')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="card" style="display:flex;justify-content:space-between;padding:10px 14px"><b style="color:var(--yl)">'+esc(DW.curWord)+'</b><span style="font-size:22px" id="dwt">'+secs+'</span></div>'+
-    '<canvas class="pad" id="dwc" width="340" height="340"></canvas>'+
-    '<div style="display:flex;gap:8px;flex-wrap:wrap" id="dcols"></div>'+
-    '<button class="btn" data-act="dwDone">'+I.check+' خلصت الرسمة</button></div>',
-    after:function(sc){mountDraw(sc,secs)}};
-  });
-}
-function mountDraw(sc,secs){
-  var cv=$('#dwc');
-  if(!cv)return;
-  var x=cv.getContext('2d');
-  var color='#2b2b2b',lw=7,drawing=false,cur=[],strokes=[];
-  function pos(e){
-    var r=cv.getBoundingClientRect();
-    var t=e.touches?e.touches[0]:e;
-    return {x:(t.clientX-r.left)*cv.width/r.width,y:(t.clientY-r.top)*cv.height/r.height};
-  }
-  function paint(){
-    x.fillStyle='#f7efdd';x.fillRect(0,0,cv.width,cv.height);
-    var all=strokes.concat([cur]);
-    for(var s=0;s<all.length;s++){
-      var st=all[s];
-      if(!st.length)continue;
-      x.strokeStyle=st[0].c;x.lineWidth=st[0].w;x.lineCap='round';x.lineJoin='round';
-      x.beginPath();
-      for(var p=0;p<st.length;p++){
-        if(p)x.lineTo(st[p].x,st[p].y);else x.moveTo(st[p].x,st[p].y);
-      }
-      x.stroke();
-    }
-  }
-  function start(e){e.preventDefault();drawing=true;var p=pos(e);cur=[{x:p.x,y:p.y,c:color,w:lw}]}
-  function move(e){e.preventDefault();if(!drawing)return;var p=pos(e);cur.push({x:p.x,y:p.y,c:color,w:lw});paint()}
-  function end(){if(drawing&&cur.length)strokes.push(cur);cur=[];drawing=false;paint()}
-  cv.addEventListener('touchstart',start,false);
-  cv.addEventListener('touchmove',move,false);
-  cv.addEventListener('touchend',end,false);
-  cv.addEventListener('mousedown',start,false);
-  cv.addEventListener('mousemove',function(e){if(drawing)move(e)},false);
-  var cols=['#2b2b2b','#ff5d5d','#ffc93d','#38d3c0','#e86fa4'];
-  var cbox=$('#dcols');
-  if(cbox){
-    for(var i=0;i<cols.length;i++){
-      var d=document.createElement('div');
-      d.style.cssText='width:34px;height:34px;border-radius:11px;background:'+cols[i]+';border:3px solid #1a1408;cursor:pointer';
-      d.onclick=function(){color=this.style.backgroundColor;lw=7;sfx.tap()};
-      cbox.appendChild(d);
-    }
-    var er=document.createElement('div');
-    er.textContent='ممحاة';
-    er.style.cssText='padding:7px 12px;border-radius:11px;background:#2c251b;border:3px solid #1a1408;cursor:pointer;font-size:13px;font-weight:800';
-    er.onclick=function(){color='#f7efdd';lw=26;sfx.tap()};
-    cbox.appendChild(er);
-  }
-  paint();
-  var t=secs;
-  var tid=iv(function(){
-    t--;
-    var el=$('#dwt');
-    if(el)el.textContent=t;
-    if(t<=0){clearInterval(tid);toast('خلص الوقت!');ACTS.dwDone()}
-  },1000);
-  DW.stopTid=tid;
-  DW.getCv=function(){clearInterval(tid);return cv};
-}
-ACTS.dwDone=function(){
-  if(!DW.getCv)return;
-  var cv=DW.getCv();
-  DW.getCv=null;
-  DW.pics.push({artist:DW.i,word:DW.curWord,img:cv.toDataURL()});
-  sfx.pop();dwGuess(0);
-};
-function dwGuess(g){
-  if(g>=S.players.length){DW.i++;return dwTurn()}
-  if(g===DW.i)return dwGuess(g+1);
-  var pic=DW.pics[DW.pics.length-1];
-  passGo(g,'اكتب تخمينك للرسمة',function(){
-    go(function(){
-      return {html:hdr('خمّن الرسمة')+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">'+
-      avHTML(g)+
-      '<img src="'+pic.img+'" style="width:100%;border-radius:16px;border:3px solid #1a1408">'+
-      '<input id="gval" placeholder="الرسمة دي إيه؟" maxlength="30">'+
-      '<button class="btn" data-act="dwCheck" data-arg="'+g+'">'+I.check+' ده تخميني</button></div>'};
-    });
-  });
-}
-ACTS.dwCheck=function(a){
-  var g=parseInt(a,10);
-  var v=$('#gval').value.trim();
-  if(!v)return toast('اكتب تخمين!');
-  var pic=DW.pics[DW.pics.length-1];
-  if(v===pic.word||v.replace(/ة/g,'ه')===pic.word.replace(/ة/g,'ه')){
-    sfx.good();confetti(40);
-    DW.points[g]=(DW.points[g]||0)+20;
-    DW.points[pic.artist]=(DW.points[pic.artist]||0)+10;
-    toast('صح! +20');
-  }else{sfx.bad();toast('لأ!')}
-  dwGuess(g+1);
-};
-function dwResults(){
-  var rk=[];
-  for(var i=0;i<S.players.length;i++)rk.push([S.players[i].name,DW.points[i]||0]);
-  rk.sort(function(a,b){return b[1]-a[1]});
-  for(i=0;i<rk.length;i++)if(rk[i][1]>0)award(rk[i][0],rk[i][1],{draw:rk[i][1]>=20?1:0});
+function lyResult(){
+  var L=LY.lines[LY.vi];
+  var right=0,fooled=0;
+  for(var k in L.votes){if(L.votes[k]===L.lie)right++;else fooled++}
+  for(var k2 in L.votes){if(L.votes[k2]===L.lie)award(S.players[parseInt(k2,10)].name,15,{})}
+  if(fooled>0)award(S.players[L.who].name,10,{});
   saveP();
   go(function(){
-    var cards='',pills='';
-    for(i=0;i<DW.pics.length;i++)cards+='<div class="card mt"><img src="'+DW.pics[i].img+'" style="width:100%;border-radius:12px"><div class="sub" style="font-size:12px">'+esc(DW.pics[i].word)+'</div></div>';
-    for(i=0;i<rk.length;i++)pills+='<div class="score-pill"><span>'+esc(rk[i][0])+'</span><span>'+rk[i][1]+'</span></div>';
-    return {html:hdr('DRAW — النتيجة')+'<div class="body">'+
-    '<div class="wordcard"><div class="w" style="font-size:24px">أفضل رسام: '+esc(rk[0][0])+'</div></div>'+cards+pills+
-    '<button class="btn mt2" data-act="tab" data-arg="games">'+I.back+' خلصنا</button></div>'};
+    var cards='';
+    for(var j=0;j<3;j++)cards+='<div class="card mt" style="text-align:center;'+(j===L.lie?'border-color:var(--red)':'')+'">'+(j===L.lie?'<span class="tag" style="background:var(--red);color:#fff">الكذبة</span> ':'<span class="tag y">صدق</span> ')+esc(L.items[j].t)+'</div>';
+    return {html:hdr('النتيجة')+'<div class="body">'+
+    avHTML(L.who)+'<div class="big center mt">'+esc(S.players[L.who].name)+'</div>'+cards+
+    '<div class="sub center mt">جواب صح: '+right+' — انخدعوا: '+fooled+'</div>'+
+    '<button class="btn mt2" data-act="lyNext">اللي بعده</button></div>'};
   });
-  confetti(110);sfx.win();
+  if(right>0)sfx.good();else sfx.bad();
+}
+ACTS.lyNext=function(){LY.vi++;lyTurn()};
+function lyEnd(){
+  confetti(80);sfx.win();
+  go(function(){
+    return {html:hdr('WHO IS LYING؟')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="gic" style="background:var(--pk);width:80px;height:80px">'+I.skull+'</div>'+
+    '<div class="big center">خلصت اللعبة!</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
+  });
 }
 
-/* ===== MUSIC ===== */
-var MU={};
+/* ===== DRAW and GUESS ===== */
+var DW={i:0,w:''};
+function dwSetup(){
+  go(function(){
+    return {html:hdr('DRAW and GUESS')+'<div class="body">'+
+    '<div class="big center">ارسم وسيبهم يخمنوا</div>'+
+    '<div class="sub center mt">كل لاعب ياخد كلمة سرية ويرسمها — ممنوع حروف وأرقام!</div>'+
+    '<button class="btn mt2" style="background:var(--or)" '+(S.players.length<2?'disabled':'')+' data-act="dwStart">'+I.brush+' ابدأوا</button></div>'};
+  });
+}
+ACTS.dwStart=function(){DW.i=0;dwPass()};
+function dwPass(){
+  if(DW.i>=S.players.length)return dwEnd();
+  passGo(DW.i,'هتاخد كلمة سرية وترسمها والباقي يخمن',function(){
+    DW.w=rnd(DRAWW);
+    go(function(){
+      return {html:hdr('كلمتك السرية')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+      avHTML(DW.i)+
+      '<div class="wordcard"><div class="sub" style="font-weight:800">ارسم دي بس من غير كتابة</div><div class="w" style="font-size:26px">'+esc(DW.w)+'</div></div>'+
+      '<button class="btn" data-act="dwCanvas">'+I.brush+' جاهز — افتح السبورة</button></div>'};
+    });
+  });
+}
+ACTS.dwCanvas=function(){
+  var pi=DW.i;
+  go(function(){
+    return {html:hdr('ارسم! والباقي يخمن بصوت عالي')+'<div class="body">'+
+    '<canvas id="dw" class="pad" width="600" height="600"></canvas>'+
+    '<div class="row mt"><button class="btn ghost sm" data-act="dwClear">امسح</button><button class="btn sm" data-act="dwGuessed" data-arg="'+pi+'">اتخمنت!</button></div></div>'};
+  });
+  tm(function(){
+    var c=$('#dw');if(!c)return;
+    var x=c.getContext('2d');
+    x.fillStyle='#f7efdd';x.fillRect(0,0,c.width,c.height);
+    x.lineCap='round';x.lineJoin='round';x.lineWidth=7;x.strokeStyle='#171310';
+    var dr=false,lx=0,ly=0;
+    function pos(e){var r=c.getBoundingClientRect();var t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*c.width/r.width,y:(t.clientY-r.top)*c.height/r.height}}
+    function dn(e){e.preventDefault();dr=true;var p=pos(e);lx=p.x;ly=p.y}
+    function mv(e){if(!dr)return;e.preventDefault();var p=pos(e);x.beginPath();x.moveTo(lx,ly);x.lineTo(p.x,p.y);x.stroke();lx=p.x;ly=p.y}
+    function up(){dr=false}
+    c.addEventListener('touchstart',dn,{passive:false});
+    c.addEventListener('touchmove',mv,{passive:false});
+    c.addEventListener('touchend',up);
+    c.addEventListener('mousedown',dn);c.addEventListener('mousemove',mv);window.addEventListener('mouseup',up);
+    DW._clear=function(){x.fillStyle='#f7efdd';x.fillRect(0,0,c.width,c.height)};
+  },60);
+};
+ACTS.dwClear=function(){if(DW._clear)DW._clear()};
+ACTS.dwGuessed=function(a){
+  var pi=parseInt(a,10);
+  award(S.players[pi].name,30,{draw:1});saveP();
+  confetti(50);sfx.good();
+  toast('برافو! الكلمة كانت: '+DW.w);
+  DW.i++;tm(dwPass,1600);
+};
+function dwEnd(){
+  go(function(){
+    return {html:hdr('DRAW and GUESS')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="gic" style="background:var(--or);width:80px;height:80px">'+I.brush+'</div>'+
+    '<div class="big center">كل الرسامين رسموا!</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
+  });
+}
+
+/* ===== MUSIC BATTLE ===== */
+var MU={i:0,qs:[]};
 function muSetup(){
   go(function(){
     return {html:hdr('MUSIC BATTLE')+'<div class="body">'+
-    '<div class="wordcard"><div class="w" style="font-size:19px">أول واحد يعرف يدوس اسمه!</div></div>'+
-    '<button class="btn mt2" style="background:var(--pk);color:#fff" '+(S.players.length<2?'disabled':'')+' data-act="muStart" data-arg="emoji">'+I.music+' لغز الإيموجي</button>'+
-    '<button class="btn mt" style="background:var(--pk);color:#fff" '+(S.players.length<2?'disabled':'')+' data-act="muStart" data-arg="complete">'+I.music+' كمّلها! (أمثال وأغاني)</button></div>'};
+    '<div class="big center">لغز الإيموجي + كمّلها</div>'+
+    '<div class="sub center mt">أغاني وأفلام في إيموجي — وكلمات كمّلوها — اللي يجاوب صح ياخد نقطة</div>'+
+    '<button class="btn mt2" style="background:var(--pk);color:#fff" data-act="muStart">'+I.music+' ابدأوا</button></div>'};
   });
 }
-ACTS.muStart=function(a){
-  MU={mode:a,scores:{},qs:shuffle(a==='emoji'?EMOJI:COMPLETE).slice(0,8),i:0,dead:{}};
-  muQ();
+ACTS.muStart=function(){
+  var pool=[];
+  for(var i=0;i<EMOJI.length;i++)pool.push({k:'e',d:EMOJI[i]});
+  for(var j=0;j<COMPLETE.length;j++)pool.push({k:'c',d:COMPLETE[j]});
+  MU.qs=shuffle(pool);MU.i=0;muTurn();
 };
-function muQ(){
+function muTurn(){
   if(MU.i>=MU.qs.length)return muEnd();
   var q=MU.qs[MU.i];
-  go(function(){
+  if(q.k==='e'){
+    go(function(){
+      return {html:hdr('لغز الإيموجي — '+(MU.i+1))+'<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:18px">'+
+      '<div class="wordcard"><div class="w" style="font-size:44px;letter-spacing:4px">'+q.d[0]+'</div></div>'+
+      '<div class="sub center">مين يعرف الإجابة؟</div>'+
+      '<button class="btn" data-act="muAns" data-arg="0">'+I.eye+' اظهروا الإجابة</button></div>'};
+    });
+  }else{
+    var order=shuffle([0,1,2,3]);
     var btns='';
-    for(var i=0;i<S.players.length;i++)btns+='<button class="btn sm" style="flex:1 1 45%;'+(MU.dead[i]?'opacity:.3;':'')+'" data-act="muBuzz" data-arg="'+i+'">'+esc(S.players[i].name)+'</button>';
-    return {html:hdr('سؤال '+(MU.i+1))+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="wordcard"><div class="w" style="font-size:28px">'+(MU.mode==='emoji'?q[0]:esc(q[0]))+'</div>'+
-    '<div class="sub center mt blink">أول واحد يعرف يدوس اسمه!</div></div>'+
-    '<div class="row" style="flex-wrap:wrap;gap:9px">'+btns+'</div></div>'};
-  });
+    for(var oi=0;oi<order.length;oi++){
+      var idx=order[oi];
+      btns+='<button class="btn ghost sm mt" data-act="muAns" data-arg="'+(idx===q.d[2]?1:0)+'">'+esc(q.d[1][idx])+'</button>';
+    }
+    go(function(){
+      return {html:hdr('كمّلها — '+(MU.i+1))+'<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:14px">'+
+      '<div class="wordcard"><div class="w" style="font-size:22px">'+esc(q.d[0])+'</div></div>'+btns+'</div>'};
+    });
+  }
 }
-ACTS.muBuzz=function(a){
-  var i=parseInt(a,10);
-  if(MU.dead[i])return;
-  sfx.pop();
-  var q=MU.qs[MU.i];
-  go(function(){
-    var opts='';
-    for(var k=0;k<q[1].length;k++)opts+='<button class="btn ghost" data-act="muAns" data-arg="'+i+':'+k+'">'+esc(q[1][k])+'</button>';
-    return {html:hdr('دور '+esc(S.players[i].name))+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="wordcard"><div class="w" style="font-size:24px">'+(MU.mode==='emoji'?q[0]:esc(q[0]))+'</div></div>'+opts+
-    '<button class="btn red sm" data-act="muAns" data-arg="'+i+':-1">معرفش!</button></div>'};
-  });
-};
 ACTS.muAns=function(a){
-  var p=a.split(':');
-  var i=parseInt(p[0],10),k=parseInt(p[1],10);
   var q=MU.qs[MU.i];
-  if(k===q[2]){
-    MU.scores[i]=(MU.scores[i]||0)+15;
-    sfx.win();confetti(50);
-    award(S.players[i].name,15,{music:1});saveP();
-    toast('صح! +15');
-    MU.i++;MU.dead={};muQ();
+  if(q.k==='e'){
+    sfx.good();
+    go(function(){
+      return {html:hdr('الإجابة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+      '<div class="wordcard"><div class="w" style="font-size:28px">'+esc(q.d[1][0])+'</div></div>'+
+      '<button class="btn" data-act="muNext">التالي</button></div>'};
+    });
   }else{
-    MU.dead[i]=1;sfx.bad();
-    var alive=0;
-    for(var j=0;j<S.players.length;j++)if(!MU.dead[j])alive++;
-    if(alive===0){MU.i++;MU.dead={};muQ()}
-    else{toast('غلط! '+S.players[i].name+' خارج');muQ()}
+    if(a==='1'){confetti(40);sfx.win();toast('إجابة صح!')}
+    else{sfx.bad();toast('غلط! الإجابة: '+q.d[1][q.d[2]])}
+    MU.i++;tm(muTurn,900);
   }
 };
+ACTS.muNext=function(){sfx.pop();MU.i++;muTurn()};
 function muEnd(){
-  var rk=[];
-  for(var i=0;i<S.players.length;i++)rk.push([S.players[i].name,MU.scores[i]||0]);
-  rk.sort(function(a,b){return b[1]-a[1]});
+  confetti(90);sfx.win();
   go(function(){
-    var pills='';
-    for(i=0;i<rk.length;i++)pills+='<div class="score-pill"><span>'+esc(rk[i][0])+'</span><span>'+rk[i][1]+'</span></div>';
-    return {html:hdr('MUSIC — النتيجة')+
-    '<div class="body"><div class="wordcard"><div class="w">'+esc(rk[0][0])+'</div></div>'+pills+
-    '<button class="btn mt2" data-act="tab" data-arg="games">'+I.back+' خلصنا</button></div>'};
+    return {html:hdr('MUSIC BATTLE')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="gic" style="background:var(--pk);width:80px;height:80px">'+I.music+'</div>'+
+    '<div class="big center">خلصت الأسئلة!</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
   });
-  if(rk[0][1]>0){confetti(100);sfx.win()}
 }
 
-/* ===== 1v1 ===== */
-var AR={sel:{},a:0,b:0,game:0,sa:0,sb:0};
+/* ===== 1 VS 1 ARENA ===== */
+var AR={a:0,b:0,qs:[],i:0,sa:0,sb:0,turn:0};
 function arMenu(){
-  AR.sel={};
+  var btns='';
+  for(var i=0;i<S.players.length;i++)btns+='<div class="grow" data-act="arPickA" data-arg="'+i+'">'+avHTML(i)+'<div class="gt">'+esc(S.players[i].name)+'</div></div>';
   go(function(){
-    var rows='';
-    for(var i=0;i<S.players.length;i++)rows+='<div class="grow" data-act="arSel" data-arg="'+i+'">'+avHTML(i)+'<div class="gt">'+esc(S.players[i].name)+'</div></div>';
-    var names=['Fastest Finger — مين يدوس أسرع','Trivia Duel — 6 أسئلة','Word Battle — كلمة من آخر حرف','Memory Duel — احفظ الرقم','Target — أهداف بسرعة'];
-    var games='';
-    for(var g=0;g<names.length;g++)games+='<div class="grow" data-act="arGame" data-arg="'+g+'"><div class="gt">'+names[g]+'</div></div>';
     return {html:hdr('1 VS 1 ARENA')+'<div class="body">'+
-    '<div class="big">اختاروا اتنين</div>'+rows+
-    '<div class="big mt2">اختاروا اللعبة</div>'+games+'</div>'};
+    '<div class="big">اختار اللاعب الأول</div><div class="mt">'+btns+'</div></div>'};
   });
 }
-ACTS.arSel=function(a){
-  var i=parseInt(a,10);
-  if(AR.sel[i])delete AR.sel[i];
-  else{
-    var cnt=0;
-    for(var k in AR.sel)cnt++;
-    if(cnt>=2)return toast('اتنين بس!');
-    AR.sel[i]=1;
+ACTS.arPickA=function(a){
+  AR.a=parseInt(a,10);sfx.tap();
+  var btns='';
+  for(var j=0;j<S.players.length;j++){
+    if(j===AR.a)continue;
+    btns+='<div class="grow" data-act="arPickB" data-arg="'+j+'">'+avHTML(j)+'<div class="gt">'+esc(S.players[j].name)+'</div></div>';
   }
-  sfx.tap();arMenu();
-};
-ACTS.arGame=function(a){
-  var keys=[];
-  for(var k in AR.sel)keys.push(parseInt(k,10));
-  if(keys.length!==2)return toast('اختاروا اتنين الأول');
-  AR.a=keys[0];AR.b=keys[1];
-  AR.game=parseInt(a,10);AR.sa=0;AR.sb=0;
-  arMatch();
-};
-function arMatch(){
   go(function(){
-    return {html:hdr('1 VS 1')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-    '<div class="vs"><div class="p">'+avHTML(AR.a)+'<b>'+esc(S.players[AR.a].name)+'</b><span class="tag y" id="sa">'+AR.sa+'</span></div>'+
-    '<div class="x">VS</div>'+
-    '<div class="p">'+avHTML(AR.b)+'<b>'+esc(S.players[AR.b].name)+'</b><span class="tag y" id="sb">'+AR.sb+'</span></div></div>'+
-    '<button class="btn tl" data-act="arGo">'+I.swords+' ابدأوا المباراة</button></div>'};
+    return {html:hdr('اختار الخصم')+'<div class="body"><div class="big">مين ضده؟</div><div class="mt">'+btns+'</div></div>'};
   });
-}
-ACTS.arGo=function(){
-  sfx.pop();
-  var f=[arFastest,arTrivia,arWord,arMemory,arTarget];
-  f[AR.game]();
 };
-function arScore(a,b){
-  AR.sa+=a;AR.sb+=b;
-  var ea=$('#sa'),eb=$('#sb');
-  if(ea)ea.textContent=AR.sa;
-  if(eb)eb.textContent=AR.sb;
-}
-function arEnd(){
-  var win=AR.sa>AR.sb?AR.a:(AR.sb>AR.sa?AR.b:-1);
-  if(win>=0){award(S.players[win].name,80,{wins:1});saveP();confetti(120);sfx.win()}
-  go(function(){
-    return {html:hdr('نتيجة المواجهة')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-    '<div class="vs"><div class="p">'+avHTML(AR.a)+'<b>'+AR.sa+'</b></div><div class="x">VS</div><div class="p">'+avHTML(AR.b)+'<b>'+AR.sb+'</b></div></div>'+
-    '<div class="wordcard"><div class="w" style="font-size:22px">'+(win<0?'تعادل!':'الفائز: '+esc(S.players[win].name))+'</div></div>'+
-    '<button class="btn" data-act="arMenu">'+I.swords+' مباراة تانية</button></div>'};
-  });
-}
-ACTS.arMenu=function(){arMenu()};
-function arFastest(){
-  var round=0,accept=true;
-  go(function(){
-    return {html:hdr('Fastest Finger — الأفضل من 5')+
-    '<div class="halves" style="flex:1">'+
-    '<div class="half" id="h0" style="background:'+pcol(AR.a)+'44"><div class="hname" style="color:'+pcol(AR.a)+'">'+esc(S.players[AR.a].name)+'</div><div class="big blink" id="st0">استعدوا...</div></div>'+
-    '<div class="half" id="h1" style="background:'+pcol(AR.b)+'44"><div class="hname" style="color:'+pcol(AR.b)+'">'+esc(S.players[AR.b].name)+'</div><div class="big" id="st1"></div></div></div>',
-    after:function(sc){
-      var ready=false,goT=null;
-      function finish(side,msg){
-        ready=false;accept=false;clearTimeout(goT);
-        var s0=$('#st0'),s1=$('#st1');
-        if(s0){s0.textContent=msg;s0.className='big'}
-        if(s1)s1.textContent='';
-        if(side>=0){arScore(side===0?1:0,0);sfx.good()}else sfx.bad();
-        tm(function(){
-          round++;
-          if(round>=5)arEnd();else newRound();
-        },1400);
-      }
-      function newRound(){
-        if(!sc.isConnected)return;
-        accept=true;
-        var s0=$('#st0'),s1=$('#st1');
-        if(s0){s0.textContent='استعدوا...';s0.className='big blink'}
-        if(s1)s1.textContent='';
-        ready=false;
-        goT=tm(function(){
-          ready=true;
-          if(s0)s0.textContent='دوس!';
-          sfx.pop();
-          tm(function(){if(ready)finish(-1,'عدى الوقت!')},1200);
-        },1500+Math.random()*2500);
-      }
-      function mk(side){
-        return function(e){
-          if(e.preventDefault)e.preventDefault();
-          if(!sc.isConnected)return;
-          if(!accept)return;
-          if(ready)finish(side,S.players[side===0?AR.a:AR.b].name+' أسرع!');
-          else finish(side===0?1:0,S.players[side===0?AR.a:AR.b].name+' داس بدري!');
-        };
-      }
-      var h0=$('#h0'),h1=$('#h1');
-      if(h0){h0.addEventListener('touchstart',mk(0),false);h0.addEventListener('mousedown',mk(0),false)}
-      if(h1){h1.addEventListener('touchstart',mk(1),false);h1.addEventListener('mousedown',mk(1),false)}
-      newRound();
-    }};
-  });
-}
-function arTrivia(){
-  window._ART={qs:shuffle(TRIVIA).slice(0,6),qi:0,turn:0};
-  arTAsk();
-}
-function arTAsk(){
-  var st=window._ART,q=st.qs[st.qi];
-  go(function(){
+ACTS.arPickB=function(a){
+  AR.b=parseInt(a,10);
+  AR.qs=shuffle(TRIVIA).slice(0,8);AR.i=0;AR.sa=0;AR.sb=0;AR.turn=0;
+  sfx.pop();arTurn();
+};
+function arTurn(){
+  if(AR.i>=AR.qs.length)return arEnd();
+  var cur=AR.turn===0?AR.a:AR.b;
+  var q=AR.qs[AR.i];
+  passGo(cur,'سؤال لك — ركّز!',function(){
     var opts='';
-    for(var k=0;k<q[1].length;k++)opts+='<button class="btn ghost" data-act="arTAns" data-arg="'+k+'">'+esc(q[1][k])+'</button>';
-    return {html:hdr('Trivia — '+(st.qi+1)+'/6')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="card center"><b>دور: '+esc(S.players[st.turn===0?AR.a:AR.b].name)+'</b></div>'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    for(var o=0;o<4;o++)opts+='<button class="btn ghost sm mt" data-act="arAns" data-arg="'+o+'">'+esc(q[1][o])+'</button>';
+    go(function(){
+      return {html:hdr('دور '+esc(S.players[cur].name))+'<div class="body">'+
+      '<div class="score-pill"><span>'+esc(S.players[AR.a].name)+' '+AR.sa+'</span><span>'+AR.sb+' '+esc(S.players[AR.b].name)+'</span></div>'+
+      '<div class="wordcard mt"><div class="w" style="font-size:22px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    });
   });
 }
-ACTS.arTAns=function(a){
-  var st=window._ART,q=st.qs[st.qi],k=parseInt(a,10);
-  if(k===q[2]){sfx.good();if(st.turn===0)arScore(1,0);else arScore(0,1)}
-  else sfx.bad();
-  st.qi++;st.turn=1-st.turn;
-  if(st.qi>=6)arEnd();else arTAsk();
+ACTS.arAns=function(a){
+  var q=AR.qs[AR.i];
+  var ok=parseInt(a,10)===q[2];
+  if(AR.turn===0){if(ok)AR.sa+=10;else AR.sb+=5}
+  else{if(ok)AR.sb+=10;else AR.sa+=5}
+  if(ok){sfx.good();toast('صح!')}else{sfx.bad();toast('غلط — الإجابة: '+q[1][q[2]])}
+  AR.i++;AR.turn=1-AR.turn;
+  tm(arTurn,900);
 };
-function arWord(){
-  window._ARW={cur:rnd(['مدرسة','عربية','قهوة','بيت','نهار']),used:{},turn:0};
-  arWAsk();
-}
-function arWAsk(){
-  var st=window._ARW;
+function arEnd(){
+  var win=AR.sa===AR.sb?-1:(AR.sa>AR.sb?AR.a:AR.b);
   go(function(){
-    return {html:hdr('Word Battle')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="card center"><b>دور: '+esc(S.players[st.turn===0?AR.a:AR.b].name)+'</b></div>'+
-    '<div class="wordcard"><div class="w">'+esc(st.cur)+'</div><div class="sub">ابدأ بحرف: '+esc(st.cur.charAt(st.cur.length-1))+'</div></div>'+
-    '<input id="wv" placeholder="كلمتك..." maxlength="20">'+
-    '<button class="btn" data-act="arWSend">'+I.check+' ابعت</button>'+
-    '<div class="sub" style="font-size:12px">أول 3 نقاط يكسب — 12 ثانية لكل كلمة</div></div>',
-    after:function(){
-      var t=12;
-      iv(function(){
-        t--;
-        if(t<=0){
-          sfx.bad();toast('خلص الوقت!');
-          if(st.turn===0)arScore(0,1);else arScore(1,0);
-          if(AR.sa>=3||AR.sb>=3)arEnd();
-          else{st.turn=1-st.turn;arWAsk()}
-        }
-      },1000);
-    }};
+    return {html:hdr('النتيجة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
+    '<div class="score-pill" style="width:100%"><span>'+esc(S.players[AR.a].name)+' '+AR.sa+'</span><span>'+AR.sb+' '+esc(S.players[AR.b].name)+'</span></div>'+
+    (win>=0?'<div class="big center">'+(win===AR.a?esc(S.players[AR.a].name):esc(S.players[AR.b].name))+' كسب!</div>':'<div class="big center">تعادل!</div>')+
+    '<button class="btn mt" data-act="arAgain">جولة كمان</button>'+
+    '<button class="btn ghost" data-act="tab" data-arg="games">ارجعوا للألعاب</button></div>'};
+  });
+  if(win>=0){award(S.players[win].name,60,{wins:1});saveP();confetti(100);sfx.win()}else sfx.good();
+}
+ACTS.arAgain=function(){sfx.pop();arMenu()};
+
+/* ===== TEAM BATTLE ===== */
+var TE={t1:[],t2:[],s1:0,s2:0,qs:[],i:0,turn:0};
+function teSetup(){
+  go(function(){
+    return {html:hdr('TEAM BATTLE')+'<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
+    '<button class="btn" data-act="teSplit">'+I.users+' قسموا الشلة عشوائي</button>'+
+    '<div id="teinfo" class="sub center">مفيش تقسيم لسه</div>'+
+    '<button class="btn gr" id="tego" disabled data-act="teStart">'+I.swords+' ابدأوا المعركة</button></div>'};
   });
 }
-ACTS.arWSend=function(){
-  var st=window._ARW;
-  var v=$('#wv').value.trim();
-  if(!v)return toast('اكتب كلمة!');
-  var first=v.charAt(0),last=st.cur.charAt(st.cur.length-1);
-  var nf=first.replace(/ة/g,'ه').replace(/ى/g,'ي');
-  var nl=last.replace(/ة/g,'ه').replace(/ى/g,'ي');
-  if(nf!==nl||st.used[v]){
-    sfx.bad();
-    if(st.turn===0)arScore(0,1);else arScore(1,0);
-  }else{
-    st.used[v]=1;st.cur=v;sfx.good();
-    if(st.turn===0)arScore(1,0);else arScore(0,1);
-  }
-  if(AR.sa>=3||AR.sb>=3)return arEnd();
-  st.turn=1-st.turn;
-  arWAsk();
+ACTS.teSplit=function(){
+  if(S.players.length<4)return toast('محتاجين 4 لاعبين على الأقل');
+  var idxs=[];
+  for(var i=0;i<S.players.length;i++)idxs.push(i);
+  idxs=shuffle(idxs);
+  TE.t1=[];TE.t2=[];
+  for(var j=0;j<idxs.length;j++){if(j%2===0)TE.t1.push(idxs[j]);else TE.t2.push(idxs[j])}
+  var n1='',n2='';
+  for(var a=0;a<TE.t1.length;a++)n1+=esc(S.players[TE.t1[a]].name)+' • ';
+  for(var b=0;b<TE.t2.length;b++)n2+=esc(S.players[TE.t2[b]].name)+' • ';
+  $('#teinfo').innerHTML='<b style="color:var(--yl)">فريق A:</b> '+n1+'<br><b style="color:var(--tl)">فريق B:</b> '+n2;
+  $('#tego').disabled=false;
+  sfx.pop();
 };
-function arMemory(){
-  window._ARM={len:4,turn:0,gen:0,num:''};
-  arMShow();
-}
-function arMShow(){
-  var st=window._ARM;
-  st.gen++;
-  var num='';
-  for(var i=0;i<st.len;i++)num+=Math.floor(Math.random()*10);
-  st.num=num;
-  go(function(){
-    return {html:hdr('Memory Duel')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-    '<div class="card center"><b>دور: '+esc(S.players[st.turn===0?AR.a:AR.b].name)+' — احفظ!</b></div>'+
-    '<div class="wordcard"><div class="w blink" id="nm" style="font-size:38px">'+num+'</div></div></div>',
-    after:function(sc){
-      sfx.tick();
-      tm(function(){
-        var nm=$('#nm');
-        if(nm){nm.textContent='؟؟؟';nm.className='w'}
-        tm(function(){
-          if(!sc.isConnected)return;
-          go(function(){
-            return {html:hdr('اكتب الرقم')+
-            '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-            '<div class="card center"><b>'+esc(S.players[st.turn===0?AR.a:AR.b].name)+' — الرقم كان إيه؟</b></div>'+
-            '<input id="mv" maxlength="10" placeholder="الرقم...">'+
-            '<button class="btn" data-act="arMSend">'+I.check+' ابعت</button></div>'};
-          });
-        },700);
-      },2600);
-    }};
+ACTS.teStart=function(){TE.qs=shuffle(TRIVIA).slice(0,12);TE.i=0;TE.s1=0;TE.s2=0;TE.turn=0;teTurn()};
+function teTurn(){
+  if(TE.i>=TE.qs.length)return teEnd();
+  var t=TE.turn===0?TE.t1:TE.t2;
+  var cur=t[TE.i%t.length];
+  var q=TE.qs[TE.i];
+  passGo(cur,'جاوب لفريقك!',function(){
+    var opts='';
+    for(var o=0;o<4;o++)opts+='<button class="btn ghost sm mt" data-act="teAns" data-arg="'+o+'">'+esc(q[1][o])+'</button>';
+    go(function(){
+      return {html:hdr(TE.turn===0?'فريق A':'فريق B')+'<div class="body">'+
+      '<div class="score-pill"><span>A: '+TE.s1+'</span><span>B: '+TE.s2+'</span></div>'+
+      '<div class="wordcard mt"><div class="w" style="font-size:22px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    });
   });
 }
-ACTS.arMSend=function(){
-  var st=window._ARM;
-  var v=$('#mv').value.trim();
-  if(v===st.num){sfx.good();st.len++;if(st.turn===0)arScore(1,0);else arScore(0,1)}
-  else{sfx.bad();if(st.turn===0)arScore(0,1);else arScore(1,0)}
-  st.turn=1-st.turn;
-  if(st.gen>=8||AR.sa+AR.sb>=6)return arEnd();
-  arMShow();
+ACTS.teAns=function(a){
+  var q=TE.qs[TE.i];
+  var ok=parseInt(a,10)===q[2];
+  if(ok){if(TE.turn===0)TE.s1+=10;else TE.s2+=10;sfx.good()}
+  else{sfx.bad();toast('غلط! الإجابة: '+q[1][q[2]])}
+  TE.i++;TE.turn=1-TE.turn;tm(teTurn,900);
 };
-function arTarget(){
+function teEnd(){
+  var w=TE.s1===TE.s2?0:(TE.s1>TE.s2?1:2);
   go(function(){
-    return {html:hdr('Target — 8 أهداف')+
-    '<div style="flex:1;position:relative;overflow:hidden;background:#14100c">'+
-    '<div class="card" style="position:absolute;top:12px;left:12px;right:12px;text-align:center;z-index:2"><b>الهدف في نص مين — هو اللي يضغطه خلال 1.4 ث!</b></div>'+
-    '<div id="tgt" style="position:absolute;width:70px;height:70px;border-radius:50%;background:var(--yl);border:4px solid #1a1408;display:none;cursor:pointer;z-index:3"></div></div>',
-    after:function(sc){
-      var shots=0;
-      function spawn(){
-        if(!sc.isConnected)return;
-        if(shots>=8)return arEnd();
-        shots++;
-        var side=Math.random()<.5?0:1;
-        var t=$('#tgt');
-        if(!t)return;
-        t.style.display='block';
-        t.style.background=side===0?pcol(AR.a):pcol(AR.b);
-        t.style.left=(side===0?10+Math.random()*35:55+Math.random()*35)+'%';
-        t.style.top=(25+Math.random()*55)+'%';
-        sfx.tick();
-        var done=false;
-        function hit(){
-          if(done)return;done=true;clearTimeout(to);
-          if(side===0)arScore(1,0);else arScore(0,1);
-          sfx.good();t.style.display='none';
-          tm(spawn,700);
-        }
-        t.onclick=hit;
-        var to=tm(function(){
-          if(done)return;done=true;sfx.bad();
-          t.style.display='none';tm(spawn,700);
-        },1400);
-      }
-      tm(spawn,1000);
-    }};
+    return {html:hdr('النتيجة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
+    '<div class="score-pill" style="width:100%"><span>فريق A: '+TE.s1+'</span><span>فريق B: '+TE.s2+'</span></div>'+
+    '<div class="big center">'+(w===0?'تعادل!':(w===1?'فريق A كسب!':'فريق B كسب!'))+'</div>'+
+    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
   });
+  if(w>0){
+    var winners=w===1?TE.t1:TE.t2;
+    for(var i=0;i<winners.length;i++)award(S.players[winners[i]].name,50,{wins:1});
+    saveP();confetti(120);sfx.win();
+  }else sfx.good();
 }
 
-/* ===== SOLO (بمستويات) ===== */
+/* ===== SOLO GAMES ===== */
+function lvlGet(g){var l={};try{l=JSON.parse(localStorage.getItem('shala_lvl')||'{}')}catch(e){}return l[g]||1}
+function lvlSet(g,v){var l={};try{l=JSON.parse(localStorage.getItem('shala_lvl')||'{}')}catch(e){}l[g]=v;try{localStorage.setItem('shala_lvl',JSON.stringify(l))}catch(e){}}
+function soloEnd(g,won){
+  if(won){
+    var lv=lvlGet(g);
+    if(lv<10)lvlSet(g,lv+1);
+    confetti(70);sfx.win();
+    var done=Math.min(lv,10);
+    go(function(){
+      return {html:hdr('SOLO')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+      '<div class="wordcard"><div class="sub" style="color:var(--gr);font-weight:800">مبروك!</div><div class="w" style="font-size:24px">خلصت المستوى '+done+'</div></div>'+
+      '<button class="btn" data-act="tab" data-arg="solo">ارجع للألعاب الفردية</button></div>'};
+    });
+  }else{
+    sfx.bad();
+    go(function(){
+      return {html:hdr('SOLO')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+      '<div class="wordcard red"><div class="sub" style="color:var(--red);font-weight:800">حاول تاني</div><div class="w" style="font-size:24px">مش مظبوطة المرة دي</div></div>'+
+      '<button class="btn" data-act="tab" data-arg="solo">ارجع للألعاب الفردية</button></div>'};
+    });
+  }
+}
 ACTS.soloGo=function(a){
-  sfx.tap();
   if(a==='reaction')soReaction();
   else if(a==='numbers')soNumbers();
   else if(a==='cards')soCards();
   else if(a==='pattern')soPattern();
-   else if(a==='aim')soAim();
+  else if(a==='aim')soAim();
   else if(a==='puzzle')soPuzzle();
 };
-};
-var SOLOLVL={};
-try{SOLOLVL=JSON.parse(localStorage.getItem('shala_lvl')||'{}')}catch(e){SOLOLVL={}}
-function soSaveLvl(){try{localStorage.setItem('shala_lvl',JSON.stringify(SOLOLVL))}catch(e){}}
-function soLevel(k){return SOLOLVL[k]||1}
-function soBest(k,v,lower){
-  var b={};
-  try{b=JSON.parse(localStorage.getItem('shala_best')||'{}')}catch(e){}
-  if(b[k]===undefined||(lower&&v<b[k])||(!lower&&v>b[k])){
-    b[k]=v;
-    try{localStorage.setItem('shala_best',JSON.stringify(b))}catch(e){}
-    return true;
-  }
-  return false;
-}
-var SOFN={};
-function soAllDone(k){
-  paint({html:hdr('خلصتي كل المستويات!')+
-  '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;flex:1">'+
-  '<div class="gic" style="background:var(--yl);width:80px;height:80px">'+I.crown+'</div>'+
-  '<div class="big center">أسطورة!</div>'+
-  '<div class="sub center">كسبتي الـ 10 مستويات كلها</div>'+
-  '<button class="btn" data-act="soReset" data-arg="'+k+'">العبها من الأول</button>'+
-  '<button class="btn ghost" data-act="tab" data-arg="solo">'+I.back+' ارجع</button>'+
-  '</div>'});
-}
-function soLevelUp(k){
-  var lv=soLevel(k);
-  confetti(90);sfx.win();
-  if(S.players[0])award(S.players[0].name,15,{});
-  if(lv>=10){
-    if(S.players[0])award(S.players[0].name,80,{});
-    saveP();
-    SOLOLVL[k]=11;soSaveLvl();
-    soAllDone(k);
-    return;
-  }
-  saveP();
-  SOLOLVL[k]=lv+1;soSaveLvl();
-  paint({html:hdr('المستوى '+lv+' خلص!')+
-  '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;flex:1">'+
-  '<div class="gic" style="background:var(--gr);width:80px;height:80px">'+I.check+'</div>'+
-  '<div class="big center">المستوى '+lv+' خلص!</div>'+
-  '<div class="sub center">المستوى '+(lv+1)+' أصعب شوية — يلا</div>'+
-  '<button class="btn" data-act="soAgain" data-arg="'+k+'">المستوى '+(lv+1)+'</button>'+
-  '<button class="btn ghost" data-act="tab" data-arg="solo">'+I.back+' ارجع</button>'+
-  '</div>'});
-}
-function soLose(k,msg){
-  sfx.bad();
-  paint({html:hdr('خسرتي المستوى '+soLevel(k))+
-  '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;flex:1">'+
-  '<div class="big center">'+msg+'</div>'+
-  '<div class="sub center">المستوى بيفضل زي ما هو — جربي تاني</div>'+
-  '<button class="btn" data-act="soAgain" data-arg="'+k+'">جربي تاني</button>'+
-  '<button class="btn ghost" data-act="tab" data-arg="solo">'+I.back+' ارجع</button>'+
-  '</div>'});
-}
-ACTS.soAgain=function(a){sfx.pop();if(SOFN[a])SOFN[a]()};
-ACTS.soReset=function(a){SOLOLVL[a]=1;soSaveLvl();sfx.pop();if(SOFN[a])SOFN[a]()};
-
-/* REACTION — 10 مستويات */
 function soReaction(){
-  var k='reaction';
-  SOFN[k]=soReaction;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var limit=[700,620,550,490,440,400,365,335,310,290][lv-1];
+  var lv=lvlGet('reaction');
+  var need=Math.max(170,540-lv*30);
   go(function(){
-    return {html:hdr('Reaction — مستوى '+lv+'/10')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="card center"><b>المطلوب: متوسط أسرع من '+limit+'ms</b></div>'+
-    '<div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:280px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;cursor:pointer;background:var(--red);color:#fff">استنى الأخضر...</div>'+
-    '<div class="sub center">3 محاولات</div></div>',
-    after:function(sc){
-      var state='wait',t0=0,tries=0,sum=0;
-      var box=$('#rx');
-      function arm(){
-        if(!sc.isConnected||!box)return;
-        state='wait';
-        box.style.background='var(--red)';box.style.color='#fff';box.textContent='استنى الأخضر...';
-        tm(function(){
-          if(state!=='wait')return;
-          state='go';box.style.background='var(--gr)';box.textContent='دوس!!!';t0=Date.now();sfx.pop();
-        },1200+Math.random()*2600);
-      }
-      box.onclick=function(){
-        if(state==='go'){
-          var ms=Date.now()-t0;sum+=ms;tries++;
-          state='idle';box.style.background='var(--yl)';box.style.color='#221a08';box.textContent=ms+'ms';
-          sfx.good();
-          if(tries>=3){
-            var avg=Math.round(sum/3);
-            soBest('reaction',avg,true);
-            if(S.players[0])award(S.players[0].name,Math.max(5,Math.round(Math.max(0,700-avg)/4)),{});
-            saveP();
-            if(avg<limit)soLevelUp(k);
-            else soLose(k,'متوسطك '+avg+'ms — المطلوب أقل من '+limit+'ms');
-          }else arm();
-        }else if(state==='wait'){
-          state='idle';box.textContent='دست بدري!';sfx.bad();tries++;sum+=700;
-          if(tries>=3){
-            soBest('reaction',700,true);
-            soLose(k,'دستي بدري كتير — المطلوب أقل من '+limit+'ms');
-          }else arm();
-        }
-      };
-    }};
+    return {html:hdr('REACTION — مستوى '+lv+'/10')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
+    '<div id="rb" class="wordcard" style="width:100%;cursor:pointer;min-height:150px;display:flex;flex-direction:column;justify-content:center"><div class="w" id="rt" style="font-size:26px">دوس عشان تبدأ</div><div class="sub mt">لازم ترد في أقل من '+need+'ms</div></div></div>'};
   });
+  tm(function(){
+    var box=$('#rb');if(!box)return;
+    var txt=$('#rt');
+    var st=0,t0=0,to=null;
+    box.addEventListener('click',function(){
+      if(st===0){
+        st=1;txt.textContent='استنى الأخضر...';txt.style.color='var(--red)';
+        to=tm(function(){st=2;t0=Date.now();txt.textContent='ادوس!';txt.style.color='var(--gr)'},800+Math.random()*2600);
+      }else if(st===1){
+        clearTimeout(to);st=0;txt.textContent='طردت! دوس تاني';txt.style.color='var(--red)';sfx.bad();
+      }else if(st===2){
+        var ms=Date.now()-t0;st=0;
+        if(ms<=need){soloEnd('reaction',true)}
+        else{txt.textContent=ms+'ms — بطيء! دوس تاني';txt.style.color='var(--red)';sfx.bad()}
+      }
+    });
+  },60);
 }
-
-/* NUMBER RUSH — 10 مستويات */
 function soNumbers(){
-  var k='numbers';
-  SOFN[k]=soNumbers;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var cfg=[{n:12,c:4},{n:16,c:4},{n:20,c:5},{n:25,c:5},{n:30,c:6},{n:36,c:6},{n:42,c:7},{n:48,c:8},{n:54,c:9},{n:60,c:10}][lv-1];
-  var fs=cfg.c>=9?'14px':(cfg.c>=7?'17px':'19px');
+  var lv=lvlGet('numbers');
+  var N=6+lv*2,tLimit=10+lv;
+  var nums=[];
+  for(var i=1;i<=N;i++)nums.push(i);
+  nums=shuffle(nums);
+  var cells='';
+  for(var k=0;k<N;k++)cells+='<button class="chip" style="width:30%;margin:1%;min-height:60px;font-size:22px" data-num="'+nums[k]+'">'+nums[k]+'</button>';
   go(function(){
-    var nums=[];
-    for(var i=1;i<=cfg.n;i++)nums.push(i);
-    nums=shuffle(nums);
-    var btns='';
-    for(i=0;i<nums.length;i++)btns+='<button class="btn sm num" data-n="'+nums[i]+'" style="padding:0;height:56px;font-size:'+fs+'">'+nums[i]+'</button>';
-    return {html:hdr('Number Rush — مستوى '+lv+'/10')+
-    '<div class="body"><div class="card center"><b>دوس 1 → '+cfg.n+' بالترتيب</b></div>'+
-    '<div style="display:grid;grid-template-columns:repeat('+cfg.c+',1fr);gap:8px;margin-top:12px">'+btns+'</div></div>',
-    after:function(sc){
-      var next=1,t0=Date.now();
-      var bs=sc.querySelectorAll('.num');
-      for(var i=0;i<bs.length;i++){
-        bs[i].onclick=function(){
-          if(parseInt(this.getAttribute('data-n'),10)===next){
-            this.style.background='var(--tl)';this.disabled=true;
-            sfx.tick();next++;
-            if(next>cfg.n){
-              var secs=(Date.now()-t0)/1000;
-              var rec=soBest('numbers',Math.round(secs*10)/10,true);
-              if(S.players[0])award(S.players[0].name,Math.max(5,Math.round(cfg.n*1.5-secs)),{});
-              saveP();confetti(60);sfx.win();
-              toast('وقتك: '+secs.toFixed(1)+' ث'+(rec?' — قياسي!':''));
-              soLevelUp(k);
-            }
-          }else sfx.bad();
-        };
-      }
-    }};
+    return {html:hdr('NUMBER RUSH — مستوى '+lv+'/10')+'<div class="body">'+
+    '<div class="score-pill"><span>ادوس من 1 لـ '+N+'</span><span id="nt">'+tLimit+'s</span></div>'+
+    '<div style="display:flex;flex-wrap:wrap" id="ngrid">'+cells+'</div></div>'};
+  });
+  var next=1,t=tLimit;
+  iv(function(){
+    t--;var el=$('#nt');if(el)el.textContent=t+'s';
+    if(t<=0){soloEnd('numbers',false)}
+  },1000);
+  $('#ngrid').addEventListener('click',function(e){
+    var b=e.target.getAttribute?e.target.getAttribute('data-num'):null;
+    if(b===null)return;
+    var n=parseInt(b,10);
+    if(n===next){
+      e.target.style.visibility='hidden';sfx.tick();next++;
+      if(next>N)soloEnd('numbers',true);
+    }else{sfx.bad();t=Math.max(0,t-2)}
   });
 }
-
-/* MEMORY CARDS — 10 مستويات */
 function soCards(){
-  var k='cards';
-  SOFN[k]=soCards;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var pairs=[4,6,8,10,12,13,14,15,16,18][lv-1];
-  var maxMoves=[10,14,18,23,28,32,35,38,42,46][lv-1];
-  var CSYMS=[['★','#ffc93d'],['♥','#ff5d5d'],['♛','#38d3c0'],['⚡','#ff8f3d'],['✿','#e86fa4'],['☻','#4ecb71'],['♪','#7fd0ff'],['✪','#f4d06f'],['♞','#c9a1ff'],['☂','#7fd0ff'],['⚑','#ff8f3d'],['☯','#4ecb71'],['☀','#ffc93d'],['☘','#4ecb71'],['⚔','#38d3c0'],['☕','#e86fa4'],['❄','#7fd0ff'],['⌚','#f4d06f']];
-  var pool=CSYMS.slice(0,pairs);
-  var deck=shuffle(pool.concat(pool));
-  var cols=deck.length>24?6:4;
-  var open=[],moves=0,lock=false,myscr=null,over=false;
-  function render(){
-    var grid='';
-    for(var i=0;i<deck.length;i++){
-      var shown=open.indexOf(i)>=0;
-      var done=deck[i][2];
-      grid+='<button class="btn sm" data-i="'+i+'" style="padding:0;height:70px;font-size:22px;'+(done?'background:var(--gr);color:#06270f;':'')+(shown&&!done?'background:#f7efdd;color:#221a08;':'')+'">'+((shown||done)?('<span style="color:'+deck[i][1]+'">'+deck[i][0]+'</span>'):'؟')+'</button>';
-    }
-    paint({html:hdr('Memory — مستوى '+lv+'/10')+
-    '<div class="body"><div class="card center"><b>'+pairs+' أزواج — نقلات: '+moves+' / '+maxMoves+'</b></div>'+
-    '<div style="display:grid;grid-template-columns:repeat('+cols+',1fr);gap:9px;margin-top:12px">'+grid+'</div></div>',
-    after:function(sc){
-      myscr=sc;
-      var bs=sc.querySelectorAll('button[data-i]');
-      for(var z=0;z<bs.length;z++){
-        bs[z].onclick=function(){
-          if(lock||over)return;
-          if(!myscr||!document.contains(myscr))return;
-          var i=parseInt(this.getAttribute('data-i'),10);
-          if(deck[i][2]||open.indexOf(i)>=0)return;
-          open.push(i);sfx.tick();
-          if(open.length===2){
-            moves++;
-            var a=open[0],b=open[1];
-            if(deck[a][0]===deck[b][0]){
-              deck[a][2]=1;deck[b][2]=1;open=[];
-              sfx.good();render();
-              var all=true;
-              for(var j=0;j<deck.length;j++)if(!deck[j][2])all=false;
-              if(all){
-                over=true;
-                soBest('cards',moves,true);
-                if(S.players[0])award(S.players[0].name,pairs*3,{});
-                saveP();
-                toast('خلصتي في '+moves+' نقلة');
-                soLevelUp(k);
-              }
-            }else{
-              if(moves>=maxMoves){
-                over=true;render();
-                soLose(k,'النقلات خلصت — كان لازم '+pairs+' أزواج في '+maxMoves+' نقلة');
-                return;
-              }
-              sfx.bad();lock=true;render();
-              setTimeout(function(){
-                if(!myscr||!document.contains(myscr))return;
-                open=[];lock=false;render();
-              },850);
-            }
-          }else render();
-        };
+  var lv=lvlGet('cards');
+  var pairs=3+lv;
+  var em=['🍎','🍌','🍇','🍓','🥕','🌽','🍕','🍩','⚽','🏀','🚗','✈️','🐱','🐶','⭐','🌙','🔥','💧'];
+  var pick=shuffle(em).slice(0,pairs);
+  var deck=shuffle(pick.concat(pick));
+  var cells='';
+  for(var i=0;i<deck.length;i++)cells+='<button class="chip" style="width:28%;margin:1%;font-size:24px;min-height:60px" data-ci="'+i+'">؟</button>';
+  go(function(){
+    return {html:hdr('MEMORY CARDS — مستوى '+lv+'/10')+'<div class="body center">'+
+    '<div class="sub">طابق كل الأزواج</div>'+
+    '<div style="display:flex;flex-wrap:wrap;justify-content:center" id="cgrid">'+cells+'</div></div>'};
+  });
+  var open=[],found=0,busy=false;
+  $('#cgrid').addEventListener('click',function(e){
+    var b=e.target.closest?e.target.closest('[data-ci]'):null;
+    if(!b||busy)return;
+    var i=parseInt(b.getAttribute('data-ci'),10);
+    if(b.textContent!=='؟')return;
+    b.textContent=deck[i];sfx.tick();
+    open.push({i:i,b:b});
+    if(open.length===2){
+      busy=true;
+      var A=open[0],B=open[1];
+      if(deck[A.i]===deck[B.i]){
+        found++;open=[];busy=false;sfx.good();
+        if(found>=pairs)tm(function(){soloEnd('cards',true)},400);
+      }else{
+        tm(function(){A.b.textContent='؟';B.b.textContent='؟';open=[];busy=false;sfx.bad()},700);
       }
-    }});
-  }
-  render();
+    }
+  });
 }
-
-/* PATTERN — 10 مستويات */
 function soPattern(){
-  var k='pattern';
-  SOFN[k]=soPattern;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var need=lv+2;
-  var PCOL=['#ff5d5d','#ffc93d','#38d3c0','#4ecb71'];
+  var lv=lvlGet('pattern');
+  var len=3+lv;
+  var cols=['#ffc93d','#ff5d5d','#38d3c0','#4ecb71','#e86fa4'];
   var seq=[];
-  for(var i=0;i<need;i++)seq.push(Math.floor(Math.random()*4));
-  var st={idx:0,showing:true,el:null,stop:false};
-  function ok(){return (!st.stop&&st.el&&document.contains(st.el))}
-  function spRender(hl){
-    if(!ok())return;
-    var pads='';
-    for(var i=0;i<4;i++)pads+='<button class="btn" data-n="'+i+'" style="padding:0;height:95px;background:'+PCOL[i]+';'+(hl===i?'outline:6px solid #fff;':'')+'"></button>';
-    paint({html:hdr('Pattern — مستوى '+lv+'/10')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="sub center">'+(st.showing?('راقب النمط — طوله '+need+' خطوات'):'كرر النمط!')+'</div>'+
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+pads+'</div></div>',
-    after:function(sc){
-      st.el=sc;
-      var ps=sc.querySelectorAll('button[data-n]');
-      for(var i=0;i<ps.length;i++){
-        ps[i].onclick=function(){
-          if(st.showing||st.stop)return;
-          var b=parseInt(this.getAttribute('data-n'),10);
-          sfx.tap();
-          if(seq[st.idx]===b){
-            st.idx++;spRender(b);
-            setTimeout(function(){spRender()},170);
-            if(st.idx>=need){
-              st.stop=true;
-              if(S.players[0])award(S.players[0].name,need*8,{});
-              saveP();
-              soLevelUp(k);
-            }
-          }else{
-            st.stop=true;sfx.bad();
-            spRender(b);
-            setTimeout(function(){soLose(k,'النمط كان غلط — طوله '+need+' خطوات')},600);
-          }
-        };
+  for(var i=0;i<len;i++)seq.push(Math.floor(Math.random()*5));
+  var pads='';
+  for(var p=0;p<5;p++)pads+='<button class="chip" data-pi="'+p+'" style="width:30%;margin:1%;min-height:80px;background:'+cols[p]+';border-color:#1a1408"></button>';
+  go(function(){
+    return {html:hdr('PATTERN — مستوى '+lv+'/10')+'<div class="body center">'+
+    '<div id="pmsg" class="sub">احفظ النمط...</div>'+
+    '<div class="wordcard mt" style="min-height:80px"><div class="w" id="ptxt" style="font-size:40px">●</div></div>'+
+    '<div style="display:flex;flex-wrap:wrap;justify-content:center" id="pgrid">'+pads+'</div></div>'};
+  });
+  tm(function(){
+    var idx=0;
+    var el=$('#ptxt'),msg=$('#pmsg');
+    var pl=iv(function(){
+      el.textContent=(idx+1)+'/'+len;
+      el.style.color=cols[seq[idx]];
+      sfx.tick();
+      idx++;
+      if(idx>=len){
+        clearInterval(pl);
+        msg.textContent='دلوقتي كرروا النمط';
+        el.textContent='؟';el.style.color='var(--yl)';
+        var pos=0;
+        $('#pgrid').addEventListener('click',function(e){
+          var b=e.target.closest?e.target.closest('[data-pi]'):null;
+          if(!b)return;
+          var pi=parseInt(b.getAttribute('data-pi'),10);
+          if(pi===seq[pos]){pos++;sfx.tick();if(pos>=len)soloEnd('pattern',true)}
+          else soloEnd('pattern',false);
+        });
       }
-    }});
-  }
-  function spPlay(){
-    if(!ok())return;
-    st.showing=true;spRender();
-    for(var q=0;q<seq.length;q++){
-      (function(p){
-        setTimeout(function(){
-          if(!ok())return;
-          spRender(p);sfx.tick();
-          setTimeout(function(){spRender()},380);
-        },700+q*650);
-      })(seq[q]);
-    }
-    setTimeout(function(){
-      if(!ok())return;
-      st.showing=false;spRender();
-    },800+seq.length*650);
-  }
-  setTimeout(spPlay,600);
+    },900);
+  },600);
 }
-
-/* AIM — 10 مستويات */
 function soAim(){
-  var k='aim';
-  SOFN[k]=soAim;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var cfg=[{t:20,need:7,size:72,life:1500},{t:22,need:10,size:64,life:1400},{t:24,need:14,size:58,life:1300},{t:26,need:18,size:52,life:1200},{t:28,need:22,size:46,life:1100},{t:30,need:26,size:42,life:1000},{t:32,need:30,size:38,life:950},{t:34,need:34,size:36,life:900},{t:36,need:38,size:34,life:850},{t:40,need:44,size:32,life:800}][lv-1];
+  var lv=lvlGet('aim');
+  var total=5+lv*2,tLimit=8+lv;
   go(function(){
-    return {html:hdr('Aim — مستوى '+lv+'/10')+
-    '<div class="body">'+
-    '<div class="card center" style="display:flex;justify-content:space-around"><b>نقاط: <span id="asc">0</span> / '+cfg.need+'</b><b>وقت: <span id="atm">'+cfg.t+'</span></b></div>'+
-    '<div id="field" style="position:relative;height:400px;margin-top:12px;border:3px dashed var(--line2);border-radius:18px;overflow:hidden">'+
-    '<div id="aim" style="position:absolute;width:'+cfg.size+'px;height:'+cfg.size+'px;border-radius:50%;background:var(--red);border:4px solid #1a1408;cursor:pointer;display:none"></div></div></div>',
-    after:function(sc){
-      var score=0,t=cfg.t,over=false;
-      function spawn(){
-        if(!sc.isConnected||over)return;
-        var a=$('#aim'),f=$('#field');
-        if(!a||!f)return;
-        a.style.display='block';
-        a.style.left=(Math.random()*(f.clientWidth-cfg.size-10))+'px';
-        a.style.top=(Math.random()*(f.clientHeight-cfg.size-10))+'px';
-        a.style.background=rnd(['#ff5d5d','#ffc93d','#38d3c0','#ff8f3d']);
-        sfx.tick();
-        var done=false;
-        function hit(){
-          if(done)return;done=true;clearTimeout(to);
-          score++;sfx.good();
-          var e=$('#asc');if(e)e.textContent=score;
-          if(!over)tm(spawn,400);
-        }
-        a.onclick=hit;
-        var to=tm(function(){
-          if(done)return;done=true;
-          if(!over)tm(spawn,400);
-        },cfg.life);
-      }
-      tm(spawn,800);
-      iv(function(){
-        t--;
-        var e=$('#atm');if(e)e.textContent=t;
-        if(t<=0){
-          over=true;
-          var a=$('#aim');if(a)a.style.display='none';
-          if(score>=cfg.need){
-            if(S.players[0])award(S.players[0].name,score*3,{});
-            saveP();
-            soLevelUp(k);
-          }else{
-            soLose(k,'جمعتي '+score+' من '+cfg.need+' المطلوبين');
-          }
-        }
-      },1000);
-    }};
+    return {html:hdr('AIM — مستوى '+lv+'/10')+'<div class="body center">'+
+    '<div class="score-pill"><span id="at">0/'+total+'</span><span id="ac">'+tLimit+'s</span></div>'+
+    '<div id="abox" class="card mt" style="position:relative;height:380px;overflow:hidden"></div></div>'};
   });
+  var hits=0,t=tLimit;
+  var box=$('#abox');
+  function spawn(){
+    var b=document.createElement('button');
+    b.style.cssText='position:absolute;width:52px;height:52px;border-radius:50%;border:3px solid #1a1408;background:var(--red);cursor:pointer';
+    b.style.left=(Math.random()*Math.max(10,box.clientWidth-60))+'px';
+    b.style.top=(Math.random()*Math.max(10,box.clientHeight-60))+'px';
+    b.onclick=function(e){
+      e.stopPropagation();
+      hits++;sfx.tick();
+      $('#at').textContent=hits+'/'+total;
+      b.remove();
+      if(hits>=total)soloEnd('aim',true);
+      else spawn();
+    };
+    box.appendChild(b);
+  }
+  spawn();
+  iv(function(){
+    t--;var el=$('#ac');if(el)el.textContent=t+'s';
+    if(t<=0)soloEnd('aim',false);
+  },1000);
 }
-  /* PUZZLE — 10 مستويات */
-var PUZ={};
 function soPuzzle(){
-  var k='puzzle';
-  SOFN[k]=soPuzzle;
-  var lv=soLevel(k);
-  if(lv>10)return soAllDone(k);
-  var n=[3,3,4,4,5,5,5,6,6,7][lv-1];
-  var shf=[40,90,150,230,330,430,530,660,820,1000][lv-1];
-  var TSZ=Math.floor(340/n);
-  var SZ=TSZ*n;
-  var art=document.createElement('canvas');
-  art.width=SZ;art.height=SZ;
-  soPzArt(art);
-  var board=[],blank=n*n-1,moves=0,won=false,started=0;
-  function reset(){
-    board=[];
-    for(var i=0;i<n*n;i++)board.push(i);
-    board[n*n-1]=-1;
-    blank=n*n-1;
-    for(var s=0;s<shf;s++){
-      var cand=[];
-      if(blank%n>0)cand.push(blank-1);
-      if(blank%n<n-1)cand.push(blank+1);
-      if(blank-n>=0)cand.push(blank-n);
-      if(blank+n<n*n)cand.push(blank+n);
-      var pick=cand[Math.floor(Math.random()*cand.length)];
-      board[blank]=board[pick];
-      board[pick]=-1;
-      blank=pick;
+  var lv=lvlGet('puzzle');
+  var N=3,tiles=[];
+  for(var i=0;i<8;i++)tiles.push(i+1);
+  tiles.push(0);
+  for(var s=0;s<200;s++){
+    var z=tiles.indexOf(0);
+    var opts=[];
+    var r=Math.floor(z/N),c=z%N;
+    if(r>0)opts.push(z-N);
+    if(r<N-1)opts.push(z+N);
+    if(c>0)opts.push(z-1);
+    if(c<N-1)opts.push(z+1);
+    var sw=opts[Math.floor(Math.random()*opts.length)];
+    tiles[z]=tiles[sw];tiles[sw]=0;
+  }
+  var moves=0,limit=60+lv*10;
+  function draw(){
+    var g='';
+    for(var k=0;k<9;k++){
+      if(tiles[k]===0)g+='<div style="width:31%;margin:1%;min-height:80px"></div>';
+      else g+='<button class="chip" data-ti="'+k+'" style="width:31%;margin:1%;min-height:80px;font-size:26px;background:var(--yl);color:#221a08;border-color:#1a1408">'+tiles[k]+'</button>';
     }
-    var solved=true;
-    for(var q=0;q<n*n-1;q++)if(board[q]!==q)solved=false;
-    if(solved){
-      var t2=blank%n>0?blank-1:blank+1;
-      board[blank]=board[t2];
-      board[t2]=-1;
-      blank=t2;
-    }
-    moves=0;won=false;started=Date.now();
+    $('#pgrid').innerHTML=g;
+    $('#pmsg').textContent='حركات: '+moves+' / '+limit;
   }
-  function drawPz(){
-    var c=$('#pzc');
-    if(!c)return;
-    var x=c.getContext('2d');
-    for(var i=0;i<n*n;i++){
-      var t=board[i];
-      var px=(i%n)*TSZ,py=Math.floor(i/n)*TSZ;
-      if(t===-1){
-        x.fillStyle='#0d0b09';
-        x.fillRect(px,py,TSZ,TSZ);
-        x.strokeStyle='#3b3227';
-        x.strokeRect(px+.5,py+.5,TSZ-1,TSZ-1);
-        continue;
+  go(function(){
+    return {html:hdr('PUZZLE — مستوى '+lv+'/10')+'<div class="body center">'+
+    '<div id="pmsg" class="sub">رتّب المربعات من 1 لـ 8</div>'+
+    '<div style="display:flex;flex-wrap:wrap" id="pgrid"></div></div>'};
+  });
+  tm(function(){
+    draw();
+    $('#pgrid').addEventListener('click',function(e){
+      var b=e.target.closest?e.target.closest('[data-ti]'):null;
+      if(!b)return;
+      var k=parseInt(b.getAttribute('data-ti'),10);
+      var z=tiles.indexOf(0);
+      var r=Math.floor(z/N),c=z%N,ok=false;
+      if(k===z-N||k===z+N||(k===z-1&&c>0)||(k===z+1&&c<N-1))ok=true;
+      if(ok){
+        tiles[z]=tiles[k];tiles[k]=0;moves++;sfx.tick();draw();
+        var win=true;
+        for(var m=0;m<8;m++)if(tiles[m]!==m+1)win=false;
+        if(win)soloEnd('puzzle',true);
+        else if(moves>=limit)soloEnd('puzzle',false);
       }
-      var sx=(t%n)*TSZ,sy=Math.floor(t/n)*TSZ;
-      x.drawImage(art,sx,sy,TSZ,TSZ,px,py,TSZ,TSZ);
-      x.strokeStyle='rgba(0,0,0,.45)';
-      x.strokeRect(px+.5,py+.5,TSZ-1,TSZ-1);
-      x.fillStyle='#fff';
-      x.strokeStyle='#000';
-      x.lineWidth=2;
-      x.font='bold '+Math.max(9,Math.floor(TSZ/5))+'px Tahoma';
-      x.strokeText(String(t+1),px+4,py+14);
-      x.fillText(String(t+1),px+4,py+14);
-    }
-  }
-  PUZ.init=function(){reset();drawPz();var mv=$('#pzm');if(mv)mv.textContent='0'};
-  reset();
-  go(function(){
-    return {html:hdr('Puzzle — مستوى '+lv+'/10')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px">'+
-    '<b>نقلات: <span id="pzm">0</span></b>'+
-    '<div style="text-align:center"><div class="sub" style="font-size:10px">الشكل المطلوب</div><img id="pzprev" style="width:60px;height:60px;border-radius:10px;border:2px solid #1a1408;display:block"></div>'+
-    '</div>'+
-    '<canvas id="pzc" width="'+SZ+'" height="'+SZ+'" style="background:#0d0b09;border-radius:16px;border:3px solid #1a1408;box-shadow:5px 5px 0 #0007;width:100%;display:block;touch-action:none"></canvas>'+
-    '<div class="sub center" style="font-size:12px">دوسي المربع اللي جنب الفراغ عشان يتحرك — والرقم الصغير بيساعدك</div>'+
-    '<button class="btn ghost sm" data-act="pzNew">خلط من جديد</button>'+
-    '</div>',
-    after:function(sc){
-      var pv=$('#pzprev');
-      if(pv)pv.src=art.toDataURL();
-      drawPz();
-      function tap(e){
-        if(won)return;
-        if(e.preventDefault)e.preventDefault();
-        var c=$('#pzc');
-        if(!c)return;
-        var r=c.getBoundingClientRect();
-        var t=e.touches?e.touches[0]:e;
-        var cx=(t.clientX-r.left)*(c.width/r.width);
-        var cy=(t.clientY-r.top)*(c.height/r.height);
-        if(cx<0||cy<0||cx>=SZ||cy>=SZ)return;
-        var i=Math.floor(cy/TSZ)*n+Math.floor(cx/TSZ);
-        var adj=false;
-        if(i%n>0&&board[i-1]===-1)adj=true;
-        else if(i%n<n-1&&board[i+1]===-1)adj=true;
-        else if(i-n>=0&&board[i-n]===-1)adj=true;
-        else if(i+n<n*n&&board[i+n]===-1)adj=true;
-        if(!adj)return;
-        board[blank]=board[i];
-        board[i]=-1;
-        blank=i;
-        moves++;
-        sfx.tick();
-        drawPz();
-        var mv=$('#pzm');
-        if(mv)mv.textContent=moves;
-        var ok=true;
-        for(var q=0;q<n*n-1;q++)if(board[q]!==q)ok=false;
-        if(ok&&board[n*n-1]===-1){
-          won=true;
-          c.getContext('2d').drawImage(art,0,0);
-          var secs=(Date.now()-started)/1000;
-          confetti(90);sfx.win();
-          toast('خلصتي في '+moves+' نقلة — '+Math.round(secs)+' ث');
-          if(S.players[0])award(S.players[0].name,Math.round(n*n*1.5),{});
-          saveP();
-          setTimeout(function(){
-            if(!sc.isConnected)return;
-            soLevelUp(k);
-          },1500);
-        }
-      }
-      var c=$('#pzc');
-      if(c){
-        c.addEventListener('touchstart',tap,false);
-        c.addEventListener('mousedown',tap,false);
-      }
-    }};
-  });
+    });
+  },60);
 }
-function soPzArt(c){
-  var x=c.getContext('2d');
-  var W=c.width;
-  var pals=[
-    ['#1d2d50','#f7b32b','#2a9d8f','#e76f51'],
-    ['#2b2118','#ffc93d','#38d3c0','#e86fa4'],
-    ['#16213e','#ffd76a','#4ecb71','#ff8f3d'],
-    ['#3a1f2b','#f4d06f','#7fd0ff','#ff5d5d']
-  ];
-  var p=rnd(pals);
-  x.fillStyle=p[0];
-  x.fillRect(0,0,W,W);
-  for(var i=0;i<50;i++){
-    x.fillStyle=Math.random()<.5?'#fff':'#f4d06f';
-    x.fillRect(Math.random()*W,Math.random()*W*.55,2,2);
-  }
-  x.fillStyle=p[1];
-  x.beginPath();
-  x.arc(W*rnd([.3,.5,.7]),W*.28,W*.13,0,Math.PI*2);
-  x.fill();
-  x.fillStyle=p[2];
-  x.beginPath();
-  x.moveTo(0,W);x.lineTo(0,W*.62);x.lineTo(W*.22,W*.44);x.lineTo(W*.48,W*.64);x.lineTo(W*.72,W*.46);x.lineTo(W,W*.66);x.lineTo(W,W);
-  x.closePath();x.fill();
-  x.fillStyle=p[3];
-  x.beginPath();
-  x.moveTo(0,W);x.lineTo(0,W*.78);x.lineTo(W*.3,W*.6);x.lineTo(W*.62,W*.78);x.lineTo(W,W*.62);x.lineTo(W,W);
-  x.closePath();x.fill();
-  x.fillStyle='rgba(255,255,255,.12)';
-  x.fillRect(0,W*.86,W,W*.14);
-}
-ACTS.pzNew=function(){sfx.pop();if(PUZ.init)PUZ.init()};
-
-/* ===== TEAM ===== */
-var TE={};
-function teSetup(){
-  go(function(){
-    return {html:hdr('TEAM BATTLE')+'<div class="body">'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">الشلة فريقين والنقاط للفريق</div></div>'+
-    '<div class="mt">'+
-    '<div class="grow" data-act="teStart" data-arg="trivia"><div class="gt">Team Trivia</div></div>'+
-    '<div class="grow" data-act="teStart" data-arg="chain"><div class="gt">Chain Relay</div></div></div></div>'};
-  });
-}
-ACTS.teStart=function(a){
-  if(S.players.length<4)return toast('محتاجين 4 لاعبين');
-  var idx=[];
-  for(var i=0;i<S.players.length;i++)idx.push(i);
-  idx=shuffle(idx);
-  var half=Math.ceil(idx.length/2);
-  TE={mode:a,A:idx.slice(0,half),B:idx.slice(half),sa:0,sb:0};
-  go(function(){
-    var pa='',pb='';
-    for(i=0;i<TE.A.length;i++)pa+=avHTML(TE.A[i]);
-    for(i=0;i<TE.B.length;i++)pb+=avHTML(TE.B[i]);
-    return {html:hdr('تقسيم الفرق')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="vs"><div class="p" style="background:var(--tl);border-radius:14px;padding:14px">'+pa+'<b>الأزرق</b></div><div class="x">VS</div><div class="p" style="background:var(--red);border-radius:14px;padding:14px">'+pb+'<b>الأحمر</b></div></div>'+
-    '<button class="btn" data-act="teGame">'+I.play+' يلا نبدأ</button></div>'};
-  });
-};
-ACTS.teGame=function(){
-  sfx.pop();
-  if(TE.mode==='trivia')teTrivia();else teChain();
-};
-function teEnd(){
-  var win=TE.sa>TE.sb?'A':(TE.sb>TE.sa?'B':'T');
-  if(win!=='T'){
-    var w=win==='A'?TE.A:TE.B;
-    for(var i=0;i<w.length;i++)award(S.players[w[i]].name,60,{wins:1});
-    saveP();confetti(120);sfx.win();
-  }
-  go(function(){
-    return {html:hdr('TEAM — النتيجة')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="wordcard"><div class="w">'+(win==='T'?'تعادل!':'الفريق '+(win==='A'?'الأزرق كسب!':'الأحمر كسب!'))+' ('+TE.sa+' / '+TE.sb+')</div></div>'+
-    '<button class="btn" data-act="tab" data-arg="games">'+I.back+' خلصنا</button></div>'};
-  });
-}
-function teTrivia(){
-  window._TET={qs:shuffle(TRIVIA).slice(0,10),qi:0,turnA:true};
-  teTAsk();
-}
-function teTAsk(){
-  var st=window._TET,q=st.qs[st.qi];
-  go(function(){
-    var opts='';
-    for(var k=0;k<q[1].length;k++)opts+='<button class="btn ghost" data-act="teAns" data-arg="'+k+'">'+esc(q[1][k])+'</button>';
-    return {html:hdr('Team Trivia — '+(st.qi+1)+'/10')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="card center"><b>دور: الفريق '+(st.turnA?'الأزرق':'الأحمر')+'</b></div>'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
-  });
-}
-ACTS.teAns=function(a){
-  var st=window._TET,q=st.qs[st.qi],k=parseInt(a,10);
-  if(k===q[2]){sfx.good();if(st.turnA)TE.sa++;else TE.sb++}
-  else sfx.bad();
-  st.qi++;st.turnA=!st.turnA;
-  if(st.qi>=10)teEnd();else teTAsk();
-};
-function teChain(){
-  window._TEC={cur:rnd(['مدرسة','عربية','كورة','نهار','بيت']),used:{},round:0};
-  teCAsk();
-}
-function teCAsk(){
-  var st=window._TEC;
-  st.round++;
-  if(st.round>=13||TE.sa+TE.sb>=6)return teEnd();
-  var team=st.round%2?TE.A:TE.B;
-  var pi=team[st.round%team.length];
-  go(function(){
-    return {html:hdr('Chain Relay')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="card center"><b>الفريق '+(st.round%2?'الأزرق':'الأحمر')+' — '+esc(S.players[pi].name)+'</b></div>'+
-    '<div class="wordcard"><div class="w">'+esc(st.cur)+'</div><div class="sub">ابدأ بحرف: '+esc(st.cur.charAt(st.cur.length-1))+'</div></div>'+
-    '<input id="tcw" placeholder="كلمتك..." maxlength="20">'+
-    '<button class="btn" data-act="teCSend">'+I.check+' ابعت</button>'+
-    '<div class="sub" style="font-size:12px">8 ثواني لكل كلمة — أول 5 يكسب</div></div>',
-    after:function(){
-      var t=8;
-      iv(function(){
-        t--;
-        if(t<=0){
-          sfx.bad();toast('خلص الوقت!');
-          if(st.round%2)TE.sb++;else TE.sa++;
-          teCAsk();
-        }
-      },1000);
-    }};
-  });
-}
-ACTS.teCSend=function(){
-  var st=window._TEC;
-  var v=$('#tcw').value.trim();
-  if(!v)return toast('اكتب كلمة!');
-  var first=v.charAt(0),last=st.cur.charAt(st.cur.length-1);
-  var nf=first.replace(/ة/g,'ه').replace(/ى/g,'ي');
-  var nl=last.replace(/ة/g,'ه').replace(/ى/g,'ي');
-  if(nf!==nl||st.used[v]){
-    sfx.bad();
-    if(st.round%2)TE.sb++;else TE.sa++;
-  }else{
-    st.used[v]=1;st.cur=v;sfx.good();
-    if(st.round%2)TE.sa++;else TE.sb++;
-  }
-  teCAsk();
-};
 
 /* ===== CHAMPIONSHIP ===== */
-var CH={scores:{},round:0,active:false};
+var CH={active:false,scores:{},round:0};
+var CHROUNDS=['IMPOSTER','TRIVIA','REACTION','MOST LIKELY','SECRET MISSION','NUMBER RUSH','FINAL 1v1'];
 ACTS.chStart=function(){
-  CH={scores:{},round:0,active:true};
+  if(S.players.length<3)return toast('محتاجين 3 لاعبين');
+  CH.active=true;CH.round=0;CH.scores={};
   for(var i=0;i<S.players.length;i++)CH.scores[S.players[i].name]=0;
-  go(function(){
-    return {html:hdr('CHAMPIONSHIP')+
-    '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
-    '<div class="gic" style="background:var(--yl);width:80px;height:80px;animation:floaty 3s infinite">'+I.crown+'</div>'+
-    '<div class="big center">7 جولات. شلة واحدة. تاج واحد.</div>'+
-    '<button class="btn" data-act="chRound" data-arg="0">'+I.play+' يلا بينا</button></div>'};
-  });
+  IM.champ=true;
+  sfx.drum();
+  toast('الجولة 1: IMPOSTER');
+  impSetup();
 };
-function champStandings(next){
+function champStandings(r){
+  CH.round=r;
+  if(r>=CHROUNDS.length){champPodium(-1);return}
+  var arr=[];
+  for(var i=0;i<S.players.length;i++)arr.push({n:S.players[i].name,s:CH.scores[S.players[i].name]||0});
+  arr.sort(function(a,b){return b.s-a.s});
+  var rows='';
+  for(var j=0;j<arr.length;j++)rows+='<div class="score-pill" style="width:100%"><span>'+(j+1)+'. '+esc(arr[j].n)+'</span><span>'+arr[j].s+'</span></div>';
   go(function(){
-    var rk=[];
-    for(var k in CH.scores)rk.push(k);
-    rk.sort(function(a,b){return CH.scores[b]-CH.scores[a]});
-    var pills='';
-    for(var i=0;i<rk.length;i++)pills+='<div class="score-pill" style="'+(i===0?'border-color:var(--yl)':'')+'"><span>'+(i+1)+'. '+esc(rk[i])+'</span><b>'+CH.scores[rk[i]]+'</b></div>';
-    return {html:hdr('الترتيب — بعد جولة '+CH.round)+
-    '<div class="body"><div class="big center">الوضع الحالي</div>'+pills+
-    '<button class="btn mt2" data-act="chRound" data-arg="'+next+'">'+I.crown+' الجولة اللي بعدها</button></div>'};
+    return {html:hdr('البطولة — الترتيب')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;gap:8px">'+
+    '<div class="big center">خلصت الجولة '+r+' من 7</div>'+rows+
+    '<button class="btn mt2" data-act="chNext" data-arg="'+r+'">'+I.crown+' الجولة '+(r+1)+': '+CHROUNDS[r]+'</button></div>'};
   });
+  confetti(40);
 }
-ACTS.chRound=function(a){
+ACTS.chNext=function(a){
   var r=parseInt(a,10);
-  CH.round=r+1;
-  if(r===0){
-    IM.champ=true;
-    IM.cat=rnd(Object.keys(CATS));
-    IM.mode='classic';IM.disc=0;
-    var n=S.players.length;
-    var word=rnd(CATS[IM.cat]);
-    IM.F={word:word,imps:[Math.floor(Math.random()*n)],votes:{},hints:[],blindWord:rnd(CATS[IM.cat]),near:NEAR[word]||rnd(CATS[IM.cat]),mode:'classic',disc:0};
-    impReveal(0);
-  }
-  else if(r===1)chTrivia(0);
-  else if(r===2)chReaction(0);
-  else if(r===3){IM.champ=true;LK.qs=[rnd(LIKELY)];LK.i=0;LK.got={};lkVote(0)}
-  else if(r===4){IM.champ=true;ACTS.msStart()}
-  else if(r===5)chNumbers(0);
-  else chFinal();
-};
-function chTrivia(qi){
-  if(qi>=6)return champStandings(2);
-  var q=rnd(TRIVIA);
-  window._CHQ=q;
-  go(function(){
-    var btns='';
-    for(var i=0;i<S.players.length;i++)btns+='<button class="btn sm" style="flex:1 1 45%" data-act="chBuzz" data-arg="'+i+':'+qi+'">'+esc(S.players[i].name)+'</button>';
-    return {html:hdr('جولة 2 — Trivia '+(qi+1)+'/6')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">'+esc(q[0])+'</div><div class="sub">أول واحد يعرف يدوس اسمه — +15</div></div>'+
-    '<div class="row" style="flex-wrap:wrap;gap:9px">'+btns+'</div></div>'};
-  });
-}
-ACTS.chBuzz=function(a){
-  var p=a.split(':');
-  var i=parseInt(p[0],10),qi=parseInt(p[1],10);
-  var q=window._CHQ;
   sfx.pop();
-  go(function(){
+  var fns=[null,chTrivia,chReaction,chLikely,chMission,chRush,chDuel];
+  if(fns[r])fns[r]();
+};
+var CHT={i:0,qs:[]};
+function chTrivia(){
+  CHT.i=0;CHT.qs=shuffle(TRIVIA).slice(0,S.players.length);
+  chTTurn();
+}
+function chTTurn(){
+  if(CHT.i>=CHT.qs.length)return champStandings(CH.round+1);
+  var pi=CHT.i%S.players.length;
+  var q=CHT.qs[CHT.i];
+  passGo(pi,'سؤال معلومات — الإجابة الصح = 30 نقطة',function(){
+    var order=shuffle([0,1,2,3]);
     var opts='';
-    for(var k=0;k<q[1].length;k++)opts+='<button class="btn ghost" data-act="chTrAns" data-arg="'+i+':'+k+':'+q[2]+':'+qi+'">'+esc(q[1][k])+'</button>';
-    return {html:hdr('دور '+esc(S.players[i].name))+
-    '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
-    '<div class="wordcard"><div class="w" style="font-size:18px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    for(var oi=0;oi<order.length;oi++){
+      var idx=order[oi];
+      opts+='<button class="btn ghost sm mt" data-act="chTAns" data-arg="'+(idx===q[2]?1:0)+'">'+esc(q[1][idx])+'</button>';
+    }
+    go(function(){
+      return {html:hdr('TRIVIA — '+esc(S.players[pi].name))+'<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">'+
+      avHTML(pi)+'<div class="wordcard mt"><div class="w" style="font-size:22px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    });
   });
+}
+ACTS.chTAns=function(a){
+  var pi=CHT.i%S.players.length;
+  if(a==='1'){CH.scores[S.players[pi].name]+=30;sfx.good();confetti(30)}
+  else sfx.bad();
+  CHT.i++;tm(chTTurn,800);
 };
-ACTS.chTrAns=function(a){
+var CHR={i:0,times:[]};
+function chReaction(){CHR.i=0;CHR.times=[];chRTurn()}
+function chRTurn(){
+  if(CHR.i>=S.players.length)return chRResults();
+  var pi=CHR.i;
+  passGo(pi,'استنى الأخضر وادوس بأسرع وقت',function(){
+    go(function(){
+      return {html:hdr('REACTION — '+esc(S.players[pi].name))+'<div class="body" style="display:flex;flex-direction:column;justify-content:center">'+
+      '<div id="rb2" class="wordcard" style="cursor:pointer;min-height:170px;display:flex;flex-direction:column;justify-content:center"><div class="w" id="rt2" style="font-size:26px">دوس عشان تبدأ</div></div></div>'};
+    });
+    tm(function(){
+      var box=$('#rb2');if(!box)return;
+      var txt=$('#rt2');
+      var st=0,t0=0,to=null;
+      box.addEventListener('click',function(){
+        if(st===0){
+          st=1;txt.textContent='استنى...';txt.style.color='var(--red)';
+          to=tm(function(){st=2;t0=Date.now();txt.textContent='ادوس!';txt.style.color='var(--gr)'},800+Math.random()*2200);
+        }else if(st===1){
+          clearTimeout(to);st=3;
+          CHR.times[pi]=9999;CHR.i++;
+          txt.textContent='طردت! صفر نقاط';txt.style.color='var(--red)';sfx.bad();
+          tm(chRTurn,1000);
+        }else if(st===2){
+          var ms=Date.now()-t0;st=3;
+          CHR.times[pi]=ms;
+          txt.textContent=ms+'ms';
+          if(ms<300){CH.scores[S.players[pi].name]+=50;sfx.win()}
+          else if(ms<500){CH.scores[S.players[pi].name]+=30;sfx.good()}
+          else{CH.scores[S.players[pi].name]+=10;sfx.tap()}
+          CHR.i++;
+          tm(chRTurn,1200);
+        }
+      });
+    },60);
+  });
+}
+function chRResults(){
+  var arr=[];
+  for(var i=0;i<S.players.length;i++)arr.push({i:i,t:CHR.times[i]||9999});
+  arr.sort(function(a,b){return a.t-b.t});
+  if(arr[0]&&arr[0].t<9999)CH.scores[S.players[arr[0].i].name]+=30;
+  champStandings(CH.round+1);
+}
+var CHL={q:'',votes:{}};
+function chLikely(){
+  CHL.q=rnd(LIKELY);CHL.votes={};
+  go(function(){
+    return {html:hdr('MOST LIKELY')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+    '<div class="wordcard"><div class="w" style="font-size:22px">'+esc(CHL.q)+'</div></div>'+
+    '<button class="btn" data-act="chLVote">'+I.q+' اتفقتم؟ يلا نصوّت</button></div>'};
+  });
+}
+ACTS.chLVote=function(){chLCast(0)};
+function chLCast(i){
+  if(i>=S.players.length)return chLResult();
+  passGo(i,'صوّت على مين يستاهل اللقب',function(){
+    var btns='';
+    for(var j=0;j<S.players.length;j++){
+      if(j===i)continue;
+      btns+='<div class="grow" data-act="chLCast2" data-arg="'+i+':'+j+'">'+avHTML(j)+'<div class="gt">'+esc(S.players[j].name)+'</div></div>';
+    }
+    go(function(){
+      return {html:hdr('التصويت')+'<div class="body">'+avHTML(i)+'<div class="big center mt">'+esc(S.players[i].name)+' — صوتك؟</div><div class="mt">'+btns+'</div></div>'};
+    });
+  });
+}
+ACTS.chLCast2=function(a){
   var p=a.split(':');
-  var i=parseInt(p[0],10),k=parseInt(p[1],10),ans=parseInt(p[2],10),qi=parseInt(p[3],10);
-  if(k===ans){
-    CH.scores[S.players[i].name]+=15;
-    award(S.players[i].name,15,{trivia:1});saveP();
-    sfx.good();confetti(40);
-  }else sfx.bad();
-  chTrivia(qi+1);
+  var v=parseInt(p[1],10);
+  CHL.votes[v]=(CHL.votes[v]||0)+1;
+  sfx.pop();chLCast(parseInt(p[0],10)+1);
 };
-function chReaction(i){
-  if(i>=S.players.length)return champStandings(3);
-  passGo(i,'(بطولة) اختبر رد فعلك',function(){
-    go(function(){
-      return {html:hdr('Reaction — '+esc(S.players[i].name))+
-      '<div class="body" style="display:flex;flex-direction:column;justify-content:center;gap:12px">'+
-      '<div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:280px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;cursor:pointer;background:var(--red);color:#fff">استنى الأخضر...</div></div>',
-      after:function(sc){
-        var state='wait',t0=0;
-        var box=$('#rx');
-        tm(function(){
-          if(state!=='wait'||!box)return;
-          state='go';
-          box.style.background='var(--gr)';box.textContent='دوس!';
-          t0=Date.now();sfx.pop();
-        },1200+Math.random()*2500);
-        function press(){
-          if(state!=='go')return;
-          var ms=Date.now()-t0;
-          var pts=Math.max(0,600-ms);
-          CH.scores[S.players[i].name]+=pts;
-          award(S.players[i].name,Math.round(pts/4),{});saveP();
-          sfx.good();toast(ms+'ms — +'+pts);
-          chReaction(i+1);
-        }
-        if(box)box.onclick=press;
-      }};
-    });
+function chLResult(){
+  var win=null,mx=-1;
+  for(var k in CHL.votes)if(CHL.votes[k]>mx){mx=CHL.votes[k];win=parseInt(k,10)}
+  if(win!==null)CH.scores[S.players[win].name]+=60;
+  go(function(){
+    return {html:hdr('النتيجة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">'+
+    '<div class="sub center">'+esc(CHL.q)+'</div>'+
+    (win!==null?avHTML(win,'big'):'<div class="big">محدا صوّت!</div>')+
+    (win!==null?'<div class="big center">'+esc(S.players[win].name)+' +60</div>':'')+
+    '</div>'};
   });
+  if(win!==null){confetti(60);sfx.win()}
+  tm(function(){champStandings(CH.round+1)},1800);
 }
-function chNumbers(i){
-  if(i>=S.players.length)return champStandings(6);
-  passGo(i,'(بطولة) Number Rush',function(){
-    go(function(){
-      var nums=shuffle([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]);
-      var btns='';
-      for(var k=0;k<nums.length;k++)btns+='<button class="btn sm num" data-n="'+nums[k]+'" style="padding:0;height:54px;font-size:19px">'+nums[k]+'</button>';
-      return {html:hdr('Number Rush — '+esc(S.players[i].name))+
-      '<div class="body"><div class="card center"><b>دوس 1 → 25</b></div>'+
-      '<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px">'+btns+'</div></div>',
-      after:function(sc){
-        var next=1,t0=Date.now();
-        var bs=sc.querySelectorAll('.num');
-        for(var k=0;k<bs.length;k++){
-          bs[k].onclick=function(){
-            if(parseInt(this.getAttribute('data-n'),10)===next){
-              this.style.background='var(--tl)';this.disabled=true;
-              sfx.tick();next++;
-              if(next>25){
-                var secs=(Date.now()-t0)/1000;
-                var pts=Math.max(0,Math.round(150-secs));
-                CH.scores[S.players[i].name]+=pts;
-                award(S.players[i].name,Math.round(pts/3),{});saveP();
-                toast(secs.toFixed(1)+' ث — +'+pts);
-                chNumbers(i+1);
-              }
-            }else sfx.bad();
-          };
-        }
-      }};
+function chMission(){
+  function rev(i){
+    if(i>=S.players.length)return champStandings(CH.round+1);
+    passGo(i,'مهمتك السرية للجولة دي',function(){
+      var m=MISSIONS[(i+3)%MISSIONS.length].replace('{p}',S.players[(i+1)%S.players.length].name).replace('{w}',rnd(WWORDS));
+      go(function(){
+        return {html:hdr('المهمة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">'+
+        avHTML(i)+
+        '<div class="wordcard"><div class="w" style="font-size:20px">'+esc(m)+'</div></div>'+
+        '<div class="row" style="width:100%"><button class="btn gr" data-act="chMDone" data-arg="'+i+'">نفذتها +30</button><button class="btn ghost" data-act="chMFail" data-arg="'+i+'">معرفتش</button></div></div>'};
+      });
     });
-  });
-}
-function chFinal(){
-  IM.champ=false;
-  var rk=[];
-  for(var k in CH.scores)rk.push(k);
-  rk.sort(function(a,b){return CH.scores[b]-CH.scores[a]});
-  var iA=0,iB=1;
-  for(var i=0;i<S.players.length;i++){
-    if(S.players[i].name===rk[0])iA=i;
-    if(S.players[i].name===rk[1])iB=i;
   }
-  AR.a=iA;AR.b=iB;
-  go(function(){
-    return {html:hdr('FINAL CHAOS')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px;justify-content:center">'+
-    '<div class="big center">النهائي!</div>'+
-    '<div class="vs"><div class="p">'+avHTML(iA)+'<b>'+esc(S.players[iA].name)+'</b></div><div class="x">VS</div><div class="p">'+avHTML(iB)+'<b>'+esc(S.players[iB].name)+'</b></div></div>'+
-    '<button class="btn" data-act="chFinalGo">'+I.play+' FINAL GO — Fastest Finger</button></div>'};
+  ACTS.chMDone=function(a){var i2=parseInt(a,10);CH.scores[S.players[i2].name]+=30;sfx.good();rev(i2+1)};
+  ACTS.chMFail=function(a){sfx.tap();rev(parseInt(a,10)+1)};
+  rev(0);
+}
+var CHN={i:0,results:[]};
+function chRush(){
+  CHN.i=0;CHN.results=[];
+  chNTurn();
+}
+function chNTurn(){
+  if(CHN.i>=S.players.length){
+    var best=-1,bt=99999;
+    for(var r=0;r<S.players.length;r++){
+      var tt=CHN.results[r]||99999;
+      if(tt<bt){bt=tt;best=r}
+    }
+    if(best>=0&&bt<99999)CH.scores[S.players[best].name]+=40;
+    return champStandings(CH.round+1);
+  }
+  var pi=CHN.i;
+  passGo(pi,'ادوس الأرقام بالترتيب بأسرع وقت — الأسرع ياخد +40 زيادة',function(){
+    var N=8;
+    var nums=[];
+    for(var i=1;i<=N;i++)nums.push(i);
+    nums=shuffle(nums);
+    var cells='';
+    for(var k=0;k<N;k++)cells+='<button class="chip" style="width:30%;margin:1%;min-height:64px;font-size:22px" data-cn="'+nums[k]+'">'+nums[k]+'</button>';
+    go(function(){
+      return {html:hdr('NUMBER RUSH — '+esc(S.players[pi].name))+'<div class="body center">'+
+      '<div class="sub">من 1 لـ '+N+'</div><div style="display:flex;flex-wrap:wrap" id="cgrid">'+cells+'</div></div>'};
+    });
+    var next=1,t0=0;
+    $('#cgrid').addEventListener('click',function(e){
+      var b=e.target.closest?e.target.closest('[data-cn]'):null;
+      if(!b)return;
+      var n=parseInt(b.getAttribute('data-cn'),10);
+      if(n===next){
+        if(next===1)t0=Date.now();
+        b.style.visibility='hidden';sfx.tick();next++;
+        if(next>N){
+          var sec=(Date.now()-t0)/1000;
+          var pts=Math.max(10,Math.round(60-sec*3));
+          CH.scores[S.players[pi].name]+=pts;
+          CHN.results[pi]=sec;
+          toast(sec.toFixed(1)+' ثانية — +'+pts+' نقطة');
+          CHN.i++;tm(chNTurn,1200);
+        }
+      }else sfx.bad();
+    });
   });
 }
-ACTS.chFinalGo=function(){
-  var iA=AR.a,iB=AR.b,sa=0,sb=0,accept=true;
-  go(function(){
-    return {html:hdr('FINAL — Fastest Finger')+
-    '<div class="halves" style="flex:1">'+
-    '<div class="half" id="h0" style="background:'+pcol(iA)+'44"><div class="hname" style="color:'+pcol(iA)+'">'+esc(S.players[iA].name)+'</div><div class="big blink" id="st0">استعدوا...</div></div>'+
-    '<div class="half" id="h1" style="background:'+pcol(iB)+'44"><div class="hname" style="color:'+pcol(iB)+'">'+esc(S.players[iB].name)+'</div><div class="big" id="st1"></div></div></div>',
-    after:function(sc){
-      var ready=false,goT=null;
-      function finishF(side){
-        ready=false;accept=false;clearTimeout(goT);
-        if(side>=0){
-          if(side===0)sa++;else sb++;
-          sfx.good();
-        }else sfx.bad();
-        if(sa>=2||sb>=2){
-          var winner=sa>sb?iA:iB;
-          CH.scores[S.players[winner].name]+=250;
-          award(S.players[winner].name,300,{wins:1});
-          saveP();chEnd(winner);
-          return;
-        }
-        tm(newRound,1300);
-      }
-      function newRound(){
-        if(!sc.isConnected)return;
-        accept=true;
-        var s0=$('#st0'),s1=$('#st1');
-        if(s0){s0.textContent='استعدوا...';s0.className='big blink'}
-        if(s1)s1.textContent='';
-        ready=false;
-        goT=tm(function(){
-          ready=true;
-          if(s0){s0.textContent='دوس!';s0.className='big'}
-          sfx.pop();
-          tm(function(){if(ready)finishF(-1)},1300);
-        },1500+Math.random()*2500);
-      }
-      function mk(side){
-        return function(e){
-          if(e.preventDefault)e.preventDefault();
-          if(!sc.isConnected)return;
-          if(!accept)return;
-          if(ready)finishF(side);
-          else finishF(side===0?1:0);
-        };
-      }
-      var h0=$('#h0'),h1=$('#h1');
-      if(h0){h0.addEventListener('touchstart',mk(0),false);h0.addEventListener('mousedown',mk(0),false)}
-      if(h1){h1.addEventListener('touchstart',mk(1),false);h1.addEventListener('mousedown',mk(1),false)}
-      newRound();
-    }};
+var CD={A:0,B:0,AS:0,BS:0,qs:[],i:0,turn:0};
+function chDuel(){
+  var arr=[];
+  for(var i=0;i<S.players.length;i++)arr.push({i:i,s:CH.scores[S.players[i].name]||0});
+  arr.sort(function(a,b){return b.s-a.s});
+  CD.A=arr[0].i;CD.B=arr[1].i;
+  CD.qs=shuffle(TRIVIA).slice(0,6);CD.i=0;CD.turn=0;CD.AS=0;CD.BS=0;
+  sfx.drum();
+  toast('الفاينل: '+S.players[CD.A].name+' ضد '+S.players[CD.B].name);
+  cdTurn();
+}
+function cdTurn(){
+  if(CD.i>=CD.qs.length)return cdEnd();
+  var cur=CD.turn===0?CD.A:CD.B;
+  var q=CD.qs[CD.i];
+  passGo(cur,'سؤال الفاينل!',function(){
+    var order=shuffle([0,1,2,3]);
+    var opts='';
+    for(var oi=0;oi<order.length;oi++){
+      var idx=order[oi];
+      opts+='<button class="btn ghost sm mt" data-act="cdAns" data-arg="'+(idx===q[2]?1:0)+'">'+esc(q[1][idx])+'</button>';
+    }
+    go(function(){
+      return {html:hdr('الفاينل — '+esc(S.players[cur].name))+'<div class="body">'+
+      '<div class="wordcard"><div class="w" style="font-size:22px">'+esc(q[0])+'</div></div>'+opts+'</div>'};
+    });
   });
+}
+ACTS.cdAns=function(a){
+  if(a==='1'){
+    if(CD.turn===0)CD.AS++;else CD.BS++;
+    sfx.good();
+  }else sfx.bad();
+  CD.i++;CD.turn=1-CD.turn;
+  tm(cdTurn,700);
 };
-function chEnd(winner){
-  CH.active=false;
-  var rk=[];
-  for(var k in CH.scores)rk.push(k);
-  rk.sort(function(a,b){return CH.scores[b]-CH.scores[a]});
-  confetti(200);sfx.win();
+function cdEnd(){
+  var w=CD.AS===CD.BS?-1:(CD.AS>CD.BS?CD.A:CD.B);
+  if(w>=0)CH.scores[S.players[w].name]+=100;
+  champPodium(w);
+}
+function champPodium(w){
+  CH.active=false;IM.champ=false;
+  var arr=[];
+  for(var i=0;i<S.players.length;i++)arr.push({n:S.players[i].name,s:CH.scores[S.players[i].name]||0});
+  arr.sort(function(a,b){return b.s-a.s});
+  var rows='';
+  for(var j=0;j<arr.length;j++)rows+='<div class="score-pill" style="width:100%"><span>'+(j+1)+'. '+esc(arr[j].n)+'</span><span>'+arr[j].s+'</span></div>';
+  var head=w>=0?esc(S.players[w].name)+' كسب البطولة!':'الفاينل خلص';
   go(function(){
-    var pills='';
-    for(var i=0;i<rk.length;i++)pills+='<div class="score-pill" style="'+(i===0?'border-color:var(--yl)':'')+'"><span>'+(i+1)+'. '+esc(rk[i])+'</span><b>'+CH.scores[rk[i]]+'</b></div>';
-    return {html:hdr('PARTY CHAMPION')+
-    '<div class="body" style="display:flex;flex-direction:column;gap:14px">'+
-    '<div class="wordcard" style="border-color:var(--yl)">'+
-    '<div class="sub">ملك الشلة لهذا اليوم</div>'+
-    '<div class="w" style="font-size:30px">'+esc(S.players[winner].name)+'</div>'+
-    '<div class="sub">'+CH.scores[S.players[winner].name]+' نقطة • +300 XP</div></div>'+
-    pills+
-    '<button class="btn mt2" data-act="chStart">'+I.crown+' بطولة تانية</button></div>'};
+    return {html:hdr('بطل البطولة')+'<div class="body" style="display:flex;flex-direction:column;align-items:center;gap:12px">'+
+    '<div class="gic" style="background:var(--yl);width:90px;height:90px">'+I.crown+'</div>'+
+    '<div class="big center">'+head+'</div>'+rows+
+    '<button class="btn mt2" data-act="tab" data-arg="games">'+I.back+' ارجعوا للألعاب</button></div>'};
   });
+  if(w>=0){
+    award(S.players[w].name,200,{wins:1});
+    for(var p=0;p<S.players.length;p++){
+      var nm=S.players[p].name;
+      if(nm!==S.players[w].name)award(nm,Math.round((CH.scores[nm]||0)/2),{});
+    }
+    saveP();confetti(200);sfx.win();
+  }
 }
 
-/* ===== RANDOM ===== */
+/* ===== زر اللعب العشوائي ===== */
 ACTS.rdGo=function(){
-  var names=['IMPOSTER!','ASK ME!','MOST LIKELY!','SECRET MISSION!','WHO IS LYING!','MUSIC!'];
-  var fns=['impSetup','amSetup','lkSetup','msSetup','lySetup','muSetup'];
-  go(function(){
-    return {html:hdr('RANDOM PARTY')+
-    '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px">'+
-    '<div class="gic" style="background:var(--yl);width:80px;height:80px;animation:floaty 2s infinite">'+I.dice+'</div>'+
-    '<div class="big" id="rr" style="font-size:28px">؟</div>'+
-    '<div class="sub">بنلف على لعبة النهارده...</div></div>',
-    after:function(sc){
-      var n=0;
-      iv(function(){
-        if(!sc.isConnected)return;
-        var el=$('#rr');
-        if(el)el.textContent=names[n%names.length];
-        sfx.tick();n++;
-        if(n>=18){
-          var pick=Math.floor(Math.random()*names.length);
-          if(el)el.textContent=names[pick];
-          sfx.win();
-          tm(function(){
-            var fn=window[fns[pick]];
-            if(typeof fn==='function')fn();
-            else toast('اللعبة مش محملة');
-          },900);
-        }
-      },110);
-    }};
-  });
+  if(S.players.length<2)return toast('ضيفوا لاعبين الأول');
+  sfx.drum();
+  var pool=['impSetup','amSetup','lkSetup','msSetup','lySetup','dwSetup','muSetup','arMenu','teSetup'];
+  var names={impSetup:'IMPOSTER',amSetup:'ASK ME',lkSetup:'MOST LIKELY',msSetup:'SECRET MISSION',lySetup:'WHO IS LYING',dwSetup:'DRAW and GUESS',muSetup:'MUSIC BATTLE',arMenu:'1 VS 1 ARENA',teSetup:'TEAM BATTLE'};
+  var pick=rnd(pool);
+  toast('حظ النهارده: '+names[pick]);
+  tm(function(){window[pick]()},900);
 };
 </script>
 </body>
