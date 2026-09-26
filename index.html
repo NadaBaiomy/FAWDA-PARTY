@@ -354,7 +354,7 @@ function splash(){
     x.fillStyle='#171310';
     x.font='900 230px Arial';
     x.textAlign='center';x.textBaseline='middle';
-    x.fillText('S',246,268);
+    x.fillText('F',246,268);
     x.fillStyle='#ffc93d';x.font='900 56px Arial';
     x.fillText('★',416,116);
     x.fillText('★',96,396);
@@ -363,7 +363,7 @@ function splash(){
     for(var i=0;i<olds.length;i++)olds[i].parentNode.removeChild(olds[i]);
     var a=document.createElement('link');a.rel='icon';a.href=u;document.head.appendChild(a);
     var b=document.createElement('link');b.rel='apple-touch-icon';b.href=u;document.head.appendChild(b);
-    var man={name:'FAWDA PARTY',short_name:'SHALA',display:'standalone',background_color:'#171310',theme_color:'#171310',icons:[{src:u,sizes:'512x512',type:'image/png'}]};
+    var man={name:'FAWDA PARTY',short_name:'FAWDA',display:'standalone',background_color:'#171310',theme_color:'#171310',icons:[{src:u,sizes:'512x512',type:'image/png'}]};
     var bl=new Blob([JSON.stringify(man)],{type:'application/json'});
     var d=document.createElement('link');d.rel='manifest';d.href=URL.createObjectURL(bl);document.head.appendChild(d);
   }catch(e){}
