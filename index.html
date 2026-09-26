@@ -249,7 +249,7 @@ ACTS.addPlayer=function(){
 ACTS.removePlayer=function(a){S.players.splice(parseInt(a,10),1);savePl();tabCrew()};
 function tabShell(active,inner){
   paint({html:'<div class="scr">'+
-  '<div class="hdr"><div class="htitle"><span style="color:var(--yl)">SHALA</span> <span style="font-size:13px;color:#8a7b64">PARTY</span></div><button class="hbtn" data-act="mute" id="muteb">'+(MUTED?I.mute:I.snd)+'</button></div>'+
+  '<div class="hdr"><div class="htitle"><span style="color:var(--yl)">FAWDA</span> <span style="font-size:13px;color:#8a7b64">PARTY</span></div><button class="hbtn" data-act="mute" id="muteb">'+(MUTED?I.mute:I.snd)+'</button></div>'+
   '<div class="body">'+inner+'</div>'+
   '<div class="tabbar">'+
   '<div class="tab '+(active==='games'?'on':'')+'" data-act="tab" data-arg="games">'+I.dice+'<span>الألعاب</span></div>'+
@@ -332,7 +332,7 @@ function tabChamp(){
     '<div class="card mt" style="border-color:var(--red)"><b style="color:var(--red)">محتاجين 3 لاعبين</b></div>'));
 }
 function splash(){
-  var t='SHALA'.split('');
+  var t='FAWDA'.split('');
   var sp='';
   for(var i=0;i<t.length;i++)sp+='<span style="transform:rotate('+((i%2?1:-1)*(3+i))+'deg)">'+t[i]+'</span>';
   paint({html:'<div class="scr"><div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;flex:1">'+
