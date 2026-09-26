@@ -57,8 +57,8 @@ input:focus{border-color:var(--yl)}
 @keyframes blink{50%{opacity:.35}}
 .blink{animation:blink 1s infinite}
 @keyframes floaty{50%{transform:translateY(-9px)}}
-.logo{display:flex;justify-content:center;font-size:52px;color:var(--yl);text-shadow:4px 4px 0 #000}
-.logosub{text-align:center;font-size:19px;letter-spacing:12px;color:var(--ink);text-shadow:3px 3px 0 #000;margin-right:12px;margin-top:-2px}
+.logo{display:flex;justify-content:center;font-size:52px;color:var(--yl);text-shadow:4px 4px 0 #000;direction:ltr}
+.logosub{text-align:center;font-size:19px;letter-spacing:12px;color:var(--ink);text-shadow:3px 3px 0 #000;margin-right:12px;margin-top:-2px;direction:ltr}
 #toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--yl);color:#221a08;font-weight:800;padding:11px 20px;border-radius:14px;border:3px solid #1a1408;opacity:0;transition:.25s;z-index:99;pointer-events:none;font-size:14px;max-width:86vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:98}
@@ -307,7 +307,7 @@ function tabCrew(){
   tabShell('crew',
     '<div class="big center">شلّتك</div>'+
     '<div class="sub center">بروفايل كل واحد بيتحفظ على الفون</div>'+
-    '<div class="card mt"><input id="pn" placeholder="اسم اللاعب الجديد..." maxlength="14">'+
+    '<div class="card mt"><input id="pn" dir="auto" placeholder="اسم اللاعب الجديد..." maxlength="14">'+
     '<button class="btn sm mt" data-act="addPlayer">'+I.users+' ضيف لاعب</button></div>'+
     (cards||'<div class="card mt sub">لسه مفيش حد — ضيفوا الأسماء</div>'));
 }
@@ -342,6 +342,33 @@ function splash(){
   '<button class="btn ghost sm mt" style="max-width:280px" data-act="tab" data-arg="crew">'+I.users+' شلتك والبروفايلات</button>'+
   '</div></div>'});
 }
+  /* لوجو الشاشة الرئيسية */
+(function(){
+  try{
+    var c=document.createElement('canvas');
+    c.width=512;c.height=512;
+    var x=c.getContext('2d');
+    x.fillStyle='#171310';x.fillRect(0,0,512,512);
+    x.fillStyle='#0d0b09';x.beginPath();x.arc(272,286,168,0,Math.PI*2);x.fill();
+    x.fillStyle='#ffc93d';x.beginPath();x.arc(246,260,168,0,Math.PI*2);x.fill();
+    x.fillStyle='#171310';
+    x.font='900 230px Arial';
+    x.textAlign='center';x.textBaseline='middle';
+    x.fillText('S',246,268);
+    x.fillStyle='#ffc93d';x.font='900 56px Arial';
+    x.fillText('★',416,116);
+    x.fillText('★',96,396);
+    var u=c.toDataURL('image/png');
+    var olds=document.querySelectorAll('link[rel=icon],link[rel=apple-touch-icon],link[rel=manifest]');
+    for(var i=0;i<olds.length;i++)olds[i].parentNode.removeChild(olds[i]);
+    var a=document.createElement('link');a.rel='icon';a.href=u;document.head.appendChild(a);
+    var b=document.createElement('link');b.rel='apple-touch-icon';b.href=u;document.head.appendChild(b);
+    var man={name:'SHALA PARTY',short_name:'SHALA',display:'standalone',background_color:'#171310',theme_color:'#171310',icons:[{src:u,sizes:'512x512',type:'image/png'}]};
+    var bl=new Blob([JSON.stringify(man)],{type:'application/json'});
+    var d=document.createElement('link');d.rel='manifest';d.href=URL.createObjectURL(bl);document.head.appendChild(d);
+  }catch(e){}
+})();
+
 splash();
 document.addEventListener('pointerdown',function(){ac()},{once:true});
 </script>
