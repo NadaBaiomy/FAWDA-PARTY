@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#171310">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>SHALAXY</title>
+<title>FAWDA</title>
 <style>
 :root{--bg:#171310;--card:#251f17;--line:#3b3227;--line2:#4a3e2f;--ink:#f7efdd;--ink2:#b6a68d;--yl:#ffc93d;--red:#ff5d5d;--tl:#38d3c0;--gr:#4ecb71;--or:#ff8f3d;--pk:#e86fa4}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
@@ -251,7 +251,7 @@ ACTS.addPlayer=function(){
 ACTS.removePlayer=function(a){S.players.splice(parseInt(a,10),1);savePl();tabCrew()};
 function tabShell(active,inner){
   paint({html:'<div class="scr">'+
-  '<div class="hdr"><div class="htitle"><span style="color:var(--yl);font-size:16px">SHALAXY</span></div><button class="hbtn" data-act="mute" id="muteb">'+(MUTED?I.mute:I.snd)+'</button></div>'+
+  '<div class="hdr"><div class="htitle"><span style="color:var(--yl);font-size:16px">FAWDA</span></div><button class="hbtn" data-act="mute" id="muteb">'+(MUTED?I.mute:I.snd)+'</button></div>'+
   '<div class="body">'+inner+'</div>'+
   '<div class="tabbar">'+
   '<div class="tab '+(active==='games'?'on':'')+'" data-act="tab" data-arg="games">'+I.dice+'<span>الألعاب</span></div>'+
@@ -334,7 +334,7 @@ function tabChamp(){
     '<div class="card mt" style="border-color:var(--red)"><b style="color:var(--red)">محتاجين 3 لاعبين</b></div>'));
 }
 function splash(){
-  var t='SHALAXY'.split('');
+  var t='FAWDA'.split('');
   var sp='';
   for(var i=0;i<t.length;i++)sp+='<span style="transform:rotate('+((i%2?1:-1)*(3+i))+'deg)">'+t[i]+'</span>';
   paint({html:'<div class="scr"><div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;flex:1">'+
@@ -357,7 +357,7 @@ function splash(){
     x.fillStyle='#171310';
     x.font='900 230px Arial';
     x.textAlign='center';x.textBaseline='middle';
-    x.fillText('S',246,268);
+    x.fillText('F',246,268);
     x.fillStyle='#ffc93d';x.font='900 56px Arial';
     x.fillText('★',416,116);
     x.fillText('★',96,396);
@@ -366,7 +366,7 @@ function splash(){
     for(var i=0;i<olds.length;i++)olds[i].parentNode.removeChild(olds[i]);
     var a=document.createElement('link');a.rel='icon';a.href=u;document.head.appendChild(a);
     var b=document.createElement('link');b.rel='apple-touch-icon';b.href=u;document.head.appendChild(b);
-    var man={name:'SHALAXY',short_name:'SHALAXY',display:'standalone',background_color:'#171310',theme_color:'#171310',icons:[{src:u,sizes:'512x512',type:'image/png'}]};
+    var man={name:'FAWDA',short_name:'FAWDA',display:'standalone',background_color:'#171310',theme_color:'#171310',icons:[{src:u,sizes:'512x512',type:'image/png'}]};
     var bl=new Blob([JSON.stringify(man)],{type:'application/json'});
     var d=document.createElement('link');d.rel='manifest';d.href=URL.createObjectURL(bl);document.head.appendChild(d);
   }catch(e){}
