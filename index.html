@@ -321,16 +321,17 @@ function tabSolo(){
   ['Number Rush','دوس الأرقام بالترتيب','numbers',I.pad],
   ['Memory Cards','قلّب وطابق الأزواج','cards',I.q],
   ['Pattern','احفظ النمط وكمله','pattern',I.music],
-  ['Aim','أهداف بسرعة','aim',I.swords]];
+   ['Aim','أهداف بسرعة','aim',I.swords],
+  ['Puzzle','رتّبي اللوحة بتحريك المربعات','puzzle',I.brain]];
   var rows='';
   for(var i=0;i<g.length;i++){
     var lv=lvls[g[i][2]]||1;
     var tag;
-    if(lv>5)tag='<span class="tag y">خلصتها!</span>';
-    else tag='<span class="tag y">مستوى '+lv+'/5</span>';
+    if(lv>10)tag='<span class="tag y">خلصتها!</span>';
+    else tag='<span class="tag y">مستوى '+lv+'/10</span>';
     rows+='<div class="grow" data-act="soloGo" data-arg="'+g[i][2]+'"><div class="gic" style="background:var(--tl)">'+g[i][3]+'</div><div><div class="gt">'+g[i][0]+'</div><div class="gs">'+g[i][1]+'</div></div>'+tag+'<div class="arr">'+I.back+'</div></div>';
   }
-  tabShell('solo','<div class="big center">SOLO ZONE</div><div class="sub center">5 مستويات لكل لعبة — والتقدم بيتحفظ</div><div class="mt2">'+rows+'</div>');
+  tabShell('solo','<div class="big center">SOLO ZONE</div><div class="sub center">10 مستويات لكل لعبة — والتقدم بيتحفظ</div><div class="mt2">'+rows+'</div>');
 }
 function tabChamp(){
   sfx.pop();
@@ -1512,7 +1513,6 @@ function arTarget(){
   });
 }
 
-/* ===== SOLO ===== */
 /* ===== SOLO (بمستويات) ===== */
 ACTS.soloGo=function(a){
   sfx.tap();
@@ -1520,7 +1520,9 @@ ACTS.soloGo=function(a){
   else if(a==='numbers')soNumbers();
   else if(a==='cards')soCards();
   else if(a==='pattern')soPattern();
-  else if(a==='aim')soAim();
+   else if(a==='aim')soAim();
+  else if(a==='puzzle')soPuzzle();
+};
 };
 var SOLOLVL={};
 try{SOLOLVL=JSON.parse(localStorage.getItem('shala_lvl')||'{}')}catch(e){SOLOLVL={}}
@@ -1542,7 +1544,7 @@ function soAllDone(k){
   '<div class="body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;flex:1">'+
   '<div class="gic" style="background:var(--yl);width:80px;height:80px">'+I.crown+'</div>'+
   '<div class="big center">أسطورة!</div>'+
-  '<div class="sub center">كسبتي الـ 5 مستويات كلها</div>'+
+  '<div class="sub center">كسبتي الـ 10 مستويات كلها</div>'+
   '<button class="btn" data-act="soReset" data-arg="'+k+'">العبها من الأول</button>'+
   '<button class="btn ghost" data-act="tab" data-arg="solo">'+I.back+' ارجع</button>'+
   '</div>'});
@@ -1551,10 +1553,10 @@ function soLevelUp(k){
   var lv=soLevel(k);
   confetti(90);sfx.win();
   if(S.players[0])award(S.players[0].name,15,{});
-  if(lv>=5){
-    if(S.players[0])award(S.players[0].name,50,{});
+  if(lv>=10){
+    if(S.players[0])award(S.players[0].name,80,{});
     saveP();
-    SOLOLVL[k]=6;soSaveLvl();
+    SOLOLVL[k]=11;soSaveLvl();
     soAllDone(k);
     return;
   }
@@ -1582,15 +1584,15 @@ function soLose(k,msg){
 ACTS.soAgain=function(a){sfx.pop();if(SOFN[a])SOFN[a]()};
 ACTS.soReset=function(a){SOLOLVL[a]=1;soSaveLvl();sfx.pop();if(SOFN[a])SOFN[a]()};
 
-/* REACTION */
+/* REACTION — 10 مستويات */
 function soReaction(){
   var k='reaction';
   SOFN[k]=soReaction;
   var lv=soLevel(k);
-  if(lv>5)return soAllDone(k);
-  var limit=[700,560,460,390,330][lv-1];
+  if(lv>10)return soAllDone(k);
+  var limit=[700,620,550,490,440,400,365,335,310,290][lv-1];
   go(function(){
-    return {html:hdr('Reaction — مستوى '+lv+'/5')+
+    return {html:hdr('Reaction — مستوى '+lv+'/10')+
     '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
     '<div class="card center"><b>المطلوب: متوسط أسرع من '+limit+'ms</b></div>'+
     '<div id="rx" style="border-radius:22px;border:3px solid #1a1408;height:280px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;cursor:pointer;background:var(--red);color:#fff">استنى الأخضر...</div>'+
@@ -1632,20 +1634,21 @@ function soReaction(){
   });
 }
 
-/* NUMBER RUSH */
+/* NUMBER RUSH — 10 مستويات */
 function soNumbers(){
   var k='numbers';
   SOFN[k]=soNumbers;
   var lv=soLevel(k);
-  if(lv>5)return soAllDone(k);
-  var cfg=[{n:12,c:4},{n:16,c:4},{n:20,c:5},{n:25,c:5},{n:30,c:6}][lv-1];
+  if(lv>10)return soAllDone(k);
+  var cfg=[{n:12,c:4},{n:16,c:4},{n:20,c:5},{n:25,c:5},{n:30,c:6},{n:36,c:6},{n:42,c:7},{n:48,c:8},{n:54,c:9},{n:60,c:10}][lv-1];
+  var fs=cfg.c>=9?'14px':(cfg.c>=7?'17px':'19px');
   go(function(){
     var nums=[];
     for(var i=1;i<=cfg.n;i++)nums.push(i);
     nums=shuffle(nums);
     var btns='';
-    for(i=0;i<nums.length;i++)btns+='<button class="btn sm num" data-n="'+nums[i]+'" style="padding:0;height:56px;font-size:19px">'+nums[i]+'</button>';
-    return {html:hdr('Number Rush — مستوى '+lv+'/5')+
+    for(i=0;i<nums.length;i++)btns+='<button class="btn sm num" data-n="'+nums[i]+'" style="padding:0;height:56px;font-size:'+fs+'">'+nums[i]+'</button>';
+    return {html:hdr('Number Rush — مستوى '+lv+'/10')+
     '<div class="body"><div class="card center"><b>دوس 1 → '+cfg.n+' بالترتيب</b></div>'+
     '<div style="display:grid;grid-template-columns:repeat('+cfg.c+',1fr);gap:8px;margin-top:12px">'+btns+'</div></div>',
     after:function(sc){
@@ -1671,17 +1674,18 @@ function soNumbers(){
   });
 }
 
-/* MEMORY CARDS */
+/* MEMORY CARDS — 10 مستويات */
 function soCards(){
   var k='cards';
   SOFN[k]=soCards;
   var lv=soLevel(k);
-  if(lv>5)return soAllDone(k);
-  var pairs=[4,6,8,10,12][lv-1];
-  var maxMoves=[10,14,18,24,30][lv-1];
-  var CSYMS=[['★','#ffc93d'],['♥','#ff5d5d'],['♛','#38d3c0'],['⚡','#ff8f3d'],['✿','#e86fa4'],['☻','#4ecb71'],['♪','#7fd0ff'],['✪','#f4d06f'],['♞','#c9a1ff'],['☂','#7fd0ff'],['⚑','#ff8f3d'],['☯','#4ecb71']];
+  if(lv>10)return soAllDone(k);
+  var pairs=[4,6,8,10,12,13,14,15,16,18][lv-1];
+  var maxMoves=[10,14,18,23,28,32,35,38,42,46][lv-1];
+  var CSYMS=[['★','#ffc93d'],['♥','#ff5d5d'],['♛','#38d3c0'],['⚡','#ff8f3d'],['✿','#e86fa4'],['☻','#4ecb71'],['♪','#7fd0ff'],['✪','#f4d06f'],['♞','#c9a1ff'],['☂','#7fd0ff'],['⚑','#ff8f3d'],['☯','#4ecb71'],['☀','#ffc93d'],['☘','#4ecb71'],['⚔','#38d3c0'],['☕','#e86fa4'],['❄','#7fd0ff'],['⌚','#f4d06f']];
   var pool=CSYMS.slice(0,pairs);
   var deck=shuffle(pool.concat(pool));
+  var cols=deck.length>24?6:4;
   var open=[],moves=0,lock=false,myscr=null,over=false;
   function render(){
     var grid='';
@@ -1690,9 +1694,9 @@ function soCards(){
       var done=deck[i][2];
       grid+='<button class="btn sm" data-i="'+i+'" style="padding:0;height:70px;font-size:22px;'+(done?'background:var(--gr);color:#06270f;':'')+(shown&&!done?'background:#f7efdd;color:#221a08;':'')+'">'+((shown||done)?('<span style="color:'+deck[i][1]+'">'+deck[i][0]+'</span>'):'؟')+'</button>';
     }
-    paint({html:hdr('Memory — مستوى '+lv+'/5')+
+    paint({html:hdr('Memory — مستوى '+lv+'/10')+
     '<div class="body"><div class="card center"><b>'+pairs+' أزواج — نقلات: '+moves+' / '+maxMoves+'</b></div>'+
-    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px">'+grid+'</div></div>',
+    '<div style="display:grid;grid-template-columns:repeat('+cols+',1fr);gap:9px;margin-top:12px">'+grid+'</div></div>',
     after:function(sc){
       myscr=sc;
       var bs=sc.querySelectorAll('button[data-i]');
@@ -1739,12 +1743,12 @@ function soCards(){
   render();
 }
 
-/* PATTERN */
+/* PATTERN — 10 مستويات */
 function soPattern(){
   var k='pattern';
   SOFN[k]=soPattern;
   var lv=soLevel(k);
-  if(lv>5)return soAllDone(k);
+  if(lv>10)return soAllDone(k);
   var need=lv+2;
   var PCOL=['#ff5d5d','#ffc93d','#38d3c0','#4ecb71'];
   var seq=[];
@@ -1755,7 +1759,7 @@ function soPattern(){
     if(!ok())return;
     var pads='';
     for(var i=0;i<4;i++)pads+='<button class="btn" data-n="'+i+'" style="padding:0;height:95px;background:'+PCOL[i]+';'+(hl===i?'outline:6px solid #fff;':'')+'"></button>';
-    paint({html:hdr('Pattern — مستوى '+lv+'/5')+
+    paint({html:hdr('Pattern — مستوى '+lv+'/10')+
     '<div class="body" style="display:flex;flex-direction:column;gap:12px;justify-content:center">'+
     '<div class="sub center">'+(st.showing?('راقب النمط — طوله '+need+' خطوات'):'كرر النمط!')+'</div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+pads+'</div></div>',
@@ -1805,12 +1809,228 @@ function soPattern(){
   setTimeout(spPlay,600);
 }
 
-/* AIM */
+/* AIM — 10 مستويات */
 function soAim(){
   var k='aim';
   SOFN[k]=soAim;
   var lv=soLevel(k);
-  if(lv>5)return soAllDone(k
+  if(lv>10)return soAllDone(k);
+  var cfg=[{t:20,need:7,size:72,life:1500},{t:22,need:10,size:64,life:1400},{t:24,need:14,size:58,life:1300},{t:26,need:18,size:52,life:1200},{t:28,need:22,size:46,life:1100},{t:30,need:26,size:42,life:1000},{t:32,need:30,size:38,life:950},{t:34,need:34,size:36,life:900},{t:36,need:38,size:34,life:850},{t:40,need:44,size:32,life:800}][lv-1];
+  go(function(){
+    return {html:hdr('Aim — مستوى '+lv+'/10')+
+    '<div class="body">'+
+    '<div class="card center" style="display:flex;justify-content:space-around"><b>نقاط: <span id="asc">0</span> / '+cfg.need+'</b><b>وقت: <span id="atm">'+cfg.t+'</span></b></div>'+
+    '<div id="field" style="position:relative;height:400px;margin-top:12px;border:3px dashed var(--line2);border-radius:18px;overflow:hidden">'+
+    '<div id="aim" style="position:absolute;width:'+cfg.size+'px;height:'+cfg.size+'px;border-radius:50%;background:var(--red);border:4px solid #1a1408;cursor:pointer;display:none"></div></div></div>',
+    after:function(sc){
+      var score=0,t=cfg.t,over=false;
+      function spawn(){
+        if(!sc.isConnected||over)return;
+        var a=$('#aim'),f=$('#field');
+        if(!a||!f)return;
+        a.style.display='block';
+        a.style.left=(Math.random()*(f.clientWidth-cfg.size-10))+'px';
+        a.style.top=(Math.random()*(f.clientHeight-cfg.size-10))+'px';
+        a.style.background=rnd(['#ff5d5d','#ffc93d','#38d3c0','#ff8f3d']);
+        sfx.tick();
+        var done=false;
+        function hit(){
+          if(done)return;done=true;clearTimeout(to);
+          score++;sfx.good();
+          var e=$('#asc');if(e)e.textContent=score;
+          if(!over)tm(spawn,400);
+        }
+        a.onclick=hit;
+        var to=tm(function(){
+          if(done)return;done=true;
+          if(!over)tm(spawn,400);
+        },cfg.life);
+      }
+      tm(spawn,800);
+      iv(function(){
+        t--;
+        var e=$('#atm');if(e)e.textContent=t;
+        if(t<=0){
+          over=true;
+          var a=$('#aim');if(a)a.style.display='none';
+          if(score>=cfg.need){
+            if(S.players[0])award(S.players[0].name,score*3,{});
+            saveP();
+            soLevelUp(k);
+          }else{
+            soLose(k,'جمعتي '+score+' من '+cfg.need+' المطلوبين');
+          }
+        }
+      },1000);
+    }};
+  });
+}
+  /* PUZZLE — 10 مستويات */
+var PUZ={};
+function soPuzzle(){
+  var k='puzzle';
+  SOFN[k]=soPuzzle;
+  var lv=soLevel(k);
+  if(lv>10)return soAllDone(k);
+  var n=[3,3,4,4,5,5,5,6,6,7][lv-1];
+  var shf=[40,90,150,230,330,430,530,660,820,1000][lv-1];
+  var TSZ=Math.floor(340/n);
+  var SZ=TSZ*n;
+  var art=document.createElement('canvas');
+  art.width=SZ;art.height=SZ;
+  soPzArt(art);
+  var board=[],blank=n*n-1,moves=0,won=false,started=0;
+  function reset(){
+    board=[];
+    for(var i=0;i<n*n;i++)board.push(i);
+    board[n*n-1]=-1;
+    blank=n*n-1;
+    for(var s=0;s<shf;s++){
+      var cand=[];
+      if(blank%n>0)cand.push(blank-1);
+      if(blank%n<n-1)cand.push(blank+1);
+      if(blank-n>=0)cand.push(blank-n);
+      if(blank+n<n*n)cand.push(blank+n);
+      var pick=cand[Math.floor(Math.random()*cand.length)];
+      board[blank]=board[pick];
+      board[pick]=-1;
+      blank=pick;
+    }
+    var solved=true;
+    for(var q=0;q<n*n-1;q++)if(board[q]!==q)solved=false;
+    if(solved){
+      var t2=blank%n>0?blank-1:blank+1;
+      board[blank]=board[t2];
+      board[t2]=-1;
+      blank=t2;
+    }
+    moves=0;won=false;started=Date.now();
+  }
+  function drawPz(){
+    var c=$('#pzc');
+    if(!c)return;
+    var x=c.getContext('2d');
+    for(var i=0;i<n*n;i++){
+      var t=board[i];
+      var px=(i%n)*TSZ,py=Math.floor(i/n)*TSZ;
+      if(t===-1){
+        x.fillStyle='#0d0b09';
+        x.fillRect(px,py,TSZ,TSZ);
+        x.strokeStyle='#3b3227';
+        x.strokeRect(px+.5,py+.5,TSZ-1,TSZ-1);
+        continue;
+      }
+      var sx=(t%n)*TSZ,sy=Math.floor(t/n)*TSZ;
+      x.drawImage(art,sx,sy,TSZ,TSZ,px,py,TSZ,TSZ);
+      x.strokeStyle='rgba(0,0,0,.45)';
+      x.strokeRect(px+.5,py+.5,TSZ-1,TSZ-1);
+      x.fillStyle='#fff';
+      x.strokeStyle='#000';
+      x.lineWidth=2;
+      x.font='bold '+Math.max(9,Math.floor(TSZ/5))+'px Tahoma';
+      x.strokeText(String(t+1),px+4,py+14);
+      x.fillText(String(t+1),px+4,py+14);
+    }
+  }
+  PUZ.init=function(){reset();drawPz();var mv=$('#pzm');if(mv)mv.textContent='0'};
+  reset();
+  go(function(){
+    return {html:hdr('Puzzle — مستوى '+lv+'/10')+
+    '<div class="body" style="display:flex;flex-direction:column;gap:12px">'+
+    '<div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px">'+
+    '<b>نقلات: <span id="pzm">0</span></b>'+
+    '<div style="text-align:center"><div class="sub" style="font-size:10px">الشكل المطلوب</div><img id="pzprev" style="width:60px;height:60px;border-radius:10px;border:2px solid #1a1408;display:block"></div>'+
+    '</div>'+
+    '<canvas id="pzc" width="'+SZ+'" height="'+SZ+'" style="background:#0d0b09;border-radius:16px;border:3px solid #1a1408;box-shadow:5px 5px 0 #0007;width:100%;display:block;touch-action:none"></canvas>'+
+    '<div class="sub center" style="font-size:12px">دوسي المربع اللي جنب الفراغ عشان يتحرك — والرقم الصغير بيساعدك</div>'+
+    '<button class="btn ghost sm" data-act="pzNew">خلط من جديد</button>'+
+    '</div>',
+    after:function(sc){
+      var pv=$('#pzprev');
+      if(pv)pv.src=art.toDataURL();
+      drawPz();
+      function tap(e){
+        if(won)return;
+        if(e.preventDefault)e.preventDefault();
+        var c=$('#pzc');
+        if(!c)return;
+        var r=c.getBoundingClientRect();
+        var t=e.touches?e.touches[0]:e;
+        var cx=(t.clientX-r.left)*(c.width/r.width);
+        var cy=(t.clientY-r.top)*(c.height/r.height);
+        if(cx<0||cy<0||cx>=SZ||cy>=SZ)return;
+        var i=Math.floor(cy/TSZ)*n+Math.floor(cx/TSZ);
+        var adj=false;
+        if(i%n>0&&board[i-1]===-1)adj=true;
+        else if(i%n<n-1&&board[i+1]===-1)adj=true;
+        else if(i-n>=0&&board[i-n]===-1)adj=true;
+        else if(i+n<n*n&&board[i+n]===-1)adj=true;
+        if(!adj)return;
+        board[blank]=board[i];
+        board[i]=-1;
+        blank=i;
+        moves++;
+        sfx.tick();
+        drawPz();
+        var mv=$('#pzm');
+        if(mv)mv.textContent=moves;
+        var ok=true;
+        for(var q=0;q<n*n-1;q++)if(board[q]!==q)ok=false;
+        if(ok&&board[n*n-1]===-1){
+          won=true;
+          c.getContext('2d').drawImage(art,0,0);
+          var secs=(Date.now()-started)/1000;
+          confetti(90);sfx.win();
+          toast('خلصتي في '+moves+' نقلة — '+Math.round(secs)+' ث');
+          if(S.players[0])award(S.players[0].name,Math.round(n*n*1.5),{});
+          saveP();
+          setTimeout(function(){
+            if(!sc.isConnected)return;
+            soLevelUp(k);
+          },1500);
+        }
+      }
+      var c=$('#pzc');
+      if(c){
+        c.addEventListener('touchstart',tap,false);
+        c.addEventListener('mousedown',tap,false);
+      }
+    }};
+  });
+}
+function soPzArt(c){
+  var x=c.getContext('2d');
+  var W=c.width;
+  var pals=[
+    ['#1d2d50','#f7b32b','#2a9d8f','#e76f51'],
+    ['#2b2118','#ffc93d','#38d3c0','#e86fa4'],
+    ['#16213e','#ffd76a','#4ecb71','#ff8f3d'],
+    ['#3a1f2b','#f4d06f','#7fd0ff','#ff5d5d']
+  ];
+  var p=rnd(pals);
+  x.fillStyle=p[0];
+  x.fillRect(0,0,W,W);
+  for(var i=0;i<50;i++){
+    x.fillStyle=Math.random()<.5?'#fff':'#f4d06f';
+    x.fillRect(Math.random()*W,Math.random()*W*.55,2,2);
+  }
+  x.fillStyle=p[1];
+  x.beginPath();
+  x.arc(W*rnd([.3,.5,.7]),W*.28,W*.13,0,Math.PI*2);
+  x.fill();
+  x.fillStyle=p[2];
+  x.beginPath();
+  x.moveTo(0,W);x.lineTo(0,W*.62);x.lineTo(W*.22,W*.44);x.lineTo(W*.48,W*.64);x.lineTo(W*.72,W*.46);x.lineTo(W,W*.66);x.lineTo(W,W);
+  x.closePath();x.fill();
+  x.fillStyle=p[3];
+  x.beginPath();
+  x.moveTo(0,W);x.lineTo(0,W*.78);x.lineTo(W*.3,W*.6);x.lineTo(W*.62,W*.78);x.lineTo(W,W*.62);x.lineTo(W,W);
+  x.closePath();x.fill();
+  x.fillStyle='rgba(255,255,255,.12)';
+  x.fillRect(0,W*.86,W,W*.14);
+}
+ACTS.pzNew=function(){sfx.pop();if(PUZ.init)PUZ.init()};
+
 /* ===== TEAM ===== */
 var TE={};
 function teSetup(){
